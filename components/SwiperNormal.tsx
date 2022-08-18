@@ -25,11 +25,16 @@ export default function SwiperNormal ({ bannerList }: IProps) {
 const styles = StyleSheet.create({
   swiperWrap: {
     height: 133.5,
+    marginBottom: 24,
+    paddingRight: 10,
+    paddingLeft: 10,
   },
   swiper: {
   },
   img: {
-    width: '100%',
+    marginRight: 10,
+    marginLeft: 10,
+    width: 388,
     height: 133,
     borderRadius: 6,
   }

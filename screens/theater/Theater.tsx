@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
-import { Text, View } from '../components/Themed';
-import { RootTabScreenProps } from '../types';
+import { Text, View } from '../../components/Themed';
+import { RootTabScreenProps } from '../../types';
 import { useEffect, useState } from "react";
-import { netDramaList, netRecommendData, netTheaterPage } from "../apis/Theater";
-import SwiperNormal from "../components/SwiperNormal";
-import MyDrama from "./theater/component/MyDrama";
+import { netDramaList, netRecommendData, netTheaterPage } from "../../apis/Theater";
+import SwiperNormal from "../../components/SwiperNormal";
+import MyDrama from "./component/MyDrama";
+import { IDramaItem } from "../../interfaces/theater.interface";
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [page, setPage] = useState(1);
   const [tid, setTid] = useState();
-  const [dramaList, setDramaList] = useState([]);
+  const [dramaList, setDramaList] = useState<IDramaItem[]>([]);
   const [bannerList, setBannerList] = useState<{ imgUrl: string }[]>([]);
   const [typeList, setTypeList] = useState<{labelId: string, labelName: string}[]>([]);
   const [videoList, setVideoList] = useState([]);
@@ -30,10 +31,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   return (
     <View style={styles.container}>
       <SwiperNormal bannerList={bannerList}/>
+      <MyDrama dramaList={dramaList}/>
       {typeList.map(({ labelId, labelName }) => {
         return <Text key={labelId}>{labelName}</Text>;
       })}
-      {/*<MyDrama dramaList={dramaList}/>*/}
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     </View>
   );
@@ -44,13 +45,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     paddingTop: 12,
-    paddingRight: 20,
-    paddingLeft: 20,
     paddingBottom: 12,
+    backgroundColor: 'rgba(25, 25, 25, 1)'
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
   },
 });

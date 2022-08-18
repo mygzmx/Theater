@@ -30,10 +30,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   swiper: {
+
   },
   img: {
-    marginRight: 10,
-    marginLeft: 10,
     width: 388,
     height: 133,
     borderRadius: 6,

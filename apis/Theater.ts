@@ -11,7 +11,7 @@ export const netTheaterPage = async () => {
 export interface INetRecommendParam {
   index?: number;
   size?: number;
-  tid?: number;
+  tid?: any;
 }
 export const netRecommendData = async ({ index = 1, size = 12, tid }: INetRecommendParam) => {
   return await Service.post('glory/video/2163', { index, size, tid })

@@ -54,12 +54,13 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    height: 32,
+    height: 36,
     justifyContent: 'space-between',
   },
   dramaTitle: {
-    fontSize: 14,
-    color: '#7F7F7F',
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   dramaLink: {
     display: 'flex',

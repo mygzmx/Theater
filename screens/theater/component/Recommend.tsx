@@ -1,6 +1,7 @@
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image } from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
 
+const ImgEmpty = require('../../../assets/images/img-empty.png')
 
 interface IProps {
   activeRecommendType: string;
@@ -18,7 +19,8 @@ export default function Recommend(props: IProps) {
       return (<View style={styles.typeListBoxItem}>
         <Text
           style={activeRecommendType === labelId ? styles.typeListActiveBoxTxt : styles.typeListBoxTxt}
-          onPress={() => changeType(item)}>{labelName}</Text>
+          onPress={() => changeType(item)}
+          >{labelName}</Text>
         { labelId !== typeList[typeList.length - 1].labelId && <View style={styles.typeListBoxLine}/>}
       </View>);
     }
@@ -35,18 +37,13 @@ export default function Recommend(props: IProps) {
 
 
   const RecommendVideo = () => {
-    return (<View>
+    return (<View style={styles.flatListBox}>
       {videoList.map(videoItem => {
         const {bookName, bookId} = videoItem
         return (
-          <View key={bookId}>
-            <Text>{bookName}</Text>
-            <View>
-              <Text>{bookName}</Text>
-            </View>
-            <View>
-              <Text>{bookName}</Text>
-            </View>
+          <View key={bookId} style={styles.recommendItem}>
+            <Image style={styles.recommendImg} source={{uri: videoItem.coverWap}} defaultSource={ImgEmpty}/>
+            <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
           </View>
         )
       })}
@@ -78,6 +75,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     display: 'flex',
     height: 45,
+    marginBottom: 4,
   },
   typeListBoxItem: {
     display: 'flex',
@@ -105,7 +103,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#444444',
   },
   flatListBox: {
-    paddingRight: 20,
-    paddingLeft: 20,
+    paddingRight: 10,
+    paddingLeft: 10,
+    display: "flex",
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+  },
+  recommendItem: {
+    width: 114,
+    marginRight: 8,
+    marginLeft: 8,
+  },
+  recommendImg: {
+    height: 145,
+    borderRadius: 8,
+  },
+  recommendBookName: {
+    height: 20,
+    fontSize: 14,
+    color: '#FFFFFF',
+    lineHeight: 20,
+    marginTop: 8,
+    marginBottom: 17,
   }
 })

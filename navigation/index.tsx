@@ -3,19 +3,18 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+import { Entypo, AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, Text, View } from 'react-native';
 
-import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import Theater from '../screens/theater/Theater';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import Player from '../screens/player/Player';
 import TabThreeScreen from '../screens/TabThreeScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
@@ -55,42 +54,41 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
+  const HomeHeader = (props: {title: string}) => (
+    <View style={{width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)', display: 'flex', justifyContent: 'flex-end'}}>
+      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#BBBBBB', paddingLeft: 15, paddingBottom: 12}}>{props.title}</Text>
+    </View>
+  )
   return (
     <BottomTab.Navigator
-      initialRouteName="Theater"
+      initialRouteName="Player"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: '#FFFFFF',
+        tabBarBackground: () => <View style={{width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)'}}/>
       }}>
       <BottomTab.Screen
         name="Theater"
         component={Theater}
         options={({ navigation }: RootTabScreenProps<'Theater'>) => ({
           title: '剧场',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
+          headerTitleStyle: {
+            opacity: 0
+          },
+          // headerTitleAlign: 'left',
+          headerBackground: () => <HomeHeader title={'繁花剧场'}/>,
+          tabBarIcon: ({ color }) => <Entypo name="grid" size={24} color={color} />,
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        name="Player"
+        component={Player}
         options={{
           title: '在看',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerTitleStyle: {
+            opacity: 0
+          },
+          tabBarIcon: ({ color }) => <AntDesign name="play" size={24} color={color} />,
+          headerBackground: () => <HomeHeader title={'繁花剧场'}/>,
         }}
       />
       <BottomTab.Screen
@@ -98,19 +96,13 @@ function BottomTabNavigator() {
         component={TabThreeScreen}
         options={{
           title: '我的',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerTitleStyle: {
+            opacity: 0
+          },
+          headerBackground: () => <HomeHeader title={'个人中心'}/>,
+          tabBarIcon: ({ color }) => <AntDesign name="smileo" size={24} color={color} />,
         }}
       />
     </BottomTab.Navigator>
   );
-}
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

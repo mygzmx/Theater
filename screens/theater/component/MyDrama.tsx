@@ -27,6 +27,7 @@ interface IProps {
 export default function MyDrama({ dramaList, linkTo }: IProps) {
   const navigation = useNavigation()
   const linkToPlayer = async (item: IDramaItem) => {
+    // @ts-ignore
     navigation.navigate('Player', { bookId: item.bookId })
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {

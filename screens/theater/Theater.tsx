@@ -7,6 +7,7 @@ import MyDrama from "./component/MyDrama";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
 import Recommend from "./component/Recommend";
 import LoadMore from "../../components/LoadMore";
+import { StackActions } from "@react-navigation/native";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [page, setPage] = useState(1);
@@ -83,6 +84,9 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       }
     }
   }
+  const linkTo = () => {
+    console.log('navigation.getState()----->', navigation)
+  }
   return (
     <ScrollView
       overScrollMode={'auto'}
@@ -91,7 +95,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       onScrollEndDrag={onMomentumScrollEnd}
       style={styles.container}>
       <SwiperNormal bannerList={bannerList}/>
-      <MyDrama dramaList={dramaList}/>
+      <MyDrama dramaList={dramaList} linkTo={() => linkTo()}/>
       <Recommend
         changeType={(item) => changeRecommendType(item)}
         activeRecommendType={activeRecommendType}

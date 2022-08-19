@@ -1,5 +1,18 @@
-import { View, Text, FlatList, Image, ImageBackground, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Alert,
+} from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
+import linking from "../../../navigation/LinkingConfiguration";
+import * as Linking from "expo-linking";
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png');
 const UpdateIcon = require('../../../assets/images/update-icon.png');
@@ -7,21 +20,28 @@ const MoreIcon = require('../../../assets/images/more-icon.png');
 
 
 interface IProps {
-  dramaList: IDramaItem[]
+  dramaList: IDramaItem[],
+  linkTo: () => void;
 }
 
-export default function MyDrama({ dramaList }: IProps) {
+export default function MyDrama({ dramaList, linkTo }: IProps) {
+  const navigation = useNavigation()
+  const linkToPlayer = async (item: IDramaItem) => {
+    navigation.navigate('Player', { bookId: item.bookId })
+  }
   const renderItem = ({ item }: { item: IDramaItem }) => {
-    return <View style={styles.bookItem}>
-      <ImageBackground
-        style={styles.coverImg}
-        source={{ uri: item.coverImage }}
-        defaultSource={ImgEmpty}>
-        {item.isUpdate == 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
-      </ImageBackground>
-      <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
-      <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
-    </View>;
+    return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>
+      <View style={styles.bookItem}>
+        <ImageBackground
+          style={styles.coverImg}
+          source={{ uri: item.coverImage }}
+          defaultSource={ImgEmpty}>
+          {item.isUpdate == 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
+        </ImageBackground>
+        <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
+        <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
+      </View>
+    </TouchableWithoutFeedback>
   }
 
   return (<View style={styles.dramaWrap}>

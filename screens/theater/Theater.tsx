@@ -1,5 +1,4 @@
 import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
-import { Text, View } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
 import React, { useEffect, useState } from "react";
 import { netDramaList, netRecommendData, netTheaterPage } from "../../apis/Theater";
@@ -7,6 +6,7 @@ import SwiperNormal from "../../components/SwiperNormal";
 import MyDrama from "./component/MyDrama";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
 import Recommend from "./component/Recommend";
+import LoadMore from "../../components/LoadMore";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [page, setPage] = useState(1);
@@ -19,6 +19,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     initPageData();
+    setPage(1)
   }, [])
 
   const initPageData = async () => {
@@ -27,16 +28,15 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     const { recentReadList = [], operList = [] } = await netDramaList({page: 1, size: 10});
     setDramaList(recentReadList);
     setBannerList(operList);
-    await getColumnList(true)
+    await getColumnList(page, undefined,true)
   }
-  const getColumnList = async (flag: boolean = false) => {
-    const tid = activeRecommendType === '0' ? undefined : activeRecommendType;
+  const getColumnList = async (index: number, tid?: number | string,flag?: boolean) => {
     const {books = []} = await netRecommendData({index: page, tid});
     if(flag) {
-      setVideoList(books);
+      setVideoList([...books]);
       // 初始如果请求数量太少就发送二次请求
       if(books.length < 12){
-        await getColumnList();
+        await getColumnList(page + 1 );
       }
     } else {
       setVideoList([ ...videoList, ...books]);
@@ -44,15 +44,14 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
         setPageLoadingFull(true);
       }
     }
-    setPage(page + 1)
   }
   const changeRecommendType = (item: IClassificationItem) => {
     if (activeRecommendType === item.labelId) return;
     setPage(1)
     setActiveRecommendType(item.labelId)
-    // this.isShowMore = true;
-    // this.isHasMore = true;
-    getColumnList(true);
+    setPageLoading(true);
+    setPageLoadingFull(false);
+    getColumnList(1, item.labelId,true);
   }
 
   const onRefresh = React.useCallback(() => {
@@ -61,12 +60,13 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     initPageData().then(() => setRefreshing(false));
   }, []);
 
-  const [pageLoading, setPageLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [pageLoadingFull, setPageLoadingFull] = useState(false);
   const loadMore = async () => {
     console.log('loadMore-------------------_>');
     setPageLoading(true);
-    await getColumnList();
+    setPage((page + 1))
+    await getColumnList(page + 1, activeRecommendType);
     setPageLoading(false);
   }
 
@@ -74,9 +74,9 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     const offSetY = event.nativeEvent.contentOffset.y; // 获取滑动的距离
     const contentSizeHeight = event.nativeEvent.contentSize.height; // scrollView  contentSize 高度
     const oriageScrollHeight = event.nativeEvent.layoutMeasurement.height; // scrollView高度
-    console.log(`offSetY${offSetY}`);
-    console.log(`oriageScrollHeight${oriageScrollHeight}`);
-    console.log(`contentSizeHeight${contentSizeHeight}`);
+    // console.log(`offSetY${offSetY}`);
+    // console.log(`oriageScrollHeight${oriageScrollHeight}`);
+    // console.log(`contentSizeHeight${contentSizeHeight}`);
     if (offSetY + oriageScrollHeight >= contentSizeHeight - 1) {
       if (!pageLoadingFull && !pageLoading) {
         loadMore();
@@ -93,12 +93,12 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       <SwiperNormal bannerList={bannerList}/>
       <MyDrama dramaList={dramaList}/>
       <Recommend
-        changeType={changeRecommendType}
+        changeType={(item) => changeRecommendType(item)}
         activeRecommendType={activeRecommendType}
         typeList={typeList}
         videoList={videoList}
       />
-      {pageLoading && <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>}
+      <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
     </ScrollView>
   );
 }
@@ -111,7 +111,11 @@ const styles = StyleSheet.create({
     flex:1
   },
   separator: {
-    marginVertical: 30,
-    height: 1,
+    height: 50
+  },
+  separatorText: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });

@@ -38,10 +38,10 @@ export default function Recommend(props: IProps) {
 
   const RecommendVideo = () => {
     return (<View style={styles.flatListBox}>
-      {videoList.map(videoItem => {
+      {videoList.map((videoItem, videoInd) => {
         const {bookName, bookId} = videoItem
         return (
-          <View key={bookId} style={styles.recommendItem}>
+          <View key={`${bookId}_${videoInd}`} style={styles.recommendItem}>
             <Image style={styles.recommendImg} source={{uri: videoItem.coverWap}} defaultSource={ImgEmpty}/>
             <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
           </View>

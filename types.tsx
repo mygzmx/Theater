@@ -6,7 +6,6 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Theater from "./screens/theater/Theater";
 
 declare global {
   namespace ReactNavigation {

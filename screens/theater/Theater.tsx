@@ -95,7 +95,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       onScrollEndDrag={onMomentumScrollEnd}
       style={styles.container}>
       <SwiperNormal bannerList={bannerList}/>
-      <MyDrama dramaList={dramaList} linkTo={() => linkTo()}/>
+      <MyDrama dramaList={dramaList}/>
       <Recommend
         changeType={(item) => changeRecommendType(item)}
         activeRecommendType={activeRecommendType}

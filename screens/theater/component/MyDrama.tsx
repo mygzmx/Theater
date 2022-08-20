@@ -6,11 +6,8 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableWithoutFeedback,
-  Alert,
 } from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
-import linking from "../../../navigation/LinkingConfiguration";
-import * as Linking from "expo-linking";
 import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -21,14 +18,13 @@ const MoreIcon = require('../../../assets/images/more-icon.png');
 
 interface IProps {
   dramaList: IDramaItem[],
-  linkTo: () => void;
 }
 
-export default function MyDrama({ dramaList, linkTo }: IProps) {
+export default function MyDrama({ dramaList }: IProps) {
   const navigation = useNavigation()
   const linkToPlayer = async (item: IDramaItem) => {
     // @ts-ignore
-    navigation.navigate('Player', { bookId: item.bookId })
+    navigation.navigate('Player', { bookId: item.bookId, chapterId: item.chapterId  })
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
     return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>

@@ -5,6 +5,7 @@ import { AVPlaybackStatus, Video } from "expo-av";
 import Controls from "./Controls";
 import React, { useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
+import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 
 interface IProps {
   chapterData: any;
@@ -13,7 +14,7 @@ interface IProps {
 
 export default function VideoUnion ({chapterData, onEnd}: IProps) {
 
-  const [statusData, setStatusData] = useState<AVPlaybackStatus>({} as AVPlaybackStatus);
+  const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
 
   const player = useRef<Video>({} as Video);
 
@@ -63,7 +64,9 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
             uri: chapterData?.content?.mp4,
           },
           onLoad: (status: AVPlaybackStatus) => {
-            setStatusData(status)
+            if (status.isLoaded) {
+              setStatusData(status)
+            }
           },
         }}
       />

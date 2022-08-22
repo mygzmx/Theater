@@ -59,7 +59,7 @@ function BottomTabNavigator() {
   )
   return (
     <BottomTab.Navigator
-      initialRouteName="Theater"
+      initialRouteName="Player"
       screenOptions={{
         tabBarActiveTintColor: '#FFFFFF',
         tabBarBackground: () => <View style={{width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)'}}/>

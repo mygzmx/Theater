@@ -90,8 +90,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   return (
     <ScrollView
       overScrollMode={'auto'}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       onScrollEndDrag={onMomentumScrollEnd}
       style={styles.container}>
       <SwiperNormal bannerList={bannerList}/>

@@ -20,8 +20,8 @@ export default function SwiperNormal ({ bannerList }: IProps) {
       }}
     >
       { bannerList.map(val => {
-        return <View style={styles.swiperItem}>
-          <Image key={val.id} source={{ uri: val.imgUrl }} style={styles.imgBox}/>
+        return <View key={val.id} style={styles.swiperItem}>
+          <Image source={{ uri: val.imgUrl }} style={styles.imgBox}/>
         </View>
       })}
     </SwiperFlatList>

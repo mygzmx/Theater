@@ -1,5 +1,6 @@
-import { View, Text, FlatList, StyleSheet, Image, Dimensions } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, TouchableWithoutFeedback } from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
+import { useNavigation } from "@react-navigation/native";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png')
 
@@ -12,6 +13,11 @@ interface IProps {
 
 export default function Recommend(props: IProps) {
   const { typeList, videoList, activeRecommendType, changeType } = props;
+  const navigation = useNavigation()
+  const linkToPlayer = async (item: IVideoListItem) => {
+    // @ts-ignore
+    navigation.navigate('Player', { bookId: item.bookId, chapterId: item.chapterId  })
+  }
   // 标题
   const RecommendTitle = () => {
     const renderTypeItem = ({ item }: {item: IClassificationItem}) => {
@@ -35,16 +41,16 @@ export default function Recommend(props: IProps) {
     )
   }
 
-
   const RecommendVideo = () => {
     return (<View style={styles.flatListBox}>
       {videoList.map((videoItem, videoInd) => {
         const {bookName, bookId} = videoItem
-        return (
-          <View key={`${bookId}_${videoInd}`} style={styles.recommendItem}>
+        return (<TouchableWithoutFeedback key={`${bookId}_${videoInd}`}  onPress={() => linkToPlayer(videoItem)}>
+          <View style={styles.recommendItem}>
             <Image style={styles.recommendImg} source={{uri: videoItem.coverWap}} defaultSource={ImgEmpty}/>
             <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
           </View>
+        </TouchableWithoutFeedback>
         )
       })}
     </View>)

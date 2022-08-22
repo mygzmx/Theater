@@ -8,7 +8,6 @@ import {
   TouchableWithoutFeedback, Dimensions,
 } from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
-import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png');

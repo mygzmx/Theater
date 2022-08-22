@@ -7,7 +7,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
-import PagerView from "react-native-pager-view";
 
 
 export default function Player() {

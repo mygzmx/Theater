@@ -1,5 +1,5 @@
 import { StyleSheet, Image, View } from "react-native";
-import Swiper from 'react-native-swiper';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
 interface IProps {
   bannerList: any[];
@@ -7,42 +7,45 @@ interface IProps {
 
 export default function SwiperNormal ({ bannerList }: IProps) {
   return (<View style={styles.swiperWrap}>
-    <Swiper
-      style={styles.swiper}
-      horizontal={true}
-      autoplay={true}
-      paginationStyle={{bottom: 10}}
-      showsPagination={true}
-      showsButtons={false}>
+    <SwiperFlatList
+      autoplay
+      index={2}
+      autoplayLoop
+      showPagination
+      paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
+      paginationStyleItem={{width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4}}
+      paginationStyle={{
+        bottom: -5,
+        alignItems: 'flex-end'
+      }}
+    >
       { bannerList.map(val => {
         return <View style={styles.swiperItem}>
-          <Image key={val.id} source={{ uri: val.imgUrl }} style={styles.img}/>
+          <Image key={val.id} source={{ uri: val.imgUrl }} style={styles.imgBox}/>
         </View>
       })}
-    </Swiper>
+    </SwiperFlatList>
   </View>);
 }
 
 const styles = StyleSheet.create({
   swiperWrap: {
-    height: 133.5,
+    height: 132.5,
     marginBottom: 24,
-    paddingRight: 10,
-    paddingLeft: 10,
+    paddingRight: 15,
+    paddingLeft: 15,
   },
   swiper: {
-
   },
   swiperItem: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    paddingRight: 5,
+    paddingLeft: 5,
   },
-  img: {
-    width: 388,
-    height: 133,
+  imgBox: {
+    width: 375,
+    height: 132.5,
     borderRadius: 6,
   }
 });

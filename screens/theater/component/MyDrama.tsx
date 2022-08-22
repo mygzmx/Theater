@@ -5,7 +5,7 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback, Dimensions,
 } from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
 import { useEffect } from "react";
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   coverImg: {
-    width: 86,
-    height: 123,
+    width: 100,
+    height: 138,
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     height: 16,
   },
   bookName: {
-    width: 86,
+    width: 100,
     height: 20,
     fontSize: 14,
     color: '#FFFFFF',

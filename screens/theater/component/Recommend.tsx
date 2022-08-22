@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, Dimensions } from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png')
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   recommendTitle: {
-    paddingRight: 20,
-    paddingLeft: 20,
+    paddingRight: 12,
+    paddingLeft: 12,
     height: 25,
     fontSize: 18,
     fontWeight: "bold",
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     width: 114,
     marginRight: 8,
     marginLeft: 8,
+    marginBottom: 17,
   },
   recommendImg: {
     height: 145,
@@ -124,6 +125,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     lineHeight: 20,
     marginTop: 8,
-    marginBottom: 17,
   }
 })

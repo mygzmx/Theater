@@ -3,10 +3,11 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react'
-import Swiper from "react-native-swiper";
+// import Swiper from "react-native-swiper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
+import PagerView from "react-native-pager-view";
 
 
 export default function Player() {
@@ -43,25 +44,10 @@ export default function Player() {
   }
   return (
     <View style={styles.container}>
-      {/*<Swiper*/}
-      {/*  style={styles.swiper}*/}
-      {/*  horizontal={false}*/}
-      {/*  loop={false}*/}
-      {/*  autoplay={true}*/}
-      {/*  paginationStyle={{bottom: 10}}*/}
-      {/*  showsPagination={true}*/}
-      {/*  showsButtons={false}>*/}
-      {/*  <VideoUnion*/}
-      {/*    ref={player}*/}
-      {/*    statusData={statusData}*/}
-      {/*    chapterData={chapterData}*/}
-      {/*    onAction={()=>*/}
-      {/*      !(statusData.isLoaded) || statusData.isPlaying ? player.current?.pauseAsync() : player.current?.playAsync()}*/}
-      {/*    onLoad={onLoad}*/}
-      {/*    errorCallback={errorCallback}*/}
-      {/*    playbackCallback={playbackCallback}*/}
-      {/*  />*/}
-      {/*</Swiper>*/}
+      {/*<PagerView style={styles.swiper}>*/}
+      {/*  <VideoUnion chapterData={chapterData}/>*/}
+      {/*  <VideoUnion chapterData={chapterData}/>*/}
+      {/*</PagerView>*/}
       <VideoUnion chapterData={chapterData}/>
     </View>
   );

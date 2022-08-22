@@ -3,29 +3,41 @@ import { StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus, Video } from "expo-av";
 import Controls from "./Controls";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 
 interface IProps {
   chapterData: any;
+  onEnd: () => Promise<void>;
 }
 
-export default function VideoUnion ({chapterData}: IProps) {
+export default function VideoUnion ({chapterData, onEnd}: IProps) {
+
   const [statusData, setStatusData] = useState<AVPlaybackStatus>({} as AVPlaybackStatus);
+
   const player = useRef<Video>({} as Video);
-  const playbackCallback = (status: AVPlaybackStatus) => {
+
+  const playbackCallback = async (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
       setStatusData(status);
       // console.log('status---------------->', status)
       // {"didJustFinish": false, "durationMillis": 51733, "hasJustBeenInterrupted": false, "isBuffering": false, "isLoaded": true, "isLooping": false, "isMuted": false, "isPlaying": false, "pitchCorrectionQuality": "Varispeed", "playableDurationMillis": 1216, "positionMillis": 0, "progressUpdateIntervalMillis": 500, "rate": 1, "shouldCorrectPitch": false, "shouldPlay": false, "target": 259, "uri": "http://dzzt-video.qcread.cn/d6a4e7d9fbb90a19982aeb97535330c5/6302029d/test10/32/6x3/63x0/630x0/63001000014/527985523/527985523.mp4", "volume": 1}
       if (status.didJustFinish) {
         console.log('end---------------->')
+        await onEnd()
       }
     }
   }
+
   const errorCallback = (error: ErrorType) => {
     console.log('error---------------->', error)
   }
+  useEffect(() => {
+    if (chapterData) {
+      player.current?.playAsync();
+    }
+  }, [chapterData]);
+
   return(
     <View style={styles.videoWrap}>
       <VideoPlayer

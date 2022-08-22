@@ -2,15 +2,16 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react'
-// import Swiper from "react-native-swiper";
+import React, { useEffect, useState } from 'react'
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 
 
 export default function Player() {
-  const [chapterData, setChapterData] = useState({} as any);
+  const [bookId, setBookId] = useState<string>();
+  const [chapterData, setChapterData] = useState();
+  const [nextChapterId, setNextChapterId] = useState('');
   const navigation = useNavigation();
   const route = useRoute()
   useEffect(() => {
@@ -23,14 +24,11 @@ export default function Player() {
     }
   }, [route]);
 
-  // useEffect(() => {
-  //   if (chapterData?.content?.mp4) {
-  //     player.current?.playAsync()
-  //   }
-  // }, [chapterData]);
-
   const InitVideoData = async ({ bookId, chapterId, isInit }: { bookId?: string, chapterId?: string, isInit?: boolean}) => {
-    const { chapterInfo = [] } = await netVideoSource({ bookId, chapterId })
+    const data = await netVideoSource({ bookId, chapterId });
+    const { chapterInfo = [], nextChapterId } = data;
+    setBookId(data.bookId);
+    setNextChapterId(nextChapterId)
     if (isInit) {
       setChapterData(chapterInfo[0])
       return
@@ -41,13 +39,17 @@ export default function Player() {
       }
     })
   }
+  
+  const onEnd = async () => {
+    await InitVideoData({ bookId, chapterId: nextChapterId })
+  }
   return (
     <View style={styles.container}>
       {/*<PagerView style={styles.swiper}>*/}
       {/*  <VideoUnion chapterData={chapterData}/>*/}
       {/*  <VideoUnion chapterData={chapterData}/>*/}
       {/*</PagerView>*/}
-      <VideoUnion chapterData={chapterData}/>
+      <VideoUnion chapterData={chapterData} onEnd={onEnd}/>
     </View>
   );
 }

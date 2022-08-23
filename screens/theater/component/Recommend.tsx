@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, Image, TouchableWithoutFeedback } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, TouchableWithoutFeedback, Dimensions } from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
 
@@ -45,7 +45,7 @@ export default function Recommend(props: IProps) {
     return (<View style={styles.flatListBox}>
       {videoList.map((videoItem, videoInd) => {
         const {bookName, bookId} = videoItem
-        return (<TouchableWithoutFeedback key={`${bookId}_${videoInd}`}  onPress={() => linkToPlayer(videoItem)}>
+        return (<TouchableWithoutFeedback key={`${bookId}_${videoInd}`} onPress={() => linkToPlayer(videoItem)}>
           <View style={styles.recommendItem}>
             <Image style={styles.recommendImg} source={{uri: videoItem.coverWap}} defaultSource={ImgEmpty}/>
             <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
@@ -63,6 +63,7 @@ export default function Recommend(props: IProps) {
   </View>)
 }
 
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   recommendWrap: {
     paddingTop: 4,
@@ -109,16 +110,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#444444',
   },
   flatListBox: {
-    paddingRight: 10,
-    paddingLeft: 10,
+    marginLeft: 20,
+    // paddingLeft: 20,
+    width: width - 20,
     display: "flex",
+    alignItems: 'flex-start',
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
   recommendItem: {
-    width: 114,
-    marginRight: 8,
-    marginLeft: 8,
+    width: (width - 72)/3,
+    marginRight: 16,
     marginBottom: 17,
   },
   recommendImg: {

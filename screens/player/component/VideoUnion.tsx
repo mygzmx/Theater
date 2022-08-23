@@ -38,7 +38,9 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
       player.current?.playAsync();
     }
   }, [chapterData]);
-
+  const changeControl = (positionMillis: number) => {
+    player.current?.playFromPositionAsync(positionMillis);
+  }
   return(
     <View style={styles.videoWrap}>
       <VideoPlayer
@@ -55,6 +57,9 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
         }}
         videoProps={{
           ref: player,
+          status: {
+            progressUpdateIntervalMillis: 100,
+          },
           shouldPlay: false,
           resizeMode: ResizeMode.COVER,
           posterSource: {
@@ -72,8 +77,10 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
       />
       <Controls
         statusData={statusData}
-        onAction={()=>
-          !(statusData.isLoaded) || statusData.isPlaying ? player.current?.pauseAsync() : player.current?.playAsync()}/>
+        changeControl={changeControl}
+        onAction={()=> {
+          !(statusData.isLoaded) || statusData.isPlaying ? player.current?.pauseAsync() : player.current?.playAsync()
+        }}/>
     </View>
   )
 }

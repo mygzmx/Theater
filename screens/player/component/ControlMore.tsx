@@ -22,15 +22,14 @@ const ControlMore = (props: IProps) => {
   }, [bookId]);
   
   const getChapterList = async () => {
-    const { chapterList, bookName } = await netChapterList({
+    const { chapterList = [], bookName } = await netChapterList({
       bookId,
       startIndex,
       endIndex
     });
-    console.log('bookName---------__>', bookName)
     setBookName(bookName);
     setChapterList(chapterList);
-    const name = chapterList.find((chap: any) => chap.id === chapterId).chapterName || '';
+    const name = chapterList.find((chap: any) => chap.id === chapterId)?.chapterName || '';
     setChapterName(name)
   }
   return <View style={styles.moreWrap}>

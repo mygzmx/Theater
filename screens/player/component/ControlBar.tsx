@@ -3,7 +3,6 @@ import {
   View,
   Dimensions,
   StyleSheet,
-  Text,
   GestureResponderHandlers,
   PanResponderGestureState,
 } from "react-native";
@@ -34,7 +33,7 @@ export default class ControlBar extends React.Component<IProps, IState> {
       positionMillis: 0,
     };
     this.watcher = usePanResponder({
-      onStart: (gestureState) => props.onStart && props.onStart(),
+      onStart: () => props.onStart && props.onStart(),
       onMove: (gestureState) => this.onMove(gestureState),
       onRelease: () => props.onMoveEnd && props.onMoveEnd(this.state.positionMillis),
       onTerminate: () => props.onMoveEnd && props.onMoveEnd(this.state.positionMillis),

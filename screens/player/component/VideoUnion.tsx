@@ -44,6 +44,14 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
   return(
     <View style={styles.videoWrap}>
       <VideoPlayer
+        animation={{}}
+        activityIndicator={{}}
+        defaultControlsVisible={false}
+        header={null}
+        mute={{ visible: false }}
+        slider={{ visible: false }}
+        textStyle={{}}
+        timeVisible={false}
         style={{
           videoBackgroundColor: 'transparent'
         }}

@@ -5,7 +5,7 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
-  TouchableWithoutFeedback, Dimensions,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";

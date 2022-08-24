@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
+import { ScrollView, StyleSheet, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { RootTabScreenProps } from '../../types';
 import React, { useEffect, useState } from "react";
 import { netDramaList, netRecommendData } from "../../apis/Theater";
@@ -18,7 +18,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
 
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-    initPageData();
+    initPageData().then(() => {})
     setPage(1)
   }, [])
 
@@ -46,13 +46,13 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       }
     }
   }
-  const changeRecommendType = (item: IClassificationItem) => {
+  const changeRecommendType = async (item: IClassificationItem) => {
     if (activeRecommendType === item.labelId) return;
     setPage(1)
     setActiveRecommendType(item.labelId)
     setPageLoading(true);
     setPageLoadingFull(false);
-    getColumnList(1, item.labelId,true);
+    await getColumnList(1, item.labelId,true);
   }
 
   const onRefresh = React.useCallback(() => {
@@ -71,7 +71,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     setPageLoading(false);
   }
 
-  const onMomentumScrollEnd = (event: any) => {
+  const onMomentumScrollEnd = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offSetY = event.nativeEvent.contentOffset.y; // 获取滑动的距离
     const contentSizeHeight = event.nativeEvent.contentSize.height; // scrollView  contentSize 高度
     const oriageScrollHeight = event.nativeEvent.layoutMeasurement.height; // scrollView高度
@@ -80,18 +80,15 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     // console.log(`contentSizeHeight${contentSizeHeight}`);
     if (offSetY + oriageScrollHeight >= contentSizeHeight - 1) {
       if (!pageLoadingFull && !pageLoading) {
-        loadMore();
+        await loadMore();
       }
     }
-  }
-  const linkTo = () => {
-    console.log('navigation.getState()----->', navigation)
   }
   return (
     <ScrollView
       overScrollMode={'auto'}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      onScrollEndDrag={onMomentumScrollEnd}
+      onScrollEndDrag={(e) => onMomentumScrollEnd(e)}
       style={styles.container}>
       <SwiperNormal bannerList={bannerList}/>
       <MyDrama dramaList={dramaList}/>

@@ -1,0 +1,6 @@
+/scripts
+/config
+/build
+/package-lock.json
+/yarn.lock
+/yarn-error.log

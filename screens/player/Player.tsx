@@ -13,21 +13,19 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default function Player() {
   const dispatch = useDispatch<AppDispatch>();
-  const bookId = useSelector((state: RootState) => (state.player.bookId));
   const [chapterData, setChapterData] = useState();
   const [nextChapterId, setNextChapterId] = useState('');
   const navigation = useNavigation();
   const route = useRoute()
   useEffect(() => {
-    console.log('route--------_>', route)
     if (route.params) {
       const { bookId, chapterId } = route.params as { bookId: string; chapterId: string };
-      InitVideoData({ bookId, chapterId })
+      InitVideoData({ bookId, chapterId }).then(() => {})
     } else {
-      InitVideoData({ isInit: true })
+      InitVideoData({ isInit: true }).then(() => {})
     }
   }, [route]);
-
+  const bookId = useSelector((state: RootState) => (state.player.bookId));
   const InitVideoData = async ({ bookId, chapterId, isInit }: { bookId?: string, chapterId?: string, isInit?: boolean}) => {
     const data = await netVideoSource({ bookId, chapterId });
     const { chapterInfo = [], nextChapterId } = data;

@@ -1,6 +1,11 @@
 import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosPromise } from 'axios'
+import { RootState } from "../store";
+import { Store } from "redux";
 
 declare module 'axios' {
+  export interface AxiosInstance {
+    redux: Store<RootState>;
+  }
   export interface AxiosResponse<T = any> extends Promise<T> { }
 }
 
@@ -23,6 +28,20 @@ const Service = axios.create({
   withCredentials: true,
   timeout: 5000
 });
+
+export const initAxios = (store: Store<RootState>) => {
+  if (!Service.redux) {
+    Object.defineProperty(Service, 'redux', {
+      get() {
+        return store;
+      },
+    });
+    // window.addEventListener('pageshow', () => initAxios(store));
+  }
+  // 校验带过期时间的token等
+  // 5分钟检查一次token等信息
+  // setTimeout(() => initAxios(store), 5 * 60 * 1000);
+}
 
 const tempHeader = {
   brand: "vivo",

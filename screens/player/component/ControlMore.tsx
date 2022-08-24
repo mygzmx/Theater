@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { netChapterList } from "../../../apis/Player";
-import { useRoute } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface IProps {
 
@@ -11,19 +12,16 @@ const ControlMore = (props: IProps) => {
   const [startIndex, setStartIndex] = useState(1);
   const [endIndex, setEndIndex] = useState(30);
   const [bookName, setBookName] = useState('');
-  const [chapterId, setChapterId] = useState('');
   const [chapterName, setChapterName] = useState('');
   const [chapterList, setChapterList] = useState([]);
-  const route = useRoute();
+  const { bookId, chapterId } = useSelector((state: RootState) => (state.player));
   useEffect(() => {
-    if (route.params) {
-      const { bookId, chapterId } = route.params as { bookId: string; chapterId: string };
-      setChapterId(chapterId);
-      getChapterList(bookId)
+    if (bookId) {
+      getChapterList()
     }
-  }, [route]);
+  }, [bookId]);
   
-  const getChapterList = async (bookId: string) => {
+  const getChapterList = async () => {
     const { chapterList, bookName } = await netChapterList({
       bookId,
       startIndex,

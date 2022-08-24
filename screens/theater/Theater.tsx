@@ -1,13 +1,12 @@
 import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { RootTabScreenProps } from '../../types';
 import React, { useEffect, useState } from "react";
-import { netDramaList, netRecommendData, netTheaterPage } from "../../apis/Theater";
+import { netDramaList, netRecommendData } from "../../apis/Theater";
 import SwiperNormal from "../../components/SwiperNormal";
 import MyDrama from "./component/MyDrama";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
 import Recommend from "./component/Recommend";
 import LoadMore from "../../components/LoadMore";
-import { StackActions } from "@react-navigation/native";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [page, setPage] = useState(1);
@@ -24,15 +23,16 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   }, [])
 
   const initPageData = async () => {
-    const { classificationList = []} = await netTheaterPage();
-    setTypeList([{ labelId: '0', labelName: '全部' }, ...classificationList] as IClassificationItem[]);
     const { recentReadList = [], operList = [] } = await netDramaList({page: 1, size: 10});
     setDramaList(recentReadList);
     setBannerList(operList);
-    await getColumnList(page, undefined,true)
+    await getColumnList(page, undefined,true, true)
   }
-  const getColumnList = async (index: number, tid?: number | string,flag?: boolean) => {
-    const {books = []} = await netRecommendData({index: page, tid});
+  const getColumnList = async (index: number, tid?: number | string, flag?: boolean, isNeedClassificationList?: boolean) => {
+    const {books = [], classificationList = [] } = await netRecommendData({index: page, tid});
+    if (isNeedClassificationList) {
+      setTypeList([{ labelId: '0', labelName: '全部' }, ...classificationList] as IClassificationItem[]);
+    }
     if(flag) {
       setVideoList([...books]);
       // 初始如果请求数量太少就发送二次请求

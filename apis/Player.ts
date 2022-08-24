@@ -1,5 +1,5 @@
 import Service from './Service';
-import { IPreLoadParams, IVideoSourceParams } from "../interfaces/player.interface";
+import { IChapterParams, IPreLoadParams, IVideoSourceParams } from "../interfaces/player.interface";
 
 // 单集加载(订购)
 export const netVideoSource = async (params: IVideoSourceParams) => {
@@ -8,6 +8,10 @@ export const netVideoSource = async (params: IVideoSourceParams) => {
 
 export const netPreloadList = async (params: IPreLoadParams) => {
   return await Service.post('glory/video/2152', params)
+}
+// 章节列表接口
+export const netChapterList = async (params: IChapterParams) => {
+  return await Service.post('glory/video/2112', params)
 }
 
 export default {

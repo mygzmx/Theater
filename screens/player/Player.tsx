@@ -2,7 +2,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useSyncExternalStore } from 'react'
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
@@ -19,6 +19,7 @@ export default function Player() {
     if (route.params) {
       const { bookId, chapterId } = route.params as { bookId: string; chapterId: string };
       InitVideoData({ bookId, chapterId })
+
     } else {
       InitVideoData({ isInit: true })
     }

@@ -47,7 +47,10 @@ export default class ControlBar extends React.Component<IProps, IState> {
       this.setState({ progressValue: prevProps.progress })
     }
   }
-  // 触摸移动
+  /** 触摸移动
+   * 目前环境 onPanResponderMove 回调不支持Hooks连续塞值，类方式setState倒是可以
+   * 原因未知
+   */
   onMove(gestureState: PanResponderGestureState) {
     let touchPointX = gestureState.moveX;
     let progress;

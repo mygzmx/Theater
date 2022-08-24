@@ -7,6 +7,7 @@ import {
 import React, {  useEffect, useState } from "react";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import ControlBar from "./ControlBar";
+import ControlMore from "./ControlMore";
 
 const ImgPlay = require("../../../assets/images/player/player-play.png")
 interface IProps {
@@ -44,6 +45,7 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
   return (
     <View style={styles.controlsWrap}>
       <StopArea/>
+      <ControlMore/>
       <ControlBar
         isTouched={isTouched}
         onStart={onStart}
@@ -51,7 +53,6 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
         progress={progress}
         statusData={statusData}
       />
-
     </View>
   )
 }

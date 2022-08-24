@@ -35,3 +35,9 @@ export interface IPreLoadParams {
   omap?:	String; // 书籍归因-- Json字符串
   scene?: EScene;
 }
+
+export interface IChapterParams {
+  bookId: string;
+  startIndex: number;
+  endIndex: number;
+}

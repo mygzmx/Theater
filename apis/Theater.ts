@@ -1,13 +1,8 @@
 import Service from './Service';
 
 /**
- * 剧场数据
+ * 精选推荐
  */
-export const netTheaterPage = async () => {
-  return await Service.post('/glory/video/2160')
-}
-
-// 精选推荐
 export interface INetRecommendParam {
   index?: number;
   size?: number;
@@ -21,11 +16,17 @@ export const netRecommendData = async ({ index = 1, size = 12, tid }: INetRecomm
 export const netDramaList = async ({ page = 1, size = 12 }: {page?: number, size?: number}) => {
   return await Service.post('glory/video/2120', { page, size })
 }
-//
-// // 取消/删除追剧
-// netCancelDramaVideo(bookIds = '') {
-//   return http.post('glory/video/2121', { bookIds })
-// },
+
+// 追剧-追
+export const netDramaVideo = async (bookId: string, scene: string) => {
+  return await Service.post('glory/video/2122', { bookId, scene })
+}
+
+// 追剧-取消追剧
+export const netNoDramaVideo = async (bookId: string, scene: string) => {
+  return await Service.post('glory/video/2121', { bookId, scene })
+}
+
 //
 // /** 运营位展示上报接口
 //  * id 运营位id

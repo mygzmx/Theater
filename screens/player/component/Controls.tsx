@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import React, {  useEffect, useState } from "react";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
+import { LinearGradient } from 'expo-linear-gradient';
 import ControlBar from "./ControlBar";
 import ControlMore from "./ControlMore";
 
@@ -44,8 +45,9 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
   };
   return (
     <View style={styles.controlsWrap}>
+      <LinearGradient style={styles.controlLinear} colors={["transparent", "rgba(0,0,0,0.9)"]}/>
       <StopArea/>
-      <ControlMore/>
+      {!isTouched && <ControlMore/>}
       <ControlBar
         isTouched={isTouched}
         onStart={onStart}
@@ -64,6 +66,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     ...StyleSheet.absoluteFillObject,
+  },
+  controlLinear: {
+    position: 'absolute',
+    height: 80,
+    bottom: 12,
+    width: '100%',
   },
   stopIcon: {
     height: 400,

@@ -4,10 +4,12 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { store } from "./store";
-import { initAxios } from "./apis/Service";
+// import { initAxios } from "./apis/Service";
 import { Provider } from "react-redux";
+import { AppRegistry } from 'react-native';
+import {expo as appName} from './app.json';
 
-initAxios(store);
+// initAxios(store);
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -26,3 +28,5 @@ export default function App() {
     );
   }
 }
+
+AppRegistry.registerComponent(appName.name, () => App)

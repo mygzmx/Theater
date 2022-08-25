@@ -1,3 +1,14 @@
+export enum EIsRead {
+  不是 = 0,
+  是 = 1,
+}
+
+export interface IVideoInitParams {
+  isRead: EIsRead;
+  bookId?: string;
+  sourceChannelCode?: string;
+}
+
 export enum EConfirmPay {
   非确认订购扣费 = 1,
   确认订购 = 2,

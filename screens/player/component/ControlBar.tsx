@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   controlBarBox: {
     width,
-    height: 50,
+    height: 30,
     display: 'flex',
     justifyContent: 'flex-end',
   },

@@ -1,5 +1,10 @@
 import Service from './Service';
-import { IChapterParams, IPreLoadParams, IVideoSourceParams } from "../interfaces/player.interface";
+import { IChapterParams, IPreLoadParams, IVideoInitParams, IVideoSourceParams } from "../interfaces/player.interface";
+
+// 初始化
+export const netVideoInit = async (params: IVideoInitParams) => {
+  return await Service.post('glory/video/2150', params)
+}
 
 // 单集加载(订购)
 export const netVideoSource = async (params: IVideoSourceParams) => {

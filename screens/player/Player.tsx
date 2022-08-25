@@ -3,11 +3,11 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, { useEffect, useState } from 'react'
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import { AppDispatch, RootState } from "../../store";
-import { setBookId, setChapterId } from "../../store/modules/player.module";
+import { setBookId, setBookName, setChapterId, setChapterInfo, setAutoAdd } from "../../store/modules/player.module";
 import { useSelector, useDispatch } from "react-redux";
 
 
@@ -16,37 +16,35 @@ export default function Player() {
   const [chapterData, setChapterData] = useState();
   const [nextChapterId, setNextChapterId] = useState('');
   const navigation = useNavigation();
-  const route = useRoute()
+  const { bookId, chapterId } = useSelector((state: RootState) => (state.player));
   useEffect(() => {
-    if (route.params) {
-      const { bookId, chapterId } = route.params as { bookId: string; chapterId: string };
-      InitVideoData({ bookId, chapterId }).then(() => {})
-    } else {
-      InitVideoData({ isInit: true }).then(() => {})
-    }
-  }, [route]);
-  const bookId = useSelector((state: RootState) => (state.player.bookId));
-  const InitVideoData = async ({ bookId, chapterId, isInit }: { bookId?: string, chapterId?: string, isInit?: boolean}) => {
+    InitVideoData().then(() => {})
+  }, [bookId, chapterId]);
+
+  const InitVideoData = async () => {
     const data = await netVideoSource({ bookId, chapterId });
-    const { chapterInfo = [], nextChapterId } = data;
-    // setBookId(data.bookId);
-    dispatch(setBookId(data.bookId))
-    dispatch(setChapterId(chapterId))
+    const { chapterInfo = [], nextChapterId, bookName, autoAdd } = data;
+    dispatch(setBookName(bookName))
+    dispatch(setAutoAdd(autoAdd))
     setNextChapterId(nextChapterId)
-    if (isInit) {
+    if (bookId && chapterId) {
+      chapterInfo.forEach((chapter: any) => {
+        if (chapter.chapterId === chapterId) {
+          setChapterData(chapter)
+          dispatch(chapter)
+        }
+      })
+    } else {
+      data.bookId && dispatch(setBookId(data.bookId))
+      data.chapterId && dispatch(setChapterId(data.chapterId))
       setChapterData(chapterInfo[0])
-      return
+      dispatch(setChapterInfo(chapterInfo[0]))
     }
-    chapterInfo.forEach((chapter: any) => {
-      if (chapter.chapterId === chapterId) {
-        setChapterData(chapter)
-      }
-    })
   }
 
 
-  const onEnd = async () => {
-    await InitVideoData({ bookId, chapterId: nextChapterId })
+  const onEnd = () => {
+    dispatch(setChapterId(nextChapterId))
   }
   return (
     <View style={styles.container}>

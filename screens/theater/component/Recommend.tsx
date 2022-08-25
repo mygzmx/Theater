@@ -1,6 +1,9 @@
 import { View, Text, FlatList, StyleSheet, Image, TouchableWithoutFeedback, Dimensions } from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
+import { setBookId, setChapterId } from "../../../store/modules/player.module";
+import { useDispatch } from "react-redux";
+import { RootTabParamList, RootTabScreenProps } from "../../../types";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png')
 
@@ -14,9 +17,12 @@ interface IProps {
 export default function Recommend(props: IProps) {
   const { typeList, videoList, activeRecommendType, changeType } = props;
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const linkToPlayer = async (item: IVideoListItem) => {
+    dispatch(setBookId(item.bookId))
+    dispatch(setChapterId(item.chapterId))
     // @ts-ignore
-    navigation.navigate('Player', { bookId: item.bookId, chapterId: item.chapterId  })
+    navigation.navigate({ name: 'Player' })
   }
   // 标题
   const RecommendTitle = () => {

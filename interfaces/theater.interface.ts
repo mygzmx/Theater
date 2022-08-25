@@ -34,6 +34,7 @@ export interface IVideoListItem {
   author: string;
   bookId: string;
   bookName: string;
+  chapterId: string;
   introduction: string;
   status: string;
   bookTypeThreeMap: {[key: number]: string};

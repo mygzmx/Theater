@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { IDramaItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
+import { setBookId, setChapterId } from "../../../store/modules/player.module";
+import { useDispatch } from "react-redux";
 
 const ImgEmpty = require('../../../assets/images/img-empty.png');
 const UpdateIcon = require('../../../assets/images/update-icon.png');
@@ -21,9 +23,12 @@ interface IProps {
 
 export default function MyDrama({ dramaList }: IProps) {
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const linkToPlayer = async (item: IDramaItem) => {
+    dispatch(setBookId(item.bookId))
+    dispatch(setChapterId(item.chapterId))
     // @ts-ignore
-    navigation.navigate('Player', { bookId: item.bookId, chapterId: item.chapterId  })
+    navigation.navigate('Player')
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
     return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>

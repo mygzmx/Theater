@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { netChapterList } from "../../../apis/Player";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +14,7 @@ import { setAutoAdd } from "../../../store/modules/player.module";
 import { EIsRead } from "../../../interfaces/player.interface";
 import * as React from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import ChapterListLog from "./ChapterListLog";
 
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
@@ -24,7 +30,7 @@ const ControlMore = (props: IProps) => {
   const [isShowChapters, setIsShowChapters] = useState(false);
   const [startIndex, setStartIndex] = useState(1);
   const [endIndex, setEndIndex] = useState(30);
-  const [chapterList, setChapterList] = useState([]);
+  const [chapters, setChapters] = useState([]);
   const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
   useEffect(() => {
     if (bookId) {
@@ -38,7 +44,7 @@ const ControlMore = (props: IProps) => {
       startIndex,
       endIndex
     });
-    setChapterList(chapterList);
+    setChapters(chapterList);
   }
 
   const dramaVideo = async () => {
@@ -50,15 +56,16 @@ const ControlMore = (props: IProps) => {
       dispatch(setAutoAdd(EIsRead.不是))
     }
   }
-
   const checkChapterList = () => {
-    // @ts-ignore
-    // navigation.navigate('Drawer');
     getChapterList()
     setIsShowChapters(true);
   }
 
   return <View style={styles.moreWrap}>
+    <ChapterListLog
+      modalVisible={isShowChapters}
+      chapterList={chapters}
+      close={() => setIsShowChapters(false)}/>
     <View style={styles.moreLeft}>
       <Text style={styles.bookName}>{bookName}</Text>
       <Text style={styles.chapterName}>{chapterInfo.chapterName}</Text>

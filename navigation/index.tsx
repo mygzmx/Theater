@@ -36,7 +36,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
 const HomeScreen = ({ navigation }: any) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ height: 400, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
       <Text>HomeScreen</Text>
       <Button
         title="Go to Details"
@@ -51,6 +51,10 @@ function RootNavigator() {
     <Drawer.Navigator>
       <Drawer.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Drawer.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Drawer.Screen
+        name="Drawer"
+        component={HomeScreen}
+        options={{ headerShown: false }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>

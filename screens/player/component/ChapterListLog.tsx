@@ -9,8 +9,9 @@ import {
   TouchableOpacity, TouchableWithoutFeedback
 } from "react-native";
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { setChapterId } from "../../../store/modules/player.module";
 
 interface IProps {
   modalVisible: boolean;
@@ -24,6 +25,10 @@ export default function ChapterListLog ({modalVisible, close, chapterList}: IPro
 
   const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
 
+  const dispatch = useDispatch()
+  const chooseChapter = (chapter: any) => {
+    dispatch(setChapterId(chapter.chapterId));
+  }
   return <Modal
     animationType="slide"
     transparent={modalVisible}
@@ -48,9 +53,17 @@ export default function ChapterListLog ({modalVisible, close, chapterList}: IPro
 
         <View style={styles.chapterListBox}>
           {chapterList.map(chapter => (
-            <View style={styles.chapterItem}>
-              <Text>{chapter.chapterIndex}</Text>
-            </View>
+            <TouchableOpacity
+              key={chapter.chapterId}
+              onPressIn={() => chooseChapter(chapter)}
+              style={{ ...styles.chapterItem,
+                backgroundColor: chapter.chapterId === chapterId ? 'rgba(255, 75, 0, 1)' : 'rgba(242, 243, 245, 1)' }}>
+              <Text style={{
+                ...styles.chapterNumber,
+                color: chapter.chapterId === chapterId ? '#FFFFFF' : "#404657",
+                fontWeight: chapter.chapterId === chapterId ? '900' : '500'
+              }}>{chapter.chapterIndex}</Text>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

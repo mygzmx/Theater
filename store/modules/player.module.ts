@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EIsRead } from "../../interfaces/player.interface";
 
 export interface IPlayer {
@@ -27,22 +27,23 @@ export const playerSlice = createSlice({
     bookName: '',
     chapterId: '',
     chapterInfo: {} as IChapterInfo,
-    autoAdd: EIsRead.不是
+    autoAdd: EIsRead.不是,
+
   }),
   reducers: {
-    setBookId: (state: IPlayer, action) => {
+    setBookId: (state: IPlayer, action: PayloadAction<string>) => {
       state.bookId = action.payload;
     },
-    setChapterId: (state: IPlayer, action) => {
+    setChapterId: (state: IPlayer, action: PayloadAction<string>) => {
       state.chapterId = action.payload;
     },
-    setChapterInfo: (state: IPlayer, action) => {
+    setChapterInfo: (state: IPlayer, action: PayloadAction<any>) => {
       state.chapterInfo = JSON.parse(JSON.stringify(action.payload));
     },
-    setBookName: (state: IPlayer, action) => {
+    setBookName: (state: IPlayer, action: PayloadAction<string>) => {
       state.bookName = action.payload;
     },
-    setAutoAdd: (state: IPlayer, action) => {
+    setAutoAdd: (state: IPlayer, action: PayloadAction<EIsRead>) => {
       state.autoAdd = action.payload;
     }
   },

@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setAutoAdd } from "../../../store/modules/player.module";
-import { EIsRead } from "../../../interfaces/player.interface";
+import { EBookFinishStatus, EIsRead } from "../../../interfaces/player.interface";
 import * as React from "react";
 import { useNavigation } from "@react-navigation/native";
 import ChapterListLog from "./ChapterListLog";
@@ -28,9 +28,10 @@ const ControlMore = (props: IProps) => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const [isShowChapters, setIsShowChapters] = useState(false);
-  const [startIndex, setStartIndex] = useState(1);
-  const [endIndex, setEndIndex] = useState(30);
+  const [tabIndex, setTabIndex] = useState(0);
   const [chapters, setChapters] = useState([]);
+  const [bookFinishStatus, setBookFinishStatus] = useState<EBookFinishStatus>(0);
+  const [total, setTotal] = useState(0);
   const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
   useEffect(() => {
     if (bookId) {
@@ -38,13 +39,15 @@ const ControlMore = (props: IProps) => {
     }
   }, [bookId]);
 
-  const getChapterList = async () => {
-    const { chapterList = [] } = await netChapterList({
+  const getChapterList = async (tab: number) => {
+    const { chapterList = [], totalChapters = '0', bookFinishStatus } = await netChapterList({
       bookId,
-      startIndex,
-      endIndex
+      startIndex: tab * 30 + 1,
+      endIndex: (tab + 1) * 30
     });
     setChapters(chapterList);
+    setTotal(Number(totalChapters));
+    setBookFinishStatus(bookFinishStatus)
   }
 
   const dramaVideo = async () => {
@@ -56,15 +59,23 @@ const ControlMore = (props: IProps) => {
       dispatch(setAutoAdd(EIsRead.不是))
     }
   }
-  const checkChapterList = () => {
-    getChapterList()
+  const checkChapterList = async () => {
     setIsShowChapters(true);
+    await getChapterList(tabIndex)
   }
 
+  const chooseTab = async (index: number) => {
+    setTabIndex(index);
+    await getChapterList(index)
+  }
   return <View style={styles.moreWrap}>
     <ChapterListLog
+      bookFinishStatus={bookFinishStatus}
+      tabIndex={tabIndex}
       modalVisible={isShowChapters}
       chapterList={chapters}
+      total={total}
+      chooseTab={chooseTab}
       close={() => setIsShowChapters(false)}/>
     <View style={styles.moreLeft}>
       <Text style={styles.bookName}>{bookName}</Text>

@@ -52,3 +52,15 @@ export interface IChapterParams {
   startIndex: number;
   endIndex: number;
 }
+
+export enum EIsCharge {
+  免费 = 0,
+  收费 = 1,
+  vip免费 = 2,
+  收费已购买 = 3
+}
+
+export enum EBookFinishStatus {
+  更新中 = 1,
+  已完结 = 2,
+}

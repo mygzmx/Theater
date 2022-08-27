@@ -13,7 +13,6 @@ import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setAutoAdd } from "../../../store/modules/player.module";
 import { EBookFinishStatus, EIsRead } from "../../../interfaces/player.interface";
 import * as React from "react";
-import { useNavigation } from "@react-navigation/native";
 import ChapterListLog from "./ChapterListLog";
 
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
@@ -25,7 +24,6 @@ interface IProps {
 }
 
 const ControlMore = (props: IProps) => {
-  const navigation = useNavigation()
   const dispatch = useDispatch()
   const [isShowChapters, setIsShowChapters] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);

@@ -57,11 +57,15 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    setPage(1)
+    setActiveRecommendType('0');
+    setPageLoading(false);
+    setPageLoadingFull(false);
     console.log('onRefresh-------------------_>');
     initPageData().then(() => setRefreshing(false));
   }, []);
 
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
   const [pageLoadingFull, setPageLoadingFull] = useState(false);
   const loadMore = async () => {
     console.log('loadMore-------------------_>');
@@ -79,7 +83,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     // console.log(`oriageScrollHeight${oriageScrollHeight}`);
     // console.log(`contentSizeHeight${contentSizeHeight}`);
     if (offSetY + oriageScrollHeight >= contentSizeHeight - 1) {
-      if (!pageLoadingFull && !pageLoading) {
+      if (!pageLoadingFull) {
         await loadMore();
       }
     }

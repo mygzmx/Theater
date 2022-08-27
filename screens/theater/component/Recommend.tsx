@@ -1,4 +1,12 @@
-import { View, Text, FlatList, StyleSheet, Image, TouchableWithoutFeedback, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from "react-native";
 import { IClassificationItem, IVideoListItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
 import { setBookId, setChapterId } from "../../../store/modules/player.module";
@@ -28,13 +36,14 @@ export default function Recommend(props: IProps) {
   const RecommendTitle = () => {
     const renderTypeItem = ({ item }: {item: IClassificationItem}) => {
       const { labelId, labelName } = item;
-      return (<View style={styles.typeListBoxItem}>
-        <Text
-          style={activeRecommendType === labelId ? styles.typeListActiveBoxTxt : styles.typeListBoxTxt}
-          onPress={() => changeType(item)}
-          >{labelName}</Text>
-        { labelId !== typeList[typeList.length - 1].labelId && <View style={styles.typeListBoxLine}/>}
-      </View>);
+      return (
+        <TouchableWithoutFeedback onPress={() => changeType(item)}>
+          <View style={styles.typeListBoxItem}>
+            <Text style={activeRecommendType === labelId ? styles.typeListActiveBoxTxt : styles.typeListBoxTxt}>{labelName}</Text>
+            { labelId !== typeList[typeList.length - 1].labelId && <View style={styles.typeListBoxLine}/>}
+          </View>
+        </TouchableWithoutFeedback>
+        );
     }
     return (
       <FlatList
@@ -76,7 +85,7 @@ const styles = StyleSheet.create({
   },
   recommendTitle: {
     paddingRight: 12,
-    paddingLeft: 12,
+    paddingLeft: 20,
     height: 25,
     fontSize: 18,
     fontWeight: "bold",

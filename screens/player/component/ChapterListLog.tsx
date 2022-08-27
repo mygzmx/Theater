@@ -80,8 +80,8 @@ export default function ChapterListLog ({modalVisible, close, chapterList, total
           <Image style={styles.chapterCloseImg} source={ImgClose}/>
         </TouchableOpacity>
         <View style={styles.logTitleBox}>
-          { bookName && <Text style={styles.logTitleTxt} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>}
-          {bookFinishStatus && <View style={styles.logTitleIcon}>
+          { !!bookName && <Text style={styles.logTitleTxt} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>}
+          { !!bookFinishStatus && <View style={styles.logTitleIcon}>
             <Text style={styles.logTitleIconTxt}>
               { bookFinishStatus === EBookFinishStatus.已完结 ? '已完结' : '更新中' }
             </Text>

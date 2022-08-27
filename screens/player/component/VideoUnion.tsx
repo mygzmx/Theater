@@ -2,50 +2,20 @@ import VideoPlayer from "expo-video-player";
 import { StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus, Video } from "expo-av";
-import Controls from "./Controls";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
-import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
-import { useRoute } from "@react-navigation/native";
 
 interface IProps {
   chapterData: any;
-  onEnd: () => void;
+  player: any;
+  playbackCallback: (status: AVPlaybackStatus) => void;
+  onLoad: (status: AVPlaybackStatus) => void;
 }
 
-export default function VideoUnion ({chapterData, onEnd}: IProps) {
-
-  const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
-  const route = useRoute()
-  const player = useRef<Video>({} as Video);
-
-  const playbackCallback = (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
-      setStatusData(status);
-      if (status.didJustFinish) {
-        console.log('end---------------->')
-        onEnd()
-      }
-    }
-  }
+export default function VideoUnion ({chapterData, onLoad, player, playbackCallback}: IProps) {
 
   const errorCallback = (error: ErrorType) => {
     console.log('error---------------->', error)
-  }
-  useEffect(() => {
-    if (chapterData && route.name === 'Player') {
-      console.log('playAsync');
-      !statusData.isPlaying && player.current?.playAsync();
-    }
-    if (route.name !== 'Player') {
-      console.log('pauseAsync')
-      player.current?.pauseAsync();
-      (!statusData.isLoaded || statusData.isPlaying) && player.current?.pauseAsync();
-    }
-  }, [chapterData]);
-
-  const changeControl = (positionMillis: number) => {
-    player.current?.playFromPositionAsync(positionMillis);
   }
 
   return(
@@ -83,19 +53,10 @@ export default function VideoUnion ({chapterData, onEnd}: IProps) {
           source: {
             uri: chapterData?.content?.mp4,
           },
-          onLoad: (status: AVPlaybackStatus) => {
-            if (status.isLoaded) {
-              setStatusData(status)
-            }
-          },
+          onLoad,
         }}
       />
-      <Controls
-        statusData={statusData}
-        changeControl={changeControl}
-        onAction={()=> {
-          !(statusData.isLoaded) || statusData.isPlaying ? player.current?.pauseAsync() : player.current?.playAsync()
-        }}/>
+
     </View>
   )
 }
@@ -104,5 +65,7 @@ const styles = StyleSheet.create({
   videoWrap: {
     width: '100%',
     height: '100%',
+    borderBottomColor: 'red',
+    borderBottomWidth: 3,
   },
 });

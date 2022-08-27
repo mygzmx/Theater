@@ -13,10 +13,11 @@ import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import Theater from '../screens/theater/Theater';
 import Player from '../screens/player/Player';
+import Drama from "../screens/drama/Drama";
 import TabThreeScreen from '../screens/TabThreeScreen';
-import { DrawerParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import { createDrawerNavigator } from "@react-navigation/drawer";
+
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -33,33 +34,25 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Drawer = createDrawerNavigator<DrawerParamList>();
-const HomeScreen = ({ navigation }: any) => {
-  return (
-    <View style={{ height: 400, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-      <Text>HomeScreen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => console.log("1234")}
-      />
-    </View>
-  )
-}
 
 function RootNavigator() {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Drawer.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Drawer.Screen
-        name="Drawer"
-        component={HomeScreen}
-        options={{ headerShown: false }} />
+    <Stack.Navigator>
+      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Drama" component={Drama} options={{
+        headerBackTitle: '返回',
+        headerTitle: '我的追剧',
+        headerLargeStyle: { backgroundColor: '#0F0F0F'},
+        headerLargeTitleStyle: {color: '#FFFFFF'},
+        headerTintColor: '#FFFFFF',
+        headerTitleAlign: 'left',
+        gestureEnabled: true, // 手势可操作
+      }}/>
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
-
-    </Drawer.Navigator>
+    </Stack.Navigator>
   );
 }
 

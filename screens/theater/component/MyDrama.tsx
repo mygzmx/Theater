@@ -48,10 +48,12 @@ export default function MyDrama({ dramaList }: IProps) {
   return (<View style={styles.dramaWrap}>
     <View style={styles.dramaHeader}>
       <Text style={styles.dramaTitle}>我的追剧</Text>
-      <View style={styles.dramaLink}>
-        <Text style={styles.dramaLinkTxt}>查看全部</Text>
-        <Image style={styles.dramaLinkIcon} source={MoreIcon}/>
-      </View>
+      <TouchableWithoutFeedback onPressIn={() => navigation.navigate('Drama')}>
+        <View style={styles.dramaLink}>
+          <Text style={styles.dramaLinkTxt}>查看全部</Text>
+          <Image style={styles.dramaLinkIcon} source={MoreIcon}/>
+        </View>
+      </TouchableWithoutFeedback>
     </View>
     <FlatList
       style={styles.flatListBox}

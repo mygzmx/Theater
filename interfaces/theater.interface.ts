@@ -17,6 +17,7 @@ export interface IDramaItem {
   totalCNum: number;
   uid: string;
   utime: number;
+  isChecked?: boolean;
 }
 
 export enum EIsUpdate {

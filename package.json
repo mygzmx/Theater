@@ -20,7 +20,6 @@
     "@expo/webpack-config": "^0.17.0",
     "@react-native-community/slider": "4.2.3",
     "@react-navigation/bottom-tabs": "^6.0.5",
-    "@react-navigation/drawer": "^6.4.4",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "@reduxjs/toolkit": "^1.8.5",

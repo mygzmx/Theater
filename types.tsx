@@ -5,19 +5,19 @@
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {  NativeStackScreenProps } from '@react-navigation/native-stack';
+import Player from "./screens/player/Player";
 
 declare global {
-  namespace ReactNavigation {
+  export namespace ReactNavigation {
     interface RootParamList extends RootStackParamList {}
   }
 }
 
 export type RootStackParamList = {
-  Root: NavigatorScreenParams<RootTabParamList> | undefined;
+  Root: NavigatorScreenParams<RootTabParamList>;
   Modal: undefined;
   NotFound: undefined;
-  // Drawer: undefined;
   Drama: undefined;
 };
 

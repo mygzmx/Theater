@@ -63,7 +63,7 @@ export default function Player() {
 
   useFocusEffect(
     useCallback(() => {
-      if (chapterData && !statusData.isPlaying) {
+      if (chapterData && !statusData.isPlaying && route.name === 'Player') {
         player.current?.playAsync();
       }
       return () => {

@@ -17,6 +17,7 @@ import { getLogTime } from "../../utils/logTime";
 import { useToast } from "react-native-toast-notifications";
 import LoadMore from "../../components/LoadMore";
 import Empty from "../../components/Empty";
+import { useNavigation } from "@react-navigation/native";
 
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const UpdateIcon = require('../../assets/images/update-icon.png');
@@ -32,7 +33,9 @@ enum ECheckedState {
   部分选中 = 2,
 }
 
+
 export default function Drama () {
+  const navigation = useNavigation()
   const toast = useToast();
   const [pageLoading, setPageLoading] = useState(true);
   const [pageLoadingFull, setPageLoadingFull] = useState(false);

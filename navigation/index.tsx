@@ -15,7 +15,7 @@ import Theater from '../screens/theater/Theater';
 import Player from '../screens/player/Player';
 import Drama from "../screens/drama/Drama";
 import TabThreeScreen from '../screens/TabThreeScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import { RootStackParamList, RootStackScreenProps, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 
@@ -39,15 +39,17 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Drama" component={Drama} options={{
-        headerBackTitle: '返回',
-        headerTitle: '我的追剧',
-        headerTitleStyle: {color: '#FFFFFF'},
-        headerTintColor: '#FFFFFF',
-        headerTitleAlign: 'left',
-        gestureEnabled: true, // 手势可操作
-        headerStyle: { backgroundColor: '#0F0F0F'},
-      }}/>
+      <Stack.Screen name="Drama" component={Drama} options={({ navigation }: RootStackScreenProps<'Drama'>) => (
+        {
+          headerBackTitle: '返回',
+          headerTitle: '我的追剧',
+          headerTitleStyle: {color: '#FFFFFF'},
+          headerTintColor: '#FFFFFF',
+          headerTitleAlign: 'left',
+          gestureEnabled: true, // 手势可操作
+          headerStyle: { backgroundColor: '#0F0F0F'},
+        }
+      )}/>
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -91,26 +93,28 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Player"
         component={Player}
-        options={{
+        options={({ navigation }: RootTabScreenProps<'Player'>) => ({
           title: '在看',
           headerTitleStyle: {
             opacity: 0
           },
           tabBarIcon: ({ color }) => <AntDesign name="play" size={24} color={color} />,
           headerBackground: () => <HomeHeader title={'繁花剧场'}/>,
-        }}
+        })}
       />
       <BottomTab.Screen
         name="TabThree"
         component={TabThreeScreen}
-        options={{
-          title: '我的',
-          headerTitleStyle: {
-            opacity: 0
-          },
-          headerBackground: () => <HomeHeader title={'个人中心'}/>,
-          tabBarIcon: ({ color }) => <AntDesign name="smileo" size={24} color={color} />,
-        }}
+        options={({ navigation }: RootTabScreenProps<'TabThree'>) => (
+          {
+            title: '我的',
+            headerTitleStyle: {
+              opacity: 0
+            },
+            headerBackground: () => <HomeHeader title={'个人中心'}/>,
+            tabBarIcon: ({ color }) => <AntDesign name="smileo" size={24} color={color} />,
+          }
+        )}
       />
     </BottomTab.Navigator>
   );

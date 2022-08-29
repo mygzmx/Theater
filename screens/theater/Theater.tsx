@@ -1,12 +1,13 @@
 import { ScrollView, StyleSheet, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { RootTabScreenProps } from '../../types';
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { netDramaList, netRecommendData } from "../../apis/Theater";
 import SwiperNormal from "../../components/SwiperNormal";
 import MyDrama from "./component/MyDrama";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
 import Recommend from "./component/Recommend";
 import LoadMore from "../../components/LoadMore";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [page, setPage] = useState(1);
@@ -20,12 +21,26 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   useEffect(() => {
     initPageData().then(() => {})
     setPage(1)
+    return () => {
+      console.log('============销毁');
+    }
   }, [])
 
-  const initPageData = async () => {
+  useFocusEffect(
+    useCallback(() => {
+      console.log('=================显示');
+      getDramaData();
+      return () => {
+        console.log('============隐藏');
+      };
+    }, []),
+  );
+  const getDramaData = async () => {
     const { recentReadList = [], operList = [] } = await netDramaList({page: 1, size: 10});
     setDramaList(recentReadList);
     setBannerList(operList);
+  }
+  const initPageData = async () => {
     await getColumnList(page, undefined,true, true)
   }
   const getColumnList = async (index: number, tid?: number | string, flag?: boolean, isNeedClassificationList?: boolean) => {

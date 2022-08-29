@@ -23,8 +23,8 @@ export const netDramaVideo = async (bookId: string, scene: string) => {
 }
 
 // 追剧-取消追剧
-export const netNoDramaVideo = async (bookId: string, scene: string) => {
-  return await Service.post('glory/video/2121', { bookIds: bookId, scene })
+export const netNoDramaVideo = async (bookId: string, scene: string, omap?: any) => {
+  return await Service.post('glory/video/2121', { bookIds: bookId, scene, omap: omap ? JSON.stringify(omap) : '', })
 }
 
 //

@@ -3,8 +3,8 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react'
-import { useRoute } from "@react-navigation/native";
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import { AppDispatch, RootState } from "../../store";
@@ -57,15 +57,21 @@ export default function Player() {
   }
   useEffect(() => {
     if (chapterData && route.name === 'Player') {
-      console.log('playAsync');
+      console.log('chapterData ----------------> ');
       !statusData.isPlaying && player.current?.playAsync();
     }
-    if (route.name !== 'Player') {
-      console.log('pauseAsync')
-      player.current?.pauseAsync();
-      (!statusData.isLoaded || statusData.isPlaying) && player.current?.pauseAsync();
-    }
   }, [chapterData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (chapterData && !statusData.isPlaying) {
+        player.current?.playAsync();
+      }
+      return () => {
+        (!statusData.isLoaded || statusData.isPlaying) && player.current?.pauseAsync();
+      };
+    }, [chapterData]),
+  );
 
   const changeControl = (positionMillis: number) => {
     player.current?.playFromPositionAsync(positionMillis);

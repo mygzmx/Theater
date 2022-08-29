@@ -228,9 +228,10 @@ const styles = StyleSheet.create({
     height: 45,
   },
   operationItem: {
-    padding: 16,
-    display: 'flex',
-    alignItems: 'center',
+    height: 45,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     flexDirection: 'row',
   },
   operationTxt: {

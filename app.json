@@ -26,7 +26,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mygz.AwesomeProject"
     },
     "web": {
       "favicon": "./assets/images/logo.png"

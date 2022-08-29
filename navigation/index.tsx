@@ -42,11 +42,11 @@ function RootNavigator() {
       <Stack.Screen name="Drama" component={Drama} options={{
         headerBackTitle: '返回',
         headerTitle: '我的追剧',
-        headerLargeStyle: { backgroundColor: '#0F0F0F'},
-        headerLargeTitleStyle: {color: '#FFFFFF'},
+        headerTitleStyle: {color: '#FFFFFF'},
         headerTintColor: '#FFFFFF',
         headerTitleAlign: 'left',
         gestureEnabled: true, // 手势可操作
+        headerStyle: { backgroundColor: '#0F0F0F'},
       }}/>
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>

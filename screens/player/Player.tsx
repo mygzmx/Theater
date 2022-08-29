@@ -57,7 +57,6 @@ export default function Player() {
   }
   useEffect(() => {
     if (chapterData && route.name === 'Player') {
-      console.log('chapterData ----------------> ');
       !statusData.isPlaying && player.current?.playAsync();
     }
   }, [chapterData]);

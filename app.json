@@ -20,14 +20,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mygz.AwesomeProject"
+      "bundleIdentifier": "com.mygz.theater"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mygz.AwesomeProject"
+      "package": "com.mygz.theater"
     },
     "web": {
       "favicon": "./assets/images/logo.png"

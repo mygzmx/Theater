@@ -187,7 +187,7 @@ export default function Drama () {
       data={bingeList}
       renderItem={renderItem}
       keyExtractor={(item) => item.bookId}
-      ListEmptyComponent={() => isEmpty ? <Empty theme={'dark'} message={'暂无追剧'}/> : null}
+      ListEmptyComponent={() => isEmpty ? <Empty style={{height: 600}} theme={'dark'} message={'暂无追剧'}/> : null}
       onEndReached={(info) => !isEmpty && loadMore()}
       ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
     />

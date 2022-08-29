@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions } from "react-native";
+import { View, Text, Image, Dimensions, StyleProp, ViewStyle } from "react-native";
 
 const EmptyWhite = require('../assets/images/theater/empty-white.png')
 const EmptyDark = require('../assets/images/theater/empty-dark.png')
@@ -6,17 +6,19 @@ const EmptyDark = require('../assets/images/theater/empty-dark.png')
 interface IProps {
   theme?: 'white' | 'dark';
   message?: string;
+  style?: ViewStyle;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export default function Empty ({theme = 'white', message = '暂无数据'}: IProps) {
+export default function Empty ({theme = 'white', message = '暂无数据', style = {}}: IProps) {
   return <View style={{
+    ...style,
     width: '100%',
-    minWidth: 300,
-    maxWidth: width,
-    minHeight: 600,
-    maxHeight: height,
+    // minWidth: 300,
+    // maxWidth: width,
+    // minHeight: 600,
+    // maxHeight: height,
     height: '100%',
     display: 'flex',
     alignItems: 'center',

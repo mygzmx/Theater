@@ -8,8 +8,11 @@ import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interface
 import Recommend from "./component/Recommend";
 import LoadMore from "../../components/LoadMore";
 import { useFocusEffect } from "@react-navigation/native";
+import Empty from "../../components/Empty";
+import RecommendTitle from "./component/RecommendTitle";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
+  const [isEmpty, setIsEmpty] = useState(false);
   const [page, setPage] = useState(1);
   const [dramaList, setDramaList] = useState<IDramaItem[]>([]);
   const [bannerList, setBannerList] = useState<{ imgUrl: string }[]>([]);
@@ -44,11 +47,18 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     await getColumnList(page, undefined,true, true)
   }
   const getColumnList = async (index: number, tid?: number | string, flag?: boolean, isNeedClassificationList?: boolean) => {
-    const {books = [], classificationList = [] } = await netRecommendData({index: page, tid});
+    setPage(index)
+    setPageLoading(true);
+    const { books = [], classificationList = [] } = await netRecommendData({index: page, tid});
+    setPageLoading(false);
     if (isNeedClassificationList) {
       setTypeList([{ labelId: '0', labelName: '全部' }, ...classificationList] as IClassificationItem[]);
     }
     if(flag) {
+      if (books.length === 0) {
+        setIsEmpty(true)
+        return;
+      }
       setVideoList([...books]);
       // 初始如果请求数量太少就发送二次请求
       if(books.length < 12){
@@ -65,7 +75,6 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     if (activeRecommendType === item.labelId) return;
     setPage(1)
     setActiveRecommendType(item.labelId)
-    setPageLoading(true);
     setPageLoadingFull(false);
     await getColumnList(1, item.labelId,true);
   }
@@ -74,7 +83,6 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     setRefreshing(true);
     setPage(1)
     setActiveRecommendType('0');
-    setPageLoading(false);
     setPageLoadingFull(false);
     console.log('onRefresh-------------------_>');
     initPageData().then(() => setRefreshing(false));
@@ -83,9 +91,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [pageLoading, setPageLoading] = useState(false);
   const [pageLoadingFull, setPageLoadingFull] = useState(false);
   const loadMore = async () => {
-    console.log('loadMore-------------------_>');
-    setPageLoading(true);
-    setPage((page + 1))
+    if (pageLoading || pageLoadingFull) return;
     await getColumnList(page + 1, activeRecommendType);
     setPageLoading(false);
   }
@@ -109,15 +115,16 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       onScrollEndDrag={(e) => onMomentumScrollEnd(e)}
       style={styles.container}>
-      <SwiperNormal bannerList={bannerList}/>
-      <MyDrama dramaList={dramaList}/>
-      <Recommend
-        changeType={(item) => changeRecommendType(item)}
-        activeRecommendType={activeRecommendType}
+      {bannerList.length> 0 && <SwiperNormal bannerList={bannerList}/>}
+      {dramaList.length > 0 && <MyDrama dramaList={dramaList}/>}
+      <RecommendTitle
         typeList={typeList}
-        videoList={videoList}
-      />
-      <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
+        activeRecommendType={activeRecommendType}
+        changeType={(item) => changeRecommendType(item)}/>
+      {isEmpty ? <Empty style={{minHeight: 300}} theme={'dark'} message={'暂无推荐视频'}/> : <>
+        <Recommend videoList={videoList}/>
+        <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
+      </>}
     </ScrollView>
   );
 }

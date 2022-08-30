@@ -14,7 +14,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import Theater from '../screens/theater/Theater';
 import Player from '../screens/player/Player';
 import Drama from '../screens/drama/Drama';
-import TabThreeScreen from '../screens/TabThreeScreen';
+import Self from '../screens/self/Self';
 import {
   RootStackParamList,
   RootStackScreenProps,
@@ -111,10 +111,10 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        navigationKey="TabThree"
-        name="TabThree"
-        component={TabThreeScreen}
-        options={({ navigation }: RootTabScreenProps<'TabThree'>) => (
+        navigationKey="Self"
+        name="Self"
+        component={Self}
+        options={({ navigation }: RootTabScreenProps<'Self'>) => (
           {
             title: '我的',
             headerTitleStyle: {

@@ -5,14 +5,14 @@ import {
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { netPreloadList, netVideoSource } from "../../apis/Player";
-import VideoUnion from "./component/VideoUnion";
-import { AppDispatch, RootState } from "../../store";
-import { setBookId, setBookName, setChapterId, setChapterInfo, setAutoAdd } from "../../store/modules/player.module";
 import { useSelector, useDispatch } from "react-redux";
 import { AVPlaybackStatus, Video } from "expo-av";
-import Controls from "./component/Controls";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
+import { netPreloadList, netVideoSource } from "../../apis/Player";
+import { AppDispatch, RootState } from "../../store";
+import { setBookId, setBookName, setChapterId, setChapterInfo, setAutoAdd } from "../../store/modules/player.module";
+import VideoUnion from "./component/VideoUnion";
+import Controls from "./component/Controls";
 
 
 export default function Player() {

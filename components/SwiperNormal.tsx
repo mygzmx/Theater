@@ -13,7 +13,7 @@ export default function SwiperNormal ({ bannerList }: IProps) {
       autoplayLoop
       showPagination
       paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
-      paginationStyleItem={{width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4}}
+      paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
       paginationStyle={{
         bottom: -5,
         alignItems: 'flex-end'

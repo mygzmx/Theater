@@ -9,7 +9,6 @@ import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import { LinearGradient } from 'expo-linear-gradient';
 import ControlBar from "./ControlBar";
 import ControlMore from "./ControlMore";
-
 const ImgPlay = require("../../../assets/images/player/player-play.png")
 interface IProps {
   statusData: AVPlaybackStatusSuccess;

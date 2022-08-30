@@ -1,5 +1,5 @@
-import Service from './Service';
 import { IChapterParams, IPreLoadParams, IVideoInitParams, IVideoSourceParams } from "../interfaces/player.interface";
+import Service from './Service';
 
 // 初始化
 export const netVideoInit = async (params: IVideoInitParams) => {

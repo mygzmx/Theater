@@ -6,14 +6,16 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity, TouchableWithoutFeedback
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  FlatList
 } from "react-native";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store";
 import { setChapterId } from "../../../store/modules/player.module";
-import { FlatList } from "react-native";
 import { EBookFinishStatus, EIsCharge } from "../../../interfaces/player.interface";
+// eslint-disable-next-line import/order
+import { RootState } from "../../../store";
 
 interface IProps {
   modalVisible: boolean;
@@ -36,7 +38,7 @@ const ImgEIsCharge = {
   [EIsCharge.收费已购买]: ImgCatalogUnlock,
 }
 
-export default function ChapterListLog ({modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus}: IProps) {
+export default function ChapterListLog ({ modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus }: IProps) {
 
   const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
 

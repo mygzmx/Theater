@@ -47,11 +47,11 @@ export const playerSlice = createSlice({
       state.autoAdd = action.payload;
     }
   },
-})
+});
 
 
 export const { setBookId, setChapterId, setChapterInfo, setBookName, setAutoAdd } = playerSlice.actions;
 
-const playerReducer = playerSlice.reducer
+const playerReducer = playerSlice.reducer;
 
 export default playerReducer;

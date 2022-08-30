@@ -1,5 +1,5 @@
-import { IClassificationItem } from "../../../interfaces/theater.interface";
 import { FlatList, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { IClassificationItem } from "../../../interfaces/theater.interface";
 
 interface IProps {
   activeRecommendType: string;

@@ -6,9 +6,9 @@ import {
   GestureResponderHandlers,
   PanResponderGestureState,
 } from "react-native";
+import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import usePanResponder from "../../../hooks/usePanResponder";
 import { ControlTime } from "./ControlTime";
-import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 
 const { width } = Dimensions.get('window');
 

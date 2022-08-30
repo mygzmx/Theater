@@ -7,6 +7,10 @@
     "react-hooks"
   ],
   "rules": {
+    "no-unused-expressions": "off",
+    "react/react-in-jsx-scope": "off",
+    "flowtype/no-types-missing-file-annotation": "off",
+    "prettier/prettier": "off",
     "prefer-const": "error",
     "react-hooks/exhaustive-deps": "off",
     "indent": [
@@ -21,7 +25,7 @@
       "single"
     ],
     "semi": [
-      "error",
+      "off",
       "always"
     ],
     "max-lines": [

@@ -6,15 +6,14 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { netChapterList } from "../../../apis/Player";
 import { useDispatch, useSelector } from "react-redux";
+import * as React from "react";
+import { netChapterList } from "../../../apis/Player";
 import { RootState } from "../../../store";
 import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setAutoAdd } from "../../../store/modules/player.module";
 import { EBookFinishStatus, EIsRead } from "../../../interfaces/player.interface";
-import * as React from "react";
 import ChapterListLog from "./ChapterListLog";
-
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')

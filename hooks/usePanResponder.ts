@@ -16,7 +16,6 @@ const usePanResponder = ({ onStart, onMove, onRelease, onTerminate }: IProps): G
     onMoveShouldSetPanResponderCapture: () => true,
     // 用户放开了所有的触摸点，且此时视图已经成为了响应者
     onPanResponderTerminationRequest: (evt, gestureState) => true,
-
     // 触摸开始
     onPanResponderGrant: (evt, gestureState) => {
       onStart && onStart(gestureState)

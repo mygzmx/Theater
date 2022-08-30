@@ -8,16 +8,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { Button, ColorSchemeName, Pressable, Text, View } from 'react-native';
+import { ColorSchemeName, Text, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import Theater from '../screens/theater/Theater';
 import Player from '../screens/player/Player';
-import Drama from "../screens/drama/Drama";
+import Drama from '../screens/drama/Drama';
 import TabThreeScreen from '../screens/TabThreeScreen';
-import { RootStackParamList, RootStackScreenProps, RootTabParamList, RootTabScreenProps } from '../types';
+import {
+  RootStackParamList,
+  RootStackScreenProps,
+  RootTabParamList,
+  RootTabScreenProps,
+} from '../@types';
 import LinkingConfiguration from './LinkingConfiguration';
-
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -39,8 +43,11 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Drama" component={Drama} options={({ navigation }: RootStackScreenProps<'Drama'>) => (
-        {
+      <Stack.Screen
+        navigationKey="Drama"
+        name="Drama"
+        component={Drama}
+        options={({ navigation }: RootStackScreenProps<'Drama'>) => ({
           headerBackTitle: '返回',
           headerTitle: '我的追剧',
           headerTitleStyle: {color: '#FFFFFF'},
@@ -48,8 +55,7 @@ function RootNavigator() {
           headerTitleAlign: 'left',
           gestureEnabled: true, // 手势可操作
           headerStyle: { backgroundColor: '#0F0F0F'},
-        }
-      )}/>
+        })}/>
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -69,7 +75,7 @@ function BottomTabNavigator() {
     <View style={{width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)', display: 'flex', justifyContent: 'flex-end'}}>
       <Text style={{fontSize: 18, fontWeight: 'bold', color: '#BBBBBB', paddingLeft: 15, paddingBottom: 12}}>{props.title}</Text>
     </View>
-  )
+  );
   return (
     <BottomTab.Navigator
       initialRouteName="Player"
@@ -78,6 +84,7 @@ function BottomTabNavigator() {
         tabBarBackground: () => <View style={{width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)'}}/>
       }}>
       <BottomTab.Screen
+        navigationKey="Theater"
         name="Theater"
         component={Theater}
         options={({ navigation }: RootTabScreenProps<'Theater'>) => ({
@@ -91,6 +98,7 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
+        navigationKey="Player"
         name="Player"
         component={Player}
         options={({ navigation }: RootTabScreenProps<'Player'>) => ({
@@ -103,6 +111,7 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
+        navigationKey="TabThree"
         name="TabThree"
         component={TabThreeScreen}
         options={({ navigation }: RootTabScreenProps<'TabThree'>) => (

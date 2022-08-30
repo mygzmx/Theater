@@ -1,15 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ToastProvider } from "react-native-toast-notifications"; // 消息提示 which provides context for the Toast hook. --> useToast
+import { Provider } from "react-redux";
+import { AppRegistry } from 'react-native';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { store } from "./store";
 // import { initAxios } from "./apis/Service";
-import { Provider } from "react-redux";
-import { AppRegistry } from 'react-native';
-import {expo as appName} from './app.json';
-import { ToastProvider } from "react-native-toast-notifications"; // 消息提示 which provides context for the Toast hook. --> useToast
-
+import { expo as appName } from './app.json';
+import * as types from "./@types"; // 还是不要删了，奇怪的声明使用
 // initAxios(store);
 
 export default function App() {

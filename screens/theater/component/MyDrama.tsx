@@ -7,15 +7,13 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import { IDramaItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
-import { setBookId, setChapterId } from "../../../store/modules/player.module";
 import { useDispatch } from "react-redux";
-
+import { IDramaItem } from "../../../interfaces/theater.interface";
+import { setBookId, setChapterId } from "../../../store/modules/player.module";
 const ImgEmpty = require('../../../assets/images/img-empty.png');
 const UpdateIcon = require('../../../assets/images/update-icon.png');
 const MoreIcon = require('../../../assets/images/more-icon.png');
-
 
 interface IProps {
   dramaList: IDramaItem[],
@@ -27,8 +25,7 @@ export default function MyDrama({ dramaList }: IProps) {
   const linkToPlayer = async (item: IDramaItem) => {
     dispatch(setBookId(item.bookId))
     dispatch(setChapterId(item.chapterId))
-    // @ts-ignore
-    navigation.navigate('Player')
+    navigation.navigate("Player")
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
     return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>
@@ -37,7 +34,7 @@ export default function MyDrama({ dramaList }: IProps) {
           style={styles.coverImg}
           source={{ uri: item.coverImage }}
           defaultSource={ImgEmpty}>
-          {item.isUpdate == 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
+          {item.isUpdate === 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
         </ImageBackground>
         <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
         <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
@@ -48,7 +45,7 @@ export default function MyDrama({ dramaList }: IProps) {
   return (<View style={styles.dramaWrap}>
     <View style={styles.dramaHeader}>
       <Text style={styles.dramaTitle}>我的追剧</Text>
-      <TouchableWithoutFeedback onPressIn={() => navigation.navigate('Drama')}>
+      <TouchableWithoutFeedback onPress={() => navigation.navigate('Drama')}>
         <View style={styles.dramaLink}>
           <Text style={styles.dramaLinkTxt}>查看全部</Text>
           <Image style={styles.dramaLinkIcon} source={MoreIcon}/>
@@ -57,7 +54,7 @@ export default function MyDrama({ dramaList }: IProps) {
     </View>
     <FlatList
       style={styles.flatListBox}
-      horizontal={true}
+      horizontal
       data={dramaList}
       renderItem={renderItem}
       keyExtractor={item => item.bookId}

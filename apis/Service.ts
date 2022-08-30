@@ -1,6 +1,6 @@
 import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosPromise } from 'axios'
-import { RootState } from "../store";
 import { Store } from "redux";
+import { RootState } from "../store";
 
 declare module 'axios' {
   export interface AxiosInstance {

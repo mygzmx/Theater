@@ -6,11 +6,10 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
-import { IVideoListItem } from "../../../interfaces/theater.interface";
 import { useNavigation } from "@react-navigation/native";
-import { setBookId, setChapterId } from "../../../store/modules/player.module";
 import { useDispatch } from "react-redux";
-
+import { IVideoListItem } from "../../../interfaces/theater.interface";
+import { setBookId, setChapterId } from "../../../store/modules/player.module";
 const ImgEmpty = require('../../../assets/images/img-empty.png')
 
 interface IProps {

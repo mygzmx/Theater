@@ -1,14 +1,14 @@
 import { ScrollView, StyleSheet, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { RootTabScreenProps } from '../../types';
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { RootTabScreenProps } from '../../@types';
 import { netDramaList, netRecommendData } from "../../apis/Theater";
 import SwiperNormal from "../../components/SwiperNormal";
-import MyDrama from "./component/MyDrama";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
-import Recommend from "./component/Recommend";
 import LoadMore from "../../components/LoadMore";
-import { useFocusEffect } from "@react-navigation/native";
 import Empty from "../../components/Empty";
+import Recommend from "./component/Recommend";
+import MyDrama from "./component/MyDrama";
 import RecommendTitle from "./component/RecommendTitle";
 
 export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
@@ -39,7 +39,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     }, []),
   );
   const getDramaData = async () => {
-    const { recentReadList = [], operList = [] } = await netDramaList({page: 1, size: 10});
+    const { recentReadList = [], operList = [] } = await netDramaList({ page: 1, size: 10 });
     setDramaList(recentReadList);
     setBannerList(operList);
   }
@@ -49,7 +49,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const getColumnList = async (index: number, tid?: number | string, flag?: boolean, isNeedClassificationList?: boolean) => {
     setPage(index)
     setPageLoading(true);
-    const { books = [], classificationList = [] } = await netRecommendData({index: page, tid});
+    const { books = [], classificationList = [] } = await netRecommendData({ index: page, tid });
     setPageLoading(false);
     if (isNeedClassificationList) {
       setTypeList([{ labelId: '0', labelName: '全部' }, ...classificationList] as IClassificationItem[]);
@@ -121,7 +121,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
         typeList={typeList}
         activeRecommendType={activeRecommendType}
         changeType={(item) => changeRecommendType(item)}/>
-      {isEmpty ? <Empty style={{minHeight: 300}} theme={'dark'} message={'暂无推荐视频'}/> : <>
+      {isEmpty ? <Empty style={{ minHeight: 300 }} theme={'dark'} message={'暂无推荐视频'}/> : <>
         <Recommend videoList={videoList}/>
         <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
       </>}

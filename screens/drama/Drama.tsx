@@ -9,16 +9,15 @@ import {
   ImageBackground,
 } from "react-native";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useToast } from "react-native-toast-notifications";
+import { useNavigation } from "@react-navigation/native";
 import { IDramaItem } from "../../interfaces/theater.interface";
 import { netDramaList, netNoDramaVideo } from "../../apis/Theater";
 import { setBookId, setChapterId } from "../../store/modules/player.module";
-import { useDispatch } from "react-redux";
 import { getLogTime } from "../../utils/logTime";
-import { useToast } from "react-native-toast-notifications";
 import LoadMore from "../../components/LoadMore";
 import Empty from "../../components/Empty";
-import { useNavigation } from "@react-navigation/native";
-
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const UpdateIcon = require('../../assets/images/update-icon.png');
 const ImgEdit = require('../../assets/images/theater/edit.png')
@@ -32,7 +31,6 @@ enum ECheckedState {
   全选中 = 1,
   部分选中 = 2,
 }
-
 
 export default function Drama () {
   const navigation = useNavigation()
@@ -79,7 +77,7 @@ export default function Drama () {
   const getDramaData = async (p: number) => {
     setPage(p)
     setPageLoading(true);
-    const { recentReadList = [], recentReadAllSize = 0 } = await netDramaList({page: p});
+    const { recentReadList = [], recentReadAllSize = 0 } = await netDramaList({ page: p });
     setPageLoading(false);
     setBingeList(recentReadList);
     if(recentReadAllSize === 0 || recentReadList.length === 0){
@@ -93,13 +91,11 @@ export default function Drama () {
       setPageLoadingFull(false);
     }
   }
-
   const loadMore = async () => {
     if (pageLoadingFull || pageLoading) return;
     console.log('loadMore----------->', pageLoadingFull)
     await getDramaData(page + 1)
   }
-
   // 点击编辑按钮
   const edit = () => {
     setBingeList(prevState => prevState.map(val => ({ ...val, isChecked: false })));
@@ -157,7 +153,7 @@ export default function Drama () {
           defaultSource={ImgEmpty}>
           {item.isUpdate == 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
           {isEdit && (item.isChecked ? <Image source={ImgChecked} style={styles.checkedIcon} /> :
-              <Image style={styles.checkedIcon} source={ImgUnchecked}/>
+            <Image style={styles.checkedIcon} source={ImgUnchecked}/>
           )}
         </ImageBackground>
         <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
@@ -184,13 +180,13 @@ export default function Drama () {
     </View> }
     <FlatList
       numColumns={3}
-      ItemSeparatorComponent={() => <View style={{width: 16, height: 24,}}/>}
+      ItemSeparatorComponent={() => <View style={{ width: 16, height: 24, }}/>}
       style={{ ...styles.flatListBox, height: isEdit ? height - 220 : height - 171 }}
       horizontal={false}
       data={bingeList}
       renderItem={renderItem}
       keyExtractor={(item) => item.bookId}
-      ListEmptyComponent={() => isEmpty ? <Empty style={{height: 600}} theme={'dark'} message={'暂无追剧'}/> : null}
+      ListEmptyComponent={() => isEmpty ? <Empty style={{ height: 600 }} theme={'dark'} message={'暂无追剧'}/> : null}
       onEndReached={(info) => !isEmpty && loadMore()}
       ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
     />
@@ -207,7 +203,7 @@ export default function Drama () {
           <Text style={{ ...styles.footerItemTxt, color: checkedState === ECheckedState.全没选中 ? '#7F7F7F' : '#ffffff' }} >删除</Text>
         </View>
       </TouchableWithoutFeedback>
-      </View>
+    </View>
     }
   </View>
 }

@@ -1,7 +1,7 @@
 import VideoPlayer from "expo-video-player";
 import { StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
-import { AVPlaybackStatus, Video } from "expo-av";
+import { AVPlaybackStatus } from "expo-av";
 import React from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 
@@ -12,7 +12,7 @@ interface IProps {
   onLoad: (status: AVPlaybackStatus) => void;
 }
 
-export default function VideoUnion ({chapterData, onLoad, player, playbackCallback}: IProps) {
+export default function VideoUnion ({ chapterData, onLoad, player, playbackCallback }: IProps) {
 
   const errorCallback = (error: ErrorType) => {
     console.log('error---------------->', error)
@@ -35,7 +35,7 @@ export default function VideoUnion ({chapterData, onLoad, player, playbackCallba
         autoHidePlayer
         errorCallback={errorCallback}
         playbackCallback={playbackCallback}
-        fullscreen={{visible: false}}
+        fullscreen={{ visible: false }}
         icon={{
           size: 0,
           pause: <View/>,

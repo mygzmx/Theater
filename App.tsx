@@ -7,10 +7,10 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { store } from "./store";
-// import { initAxios } from "./apis/Service";
+import { initAxios } from "./apis/Service";
 import { expo as appName } from './app.json';
 import * as types from "./@types"; // 还是不要删了，奇怪的声明使用
-// initAxios(store);
+initAxios(store);
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

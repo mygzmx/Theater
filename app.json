@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "剧场",
+    "name": "繁花剧场",
     "slug": "fhjc",
-    "version": "1.0.0",
+    "version": "1.0.666",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "scheme": "myapp",

@@ -1,6 +1,8 @@
 import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosPromise } from 'axios'
 import { Store } from "redux";
 import { RootState } from "../store";
+import { userInfoAsync } from "../store/modules/user.module";
+import { getHeader } from "../utils/auth";
 
 declare module 'axios' {
   export interface AxiosInstance {
@@ -23,6 +25,7 @@ const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
 /**接口域名 */
 export const BASE_URL = 'http://223.kky.dzods.cn';
+
 const Service = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
@@ -38,41 +41,20 @@ export const initAxios = (store: Store<RootState>) => {
     });
     // window.addEventListener('pageshow', () => initAxios(store));
   }
+  // @ts-ignore
+  store.dispatch(userInfoAsync())
   // 校验带过期时间的token等
   // 5分钟检查一次token等信息
   // setTimeout(() => initAxios(store), 5 * 60 * 1000);
 }
-
-const tempHeader = {
-  brand: "vivo",
-  channelCode: "dz_fhjc",
-  channelCodeFee: "dz_fhjc",
-  domain: 15,
-  model: "X23",
-  osvc: 29,
-  osvn: "10",
-  pfvc: 1090,
-  pfvn: "1.9",
-  pname: "com.dianzhong.fhjc",
-  readPref: "0",
-  scDistinctId: "1660788772375-7082386-074f583b45e1e7-26871655",
-  sch: 640,
-  scw: 360,
-  startMode: "shortcut",
-  t: "",
-  triggerTime: "20220818101300",
-  userId: "2006902",
-  utdid: "fa2f55573bdf09e4b7e0613b5139cffc",
-  utdidTmp: "tmp_1660788780166DPgVEWozr6",
-  uuid: "",
-}
-
+const tempHeader = getHeader() as { [key: string]: any }
 // 添加请求拦截器
 Service.interceptors.request.use(
   (request: AxiosRequestConfig) => {
     request.headers = {
       ...request.headers,
-      ...tempHeader
+      ...tempHeader,
+      userId: Service.redux.getState().user.user.userId,
     }
     request.cancelToken = new CancelToken((c) => {
       pending.push({

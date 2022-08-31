@@ -25,7 +25,7 @@ export default function MyDrama({ dramaList }: IProps) {
   const linkToPlayer = async (item: IDramaItem) => {
     dispatch(setBookId(item.bookId))
     dispatch(setChapterId(item.chapterId))
-    navigation.navigate("Player")
+    navigation.navigate('Player')
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
     return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>

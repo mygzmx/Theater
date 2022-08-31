@@ -13,13 +13,12 @@ declare global {
   }
 }
 
-// export const useAppNavigation = () => useNavigation<ReactNavigation>();
-
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList>;
   Modal: undefined;
   NotFound: undefined;
   Drama: undefined;
+  ViewingRecords: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

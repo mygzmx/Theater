@@ -8,7 +8,6 @@ import {
   Dimensions,
   Button
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { IUserInfo } from "../../../interfaces/self.interface";
 const ImgMoreIcon = require('../../../assets/images/more-icon.png')
@@ -16,19 +15,13 @@ const ImgVipTitle = require('../../../assets/images/self/vip-title.png')
 
 interface IProps extends IUserInfo {
   amount: number;
+  routerToAc: () => void;
+  linkPay: () => void;
+  linkRecharge: () => void;
 }
 
 export default function VipCard (props: IProps) {
-  const navigation = useNavigation()
-  const routerToAc = () => {
-    // navigation.navigate('Wallet')
-  }
-  const linkPay = () => {
-
-  }
-  const linkRecharge = () => {
-    // navigation.navigate('Recharge')
-  }
+  const { routerToAc, linkPay, linkRecharge } = props;
 
   return (<ImageBackground
     source={{ uri: props.vip ? 'https://fvimg.kkyd.cn/images/vip-card.png' : 'https://fvimg.kkyd.cn/images/vip-card2.png' }}

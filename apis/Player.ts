@@ -19,6 +19,9 @@ export const netChapterList = async (params: IChapterParams) => {
   return await Service.post('glory/video/2112', params)
 }
 
+// removeFromShelf(data){
+//   return http.post('glory/video/2121', data)
+// },
 export default {
   // preloadVideo(url, data) {
   //   return http.get(url + '?' + $utils.getAppConfig('appVersion'), data)
@@ -29,9 +32,7 @@ export default {
   // addToShelf(data){
   //   return http.post('glory/video/2122', data)
   // },
-  // removeFromShelf(data){
-  //   return http.post('glory/video/2121', data)
-  // },
+
   // getRecomment(data){
   //   return http.post('glory/video/2113', data)
   // },

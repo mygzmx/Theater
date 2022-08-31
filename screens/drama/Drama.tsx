@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import { useNavigation } from "@react-navigation/native";
-import { IDramaItem } from "../../interfaces/theater.interface";
+import { EIsUpdate, IDramaItem } from "../../interfaces/theater.interface";
 import { netDramaList, netNoDramaVideo } from "../../apis/Theater";
 import { setBookId, setChapterId } from "../../store/modules/player.module";
 import { getLogTime } from "../../utils/logTime";
@@ -58,7 +58,7 @@ export default function Drama () {
   });
   const dispatch = useDispatch();
   useEffect(() => {
-    getDramaData(1)
+    getDramaData(1, true)
   }, []);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Drama () {
       const checkedLength = bingeList.filter(val => val.isChecked).length
       if (checkedLength === bingeList.length) {
         setCheckedState(ECheckedState.全选中)
-      } else if (checkedLength == 0) {
+      } else if (checkedLength === 0) {
         setCheckedState(ECheckedState.全没选中)
       } else {
         setCheckedState(ECheckedState.部分选中)
@@ -74,16 +74,28 @@ export default function Drama () {
     }
   }, [bingeList]);
 
-  const getDramaData = async (p: number) => {
+  const getDramaData = async (p: number = 1, isInit: boolean = false) => {
     setPage(p)
     setPageLoading(true);
     const { recentReadList = [], recentReadAllSize = 0 } = await netDramaList({ page: p });
     setPageLoading(false);
-    setBingeList(recentReadList);
-    if(recentReadAllSize === 0 || recentReadList.length === 0){
-      setIsEmpty(true);
-      return;
+    const newBingeList = recentReadList.map((item: IDramaItem) => ({
+      ...item,
+      isChecked: false,
+    }));
+
+    if (isInit) {
+      if(recentReadAllSize === 0 || recentReadList.length === 0){
+        setIsEmpty(true);
+        setBingeList([]);
+        return;
+      }
+      setIsEmpty(false);
+      setBingeList(newBingeList);
+    } else {
+      setBingeList(prevState => prevState.concat(newBingeList))
     }
+
     const reqTotal = p * 12;
     if(recentReadAllSize <= bingeList.length || recentReadAllSize <= reqTotal){
       setPageLoadingFull(true);
@@ -93,7 +105,6 @@ export default function Drama () {
   }
   const loadMore = async () => {
     if (pageLoadingFull || pageLoading) return;
-    console.log('loadMore----------->', pageLoadingFull)
     await getDramaData(page + 1)
   }
   // 点击编辑按钮
@@ -151,7 +162,7 @@ export default function Drama () {
           style={styles.coverImg}
           source={{ uri: item.coverImage }}
           defaultSource={ImgEmpty}>
-          {item.isUpdate == 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
+          {item.isUpdate === EIsUpdate.yes && <Image style={styles.updateImg} source={UpdateIcon}/>}
           {isEdit && (item.isChecked ? <Image source={ImgChecked} style={styles.checkedIcon} /> :
             <Image style={styles.checkedIcon} source={ImgUnchecked}/>
           )}

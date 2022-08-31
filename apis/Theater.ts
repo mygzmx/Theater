@@ -18,8 +18,8 @@ export const netDramaList = async ({ page = 1, size = 12 }: {page?: number, size
 }
 
 // 追剧-追
-export const netDramaVideo = async (bookId: string, scene: string) => {
-  return await Service.post('glory/video/2122', { bookId, scene })
+export const netDramaVideo = async (bookId: string, scene: string, omap?: string) => {
+  return await Service.post('glory/video/2122', { bookId, scene, omap })
 }
 
 // 追剧-取消追剧

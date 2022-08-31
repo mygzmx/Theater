@@ -5,11 +5,10 @@ import {
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { useSelector, useDispatch } from "react-redux";
 import { AVPlaybackStatus, Video } from "expo-av";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import { netPreloadList, netVideoSource } from "../../apis/Player";
-import { AppDispatch, RootState } from "../../store";
+import { RootState, useAppDispatch, useAppSelector } from "../../store";
 import { setBookId, setBookName, setChapterId, setChapterInfo, setAutoAdd } from "../../store/modules/player.module";
 import VideoUnion from "./component/VideoUnion";
 import Controls from "./component/Controls";
@@ -17,12 +16,12 @@ import Controls from "./component/Controls";
 
 export default function Player() {
   const route = useRoute()
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [chapterData, setChapterData] = useState();
   const [nextChapterId, setNextChapterId] = useState('');
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
   const player = useRef<Video>({} as Video);
-  const { bookId, chapterId } = useSelector((state: RootState) => (state.player));
+  const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
   useEffect(() => {
     InitVideoData().then(() => {})
   }, [bookId, chapterId]);

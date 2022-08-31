@@ -47,7 +47,7 @@ export const userSlice = createSlice({
   }),
   reducers: {
     setUserInfo: (state: IUserData, action) => {
-      return { ...action.payload, user: { ... action.payload.user } }
+      return { ...state, ...action.payload, user: { ...state.user, ...action.payload.user } }
     },
     // resetToken: (state) => {
     //   state.userToken = '';
@@ -60,8 +60,7 @@ export const userSlice = createSlice({
         // state.status = 'loading';
       })
       .addCase(userInfoAsync.fulfilled, (state, action) => {
-        // state.status = 'idle';
-        setUserInfo(action.payload);
+        return { ...state, ...action.payload, user: { ...state.user, ...action.payload.user } }
       })
       .addCase(imeiAuthAsync.fulfilled, (state, action) => {
         console.log('imeiAuthAsync-------------------->', action.payload)

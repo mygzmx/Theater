@@ -8,7 +8,7 @@ interface IProps extends IUserInfo {
 }
 
 export default function SelfHeader({ nickName, userId, login, handleLogin }: IProps) {
-
+  console.log('nickName, userId ------------------__>', nickName, userId )
   return (<View style={styles.selfHeader}>
     <ImageBackground source={{ uri: 'https://fvimg.kkyd.cn/images/self-bg.png' }} style={styles.headerTitle}>
       <View style={styles.avatarBox}>
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     width,
-    height: 190,
+    height: 145,
   },
   avatarBox: {
-    marginTop: 24,
+    marginTop: 30,
     display: "flex",
     height: 54,
     paddingRight: 20,

@@ -1,35 +1,33 @@
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { Text, View } from '../../components/Themed';
-import { IUserInfo } from "../../interfaces/self.interface";
+import { RootState, useAppSelector } from "../../store";
 import SelfHeader from "./component/SelfHeader";
+import VipCard from "./component/VipCard";
+import SelfLink from "./component/SelfLink";
 
 export default function Self () {
-  const [userInfo, setUserInfo] = useState<IUserInfo>({
-    vip: false,
-    nickName: '',
-    login: false,
-    sex: 0, // 1-男，2-女，0-无
-    userId: "",
-    vipExpiryTime: "", // '' - 未开通， 'yyyy-MM-DD' - 判断是否过期
-  });
+  const { user, amount } = useAppSelector((state: RootState) => state.user)
   // 登录
   const handleLogin = () => {
 
   }
   return (
     <View style={styles.container}>
-      <SelfHeader {...userInfo} handleLogin={handleLogin}/>
+      <SelfHeader {...user} handleLogin={handleLogin}/>
+      <VipCard {...user} amount={amount}/>
+      <SelfLink/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'rgba(25, 25, 25, 1)',
+    backgroundColor: '#FFFFFF',
   },
 
 });

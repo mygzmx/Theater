@@ -4,7 +4,7 @@
  */
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
+import { CompositeScreenProps, NavigatorScreenParams, useNavigation } from '@react-navigation/native';
 import {  NativeStackScreenProps } from '@react-navigation/native-stack';
 
 declare global {
@@ -12,6 +12,8 @@ declare global {
     interface RootParamList extends RootStackParamList, RootTabParamList {}
   }
 }
+
+// export const useAppNavigation = () => useNavigation<ReactNavigation>();
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList>;

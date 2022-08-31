@@ -1,7 +1,6 @@
 import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosPromise } from 'axios'
 import { Store } from "redux";
 import { RootState } from "../store";
-import { userInfoAsync } from "../store/modules/user.module";
 import { getHeader } from "../utils/auth";
 
 declare module 'axios' {
@@ -42,7 +41,7 @@ export const initAxios = (store: Store<RootState>) => {
     // window.addEventListener('pageshow', () => initAxios(store));
   }
   // @ts-ignore
-  store.dispatch(userInfoAsync())
+  // store.dispatch(userInfoAsync())
   // 校验带过期时间的token等
   // 5分钟检查一次token等信息
   // setTimeout(() => initAxios(store), 5 * 60 * 1000);

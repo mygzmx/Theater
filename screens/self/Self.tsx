@@ -20,7 +20,7 @@ export default function Self () {
 
   const linkTo = (item: ILinkItem) => {
     if (item.label === '联系客服') {
-      WebBrowser.openBrowserAsync(zhiChiUrl);
+      WebBrowser.openBrowserAsync(zhiChiUrl).then(r => {});
     } else {
       const uri = item.uri as keyof RootStackParamList
       navigation.navigate(uri);

@@ -1,7 +1,5 @@
-import { Dimensions, Platform } from "react-native";
-import { getLogTime, getUtdidTmp } from "./logTime";
-
 const appConfig = {
+  env: 'test',
   /**appName */
   appName: 'com.dianzhong.fhjc',
   /**应用名 */

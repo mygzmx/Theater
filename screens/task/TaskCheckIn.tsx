@@ -73,10 +73,6 @@ export default function TaskCheckIn ( ) {
     }
   }
 
-  const refreshData = () => {
-
-  }
-
   const bannerLink = (item: any, index: number) => {
     const { id, bookId, operationInfo = {} } = item;
     netOperatingReport(id, EOperatingReportType.点击).then(() => {})
@@ -112,7 +108,7 @@ export default function TaskCheckIn ( ) {
       isSign={isSigns}
       signRecordVos={signRecordVoss}
       continueDay={continueDays}
-      refresh={refreshData}
+      refresh={() => getTaskData()}
     />
     <TaskList/>
   </View>

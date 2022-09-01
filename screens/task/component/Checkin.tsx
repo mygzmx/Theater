@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   middleLine: {
     position: 'relative',
     top: -2,
-    height: 2,
+    height: 1,
     width: width - 64,
     marginLeft: 12,
   },
@@ -172,10 +172,10 @@ const styles = StyleSheet.create({
   signItemTip: {
     width: 38,
     height: 53,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#ffae74',
-    borderRadius: 7,
+    // borderWidth: 1,
+    // borderStyle: 'solid',
+    // borderColor: '#ffae74',
+    // borderRadius: 7,
     paddingTop: 6,
     alignItems: 'center',
   },

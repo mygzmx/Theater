@@ -9,6 +9,14 @@ export const netViewRecordsList = async (page: number = 1, size: number = 12): P
   return await Service.post('glory/video/2123', { page, size })
 }
 
+/** 意见反馈提交
+ * @param type
+ * @param content
+ * @param phoneNum
+ */
+export const netFeedBack = ( type: string, content: string, phoneNum: string ) => {
+  return Service.post('glory/video/2171', { type, content, phoneNum })
+}
 
 // export default {
 //   // 任务和签到数据
@@ -27,10 +35,7 @@ export const netViewRecordsList = async (page: number = 1, size: number = 12): P
 //       omap: omap ? JSON.stringify(omap) : '',
 //     })
 //   },
-//   // 意见反馈提交
-//   netFeedBack(data) {
-//     return http.post('glory/video/2171', data)
-//   },
+
 //   // 用户设置详情
 //   netSetting() {
 //     return http.post('glory/video/2150')

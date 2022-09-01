@@ -20,6 +20,7 @@ export type RootStackParamList = {
   Drama: undefined;
   ViewingRecords: undefined;
   AboutUs: undefined;
+  FeedBack: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

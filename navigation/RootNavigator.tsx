@@ -5,8 +5,18 @@ import Drama from "../screens/drama/Drama";
 import ViewingRecords from "../screens/viewingRecords/ViewingRecords";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import ModalScreen from "../screens/ModalScreen";
-import BottomTabNavigator from "./BottomTabNavigator";
 import AboutUs from "../screens/about/AboutUs";
+import FeedBack from "../screens/feedBack/FeedBack";
+import BottomTabNavigator from "./BottomTabNavigator";
+
+const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
+  headerBackTitle: '返回',
+  headerTintColor: '#0F0F0F',
+  headerTitle,
+  headerTitleAlign: 'left',
+  gestureEnabled: true, // 手势可操作
+  headerStyle: { backgroundColor: '#FFFFFF' },
+})
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -35,24 +45,24 @@ export default function RootNavigator() {
         name="ViewingRecords"
         component={ViewingRecords}
         options={() => ({
-          headerBackTitle: '返回',
-          headerTintColor: '#0F0F0F',
-          headerTitle: '观看记录',
+          ...whiteOptions('观看记录'),
           headerTitleAlign: 'left',
-          gestureEnabled: true, // 手势可操作
-          headerStyle: { backgroundColor: '#FFFFFF' },
         })}
       />
       <Stack.Screen
         name="AboutUs"
         component={AboutUs}
         options={() => ({
-          headerBackTitle: '返回',
-          headerTintColor: '#0F0F0F',
-          headerTitle: '关于我们',
+          ...whiteOptions('关于我们'),
           headerTitleAlign: 'left',
-          gestureEnabled: true, // 手势可操作
-          headerStyle: { backgroundColor: '#FFFFFF' },
+        })}
+      />
+      <Stack.Screen
+        name="FeedBack"
+        component={FeedBack}
+        options={() => ({
+          ...whiteOptions('意见反馈'),
+          headerTitleAlign: 'left',
         })}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }}/>

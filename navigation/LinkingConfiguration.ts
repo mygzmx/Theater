@@ -32,7 +32,10 @@ const linking: LinkingOptions<RootStackParamList> = {
         },
       },
       Modal: 'modal',
-      NotFound: '*',
+      Drama: 'Drama',
+      ViewingRecords: 'ViewingRecords',
+      FeedBack: 'FeedBack',
+      AboutUs: 'AboutUs',
     },
   },
 };

@@ -25,7 +25,7 @@ export default function RecommendTitle (props: IProps) {
       <Text style={styles.recommendTitle}>精选推荐</Text>
       <FlatList
         style={styles.typeListBox}
-        horizontal={true}
+        horizontal
         data={typeList}
         renderItem={renderTypeItem}
         keyExtractor={item => item.labelId}

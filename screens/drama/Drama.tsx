@@ -26,6 +26,7 @@ const ImgUnchecked = require('../../assets/images/theater/unchecked-icon.png')
 const ImgChecked = require('../../assets/images/theater/checked-icon.png')
 const { width, height } = Dimensions.get('window');
 
+// eslint-disable-next-line no-unused-vars
 enum ECheckedState {
   全没选中 = 0,
   全选中 = 1,
@@ -128,7 +129,6 @@ export default function Drama () {
     } else {
       dispatch(setBookId(item.bookId))
       dispatch(setChapterId(item.chapterId))
-      // @ts-ignore
       navigation.navigate('Player')
     }
   }

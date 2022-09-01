@@ -3,7 +3,6 @@ import * as React from "react";
 import { RootStackParamList, RootStackScreenProps } from "../@types";
 import Drama from "../screens/drama/Drama";
 import ViewingRecords from "../screens/viewingRecords/ViewingRecords";
-import NotFoundScreen from "../screens/NotFoundScreen";
 import ModalScreen from "../screens/ModalScreen";
 import AboutUs from "../screens/about/AboutUs";
 import FeedBack from "../screens/feedBack/FeedBack";
@@ -65,7 +64,6 @@ export default function RootNavigator() {
           headerTitleAlign: 'left',
         })}
       />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }}/>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen}/>
       </Stack.Group>

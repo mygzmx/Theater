@@ -24,7 +24,7 @@ export default function AboutUs () {
 
   const linkTo = ({ label, uri }: IPageData) => {
     if (label === '联系客服') {
-      Linking.openURL('tel:4001180066')
+      Linking.openURL('tel:4001180066').then(() => {})
     } else if (label === '意见反馈') {
       // @ts-ignore
       uri && navigation.navigate(uri)

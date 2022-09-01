@@ -23,19 +23,18 @@ export default function Recommend({ videoList }: IProps) {
     dispatch(setBookId(item.bookId))
     dispatch(setChapterId(item.chapterId))
     // @ts-ignore
-    navigation.navigate({ name: 'Player' })
+    navigation.navigate('Player')
   }
 
   return (<View style={styles.flatListBox}>
     {videoList.map((videoItem, videoInd) => {
-      const {bookName, bookId} = videoItem
+      const { bookName, bookId } = videoItem
       return (<TouchableWithoutFeedback key={`${bookId}_${videoInd}`} onPress={() => linkToPlayer(videoItem)}>
-          <View style={styles.recommendItem}>
-            <Image style={styles.recommendImg} source={{uri: videoItem.coverWap}} defaultSource={ImgEmpty}/>
-            <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      )
+        <View style={styles.recommendItem}>
+          <Image style={styles.recommendImg} source={{ uri: videoItem.coverWap }} defaultSource={ImgEmpty}/>
+          <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
+        </View>
+      </TouchableWithoutFeedback>)
     })}
   </View>)
 }

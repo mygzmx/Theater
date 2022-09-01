@@ -79,6 +79,7 @@ export default function ViewingRecords () {
   const playVideo = (item: IBookVoListItem) => {
     dispatch(setBookId(item.bookId));
     dispatch(setChapterId(item.chapterId));
+    // @ts-ignore
     navigation.navigate('Player')
   }
 

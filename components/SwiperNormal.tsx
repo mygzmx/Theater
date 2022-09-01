@@ -1,11 +1,12 @@
-import { StyleSheet, Image, View } from "react-native";
+import { StyleSheet, Image, View, Pressable } from "react-native";
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
 interface IProps {
   bannerList: any[];
+  bannerLink?: (item: any, index: number) => void;
 }
 
-export default function SwiperNormal ({ bannerList }: IProps) {
+export default function SwiperNormal ({ bannerList, bannerLink }: IProps) {
   return (<View style={styles.swiperWrap}>
     <SwiperFlatList
       autoplay
@@ -19,10 +20,12 @@ export default function SwiperNormal ({ bannerList }: IProps) {
         alignItems: 'flex-end'
       }}
     >
-      { bannerList.map(val => {
-        return <View key={val.id} style={styles.swiperItem}>
-          <Image source={{ uri: val.imgUrl }} style={styles.imgBox}/>
-        </View>
+      { bannerList.map((item, index) => {
+        return <Pressable key={item.id} style={styles.swiperItem} onPress={() => {
+          bannerLink && bannerLink(item, index)
+        }}>
+          <Image source={{ uri: item.imgUrl }} style={styles.imgBox}/>
+        </Pressable>
       })}
     </SwiperFlatList>
   </View>);

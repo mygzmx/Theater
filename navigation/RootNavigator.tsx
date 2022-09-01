@@ -6,6 +6,7 @@ import ViewingRecords from "../screens/viewingRecords/ViewingRecords";
 import ModalScreen from "../screens/ModalScreen";
 import AboutUs from "../screens/about/AboutUs";
 import FeedBack from "../screens/feedBack/FeedBack";
+import TaskCheckIn from "../screens/task/TaskCheckIn";
 import BottomTabNavigator from "./BottomTabNavigator";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
@@ -64,6 +65,15 @@ export default function RootNavigator() {
           headerTitleAlign: 'left',
         })}
       />
+      <Stack.Screen
+        name="TaskCheckIn"
+        component={TaskCheckIn}
+        options={() => ({
+          ...whiteOptions('任务和签到'),
+          headerTitleAlign: 'left',
+        })}
+      />
+
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen}/>
       </Stack.Group>

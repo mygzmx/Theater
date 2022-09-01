@@ -1,5 +1,4 @@
 import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { RootStackParamList } from "../../../@types";
 const MoreIcon = require('../../../assets/images/more-icon.png')
 const RecordIcon = require('../../../assets/images/self/record-icon.png')
 const TaskIcon = require('../../../assets/images/self/task-icon.png')

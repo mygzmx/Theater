@@ -1,4 +1,5 @@
 import Service from './Service';
+import { EOperatingReportType } from "../interfaces/self.interface";
 
 /**
  * 精选推荐
@@ -27,11 +28,11 @@ export const netNoDramaVideo = async (bookId: string, scene: string, omap?: any)
   return await Service.post('glory/video/2121', { bookIds: bookId, scene, omap: omap ? JSON.stringify(omap) : '', })
 }
 
-//
-// /** 运营位展示上报接口
-//  * id 运营位id
-//  * type 上报类型 1-曝光，2-点击
-//  */
-// netOperatingReport(id, type) {
-//   return http.post('glory/video/2176', { id, type })
-// },
+
+/** 运营位展示上报接口
+ * id 运营位id
+ * type 上报类型 1-曝光，2-点击
+ */
+export const netOperatingReport = (id: string | string[], type: EOperatingReportType, param?: any) => {
+  return Service.post('glory/video/2176', { id: Array.isArray(id) ? undefined : id, idList: Array.isArray(id) ? id : undefined, type, param })
+}

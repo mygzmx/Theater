@@ -1,5 +1,6 @@
 import { IBookVoListItem } from "../interfaces/viewingRecords.interface";
 import Service from "./Service";
+import { INetTaskData } from "../interfaces/self.interface";
 
 /** 观看记录
  * @param page
@@ -18,15 +19,28 @@ export const netFeedBack = ( type: string, content: string, phoneNum: string ) =
   return Service.post('glory/video/2171', { type, content, phoneNum })
 }
 
+/** 任务和签到数据*/
+export const netTaskData = (): Promise<INetTaskData> => {
+  return Service.post('glory/video/2404', { signText: 1 })
+}
+
+/** 完成任务
+ * @param action
+ * @param readDuration
+ * @param bookId
+ */
+export const netFinishTask = ({ action, readDuration, bookId }: { action?: number, readDuration?: number, bookId?: number }) => {
+  return Service.post('glory/video/2146', { action, readDuration, bookId })
+}
+
+/** 签到*/
+export const netCheckIn = () => {
+  return Service.post('glory/video/2405')
+}
+
 // export default {
-//   // 任务和签到数据
-//   netTaskData() {
-//     return http.post('glory/video/2404', { signText: 1 })
-//   },
-//   // 签到
-//   netCheckIn() {
-//     return http.post('glory/video/2405')
-//   },
+
+
 //   // 追剧-追
 //   netDramaVideo({ bookId, scene, omap }) {
 //     return http.post('glory/video/2122', {
@@ -44,10 +58,7 @@ export const netFeedBack = ( type: string, content: string, phoneNum: string ) =
 //   netUpdateUserInfo(data) {
 //     return http.post('glory/video/2107', data)
 //   },
-//   // 完成任务
-//   netFinishTask({ action, readDuration, bookId }) {
-//     return http.post('glory/video/2146', { action, readDuration, bookId })
-//   },
+
 //   // 领取任务奖励 type--1-任务，2-VIP用户读屏蔽书籍领取补偿书币，3-问卷调查领取书币，
 //   // 4-用户等级奖励，5-订购满100章，6-广告墙领奖励, 7-现金红包任务，8-企微关注，9-O企号关注
 //   netReceiveTask(taskId, type = 1) {

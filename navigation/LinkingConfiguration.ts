@@ -36,6 +36,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       ViewingRecords: 'ViewingRecords',
       FeedBack: 'FeedBack',
       AboutUs: 'AboutUs',
+      TaskCheckIn: 'TaskCheckIn',
+
     },
   },
 };

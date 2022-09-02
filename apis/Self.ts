@@ -49,6 +49,12 @@ export const netUpdateUserInfo = (data: any) => {
   return Service.post('glory/video/2107', data)
 }
 
+/** 用户设置详情*/
+export const netSetting = () => {
+  return Service.post('glory/video/2150')
+}
+
+
 // export default {
 
 
@@ -61,10 +67,7 @@ export const netUpdateUserInfo = (data: any) => {
 //     })
 //   },
 
-//   // 用户设置详情
-//   netSetting() {
-//     return http.post('glory/video/2150')
-//   },
+
 
 
 //   // 解锁的剧集列表

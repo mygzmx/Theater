@@ -8,6 +8,7 @@ import AboutUs from "../screens/about/AboutUs";
 import FeedBack from "../screens/feedBack/FeedBack";
 import TaskCheckIn from "../screens/task/TaskCheckIn";
 import BottomTabNavigator from "./BottomTabNavigator";
+import Setting from "../screens/setting/Setting";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -70,6 +71,14 @@ export default function RootNavigator() {
         component={TaskCheckIn}
         options={() => ({
           ...whiteOptions('任务和签到'),
+          headerTitleAlign: 'left',
+        })}
+      />
+      <Stack.Screen
+        name="Setting"
+        component={Setting}
+        options={() => ({
+          ...whiteOptions('设置'),
           headerTitleAlign: 'left',
         })}
       />

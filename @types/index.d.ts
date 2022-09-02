@@ -21,6 +21,7 @@ export type RootStackParamList = {
   AboutUs: undefined;
   FeedBack: undefined;
   TaskCheckIn: undefined;
+  Setting: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

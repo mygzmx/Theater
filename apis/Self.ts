@@ -1,6 +1,6 @@
 import { IBookVoListItem } from "../interfaces/viewingRecords.interface";
-import Service from "./Service";
 import { INetTaskData } from "../interfaces/self.interface";
+import Service from "./Service";
 
 /** 观看记录
  * @param page

@@ -38,6 +38,17 @@ export const netCheckIn = () => {
   return Service.post('glory/video/2405')
 }
 
+// 领取任务奖励 type--1-任务，2-VIP用户读屏蔽书籍领取补偿书币，3-问卷调查领取书币，
+// 4-用户等级奖励，5-订购满100章，6-广告墙领奖励, 7-现金红包任务，8-企微关注，9-O企号关注
+export const netReceiveTask = (taskId: number, type = 1) => {
+  return Service.post('glory/video/2141', { taskId, type })
+}
+
+// 更新用户信息
+export const netUpdateUserInfo = (data: any) => {
+  return Service.post('glory/video/2107', data)
+}
+
 // export default {
 
 
@@ -54,16 +65,8 @@ export const netCheckIn = () => {
 //   netSetting() {
 //     return http.post('glory/video/2150')
 //   },
-//   // 更新用户信息
-//   netUpdateUserInfo(data) {
-//     return http.post('glory/video/2107', data)
-//   },
 
-//   // 领取任务奖励 type--1-任务，2-VIP用户读屏蔽书籍领取补偿书币，3-问卷调查领取书币，
-//   // 4-用户等级奖励，5-订购满100章，6-广告墙领奖励, 7-现金红包任务，8-企微关注，9-O企号关注
-//   netReceiveTask(taskId, type = 1) {
-//     return http.post('glory/video/2141', { taskId, type })
-//   },
+
 //   // 解锁的剧集列表
 //   netUnlockRecord({ index = 1 }) {
 //     return http.post('glory/video/2194', { index })

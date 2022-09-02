@@ -2,18 +2,16 @@ import {
   Dimensions,
   Image,
   ImageBackground,
-  Pressable,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View
 } from "react-native";
+import { useState } from "react";
 import { EIsSign, ESignRecordType, ISignRecordVos } from "../../../interfaces/self.interface";
 import { netCheckIn } from "../../../apis/Self";
-import { useState } from "react";
 import SuccessCheckin from "./SuccessCheckin";
 import RuleCheckin from "./RuleCheckin";
-
 const ImgMiddleLine = require('../../../assets/images/self/line.png');
 const ImgRuleBg = require('../../../assets/images/self/rule-bg.png');
 const ImgCoinBg1 = require('../../../assets/images/self/coin-bg.png')
@@ -88,7 +86,7 @@ export default function Checkin ({ signText, continueDay, signRecordVos, isSign,
   </View>
 }
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   checkinWrap: {

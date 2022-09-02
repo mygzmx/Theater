@@ -10,7 +10,7 @@ export default function SwiperNormal ({ bannerList, bannerLink }: IProps) {
   return (<View style={styles.swiperWrap}>
     <SwiperFlatList
       autoplay
-      index={2}
+      index={0}
       autoplayLoop
       showPagination
       paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}

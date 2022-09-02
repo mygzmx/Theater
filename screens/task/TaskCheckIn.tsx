@@ -5,13 +5,13 @@ import { useSelector } from "react-redux";
 import * as WebBrowser from "expo-web-browser";
 import SwiperNormal from "../../components/SwiperNormal";
 import { netFinishTask, netTaskData } from "../../apis/Self";
-import { EIsSign, EOperatingReportType, ISignRecordVos } from "../../interfaces/self.interface";
+import { EIsSign, EOperatingReportType, ISignRecordVos, ITaskSetItem } from "../../interfaces/self.interface";
 import { netOperatingReport } from "../../apis/Theater";
 import { RootState } from "../../store";
 import { OPERATION_TYPE } from "../../utils/const";
+import { getLogTime } from "../../utils/logTime";
 import Checkin from "./component/Checkin";
 import TaskList from "./component/TaskList";
-import { getLogTime } from "../../utils/logTime";
 
 export default function TaskCheckIn ( ) {
   const navigation = useNavigation()
@@ -20,15 +20,15 @@ export default function TaskCheckIn ( ) {
   const [continueDays, setContinueDay] = useState(0);
   const [signRecordVoss, setSignRecordVos] = useState<ISignRecordVos[]>([]);
   const [signTexts, setSignText] = useState('');
-  const [taskSetLists, setTaskSetList] = useState<any[]>([]);
+  const [taskSetLists, setTaskSetList] = useState<ITaskSetItem[]>([]);
   const isLogin = useSelector((state: RootState) => state.user.user.login)
 
   useFocusEffect(
     useCallback(() => {
-      console.log('=================显示');
+      // console.log('=================显示');
       getTaskData(true);
       return () => {
-        console.log('============隐藏');
+        // console.log('============隐藏');
       };
     }, []),
   );
@@ -110,7 +110,7 @@ export default function TaskCheckIn ( ) {
       continueDay={continueDays}
       refresh={() => getTaskData()}
     />
-    <TaskList/>
+    <TaskList taskSetList={taskSetLists} refresh={() => getTaskData()}/>
   </View>
 }
 

@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 15,
     color: 'rgba(102, 106, 125, 1)',
+    lineHeight: 25
   }
 })

@@ -78,17 +78,17 @@ export default function ChapterListLog ({ modalVisible, close, chapterList, tota
             </Text>
           </View>}
         </View>
-        <FlatList
+        { getTabs(30).length > 1 && <FlatList
           style={styles.tabBox}
-          ItemSeparatorComponent={() => <View style={styles.tabIntervalBox}><View style={styles.tabInterval} /></View>}
+          ItemSeparatorComponent={() => <View style={styles.tabIntervalBox}><View style={styles.tabInterval}/></View>}
           horizontal
           data={getTabs(30)}
-          renderItem={({ item, index }: {item: string, index: number}) => (
+          renderItem={({ item, index }: { item: string, index: number }) => (
             <TouchableOpacity style={styles.tabItem} onPressIn={() => chooseTab(index)}>
-              <Text style={{ ...styles.tabItemTxt, fontWeight: tabIndex === index ?  '800' : '400' }}>{item}</Text>
+              <Text style={{ ...styles.tabItemTxt, fontWeight: tabIndex === index ? '800' : '400' }}>{item}</Text>
             </TouchableOpacity>)}
-          keyExtractor={item => item} />
-        <View style={styles.chapterListBox}>
+          keyExtractor={item => item}/> }
+        <View style={{ ...styles.chapterListBox, marginTop: getTabs(30).length > 1 ? 0 : 28 }}>
           {chapterList.map(chapter => (
             <TouchableOpacity
               key={chapter.chapterId}

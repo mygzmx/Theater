@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { RootTabScreenProps } from '../../@types';
 import { netDramaList, netRecommendData } from "../../apis/Theater";
@@ -19,22 +19,18 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [activeRecommendType, setActiveRecommendType] = useState('0');
   const [typeList, setTypeList] = useState<IClassificationItem[]>([]);
   const [videoList, setVideoList] = useState<IVideoListItem[]>([]);
-
   const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
-    initPageData().then(() => {})
-    setPage(1)
-    return () => {
-      console.log('============销毁');
-    }
-  }, [])
+    getColumnList(1, activeRecommendType === "0" ? undefined : activeRecommendType,true, true).then(() => {})
+  }, [activeRecommendType])
 
   useFocusEffect(
     useCallback(() => {
-      console.log('=================显示');
-      getDramaData();
+      // console.log('=================显示');
+      getDramaData().then(() => {});
       return () => {
-        console.log('============隐藏');
+        // console.log('============隐藏');
       };
     }, []),
   );
@@ -43,13 +39,10 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     setDramaList(recentReadList);
     setBannerList(operList);
   }
-  const initPageData = async () => {
-    await getColumnList(page, undefined,true, true)
-  }
   const getColumnList = async (index: number, tid?: number | string, flag?: boolean, isNeedClassificationList?: boolean) => {
     setPage(index)
     setPageLoading(true);
-    const { books = [], classificationList = [] } = await netRecommendData({ index: page, tid });
+    const { books = [], classificationList = [] } = await netRecommendData({ index, tid });
     setPageLoading(false);
     if (isNeedClassificationList) {
       setTypeList([{ labelId: '0', labelName: '全部' }, ...classificationList] as IClassificationItem[]);
@@ -62,7 +55,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
       setVideoList([...books]);
       // 初始如果请求数量太少就发送二次请求
       if(books.length < 12){
-        await getColumnList(page + 1 );
+        await getColumnList(index + 1 );
       }
     } else {
       setVideoList([ ...videoList, ...books]);
@@ -73,10 +66,8 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   }
   const changeRecommendType = async (item: IClassificationItem) => {
     if (activeRecommendType === item.labelId) return;
-    setPage(1)
     setActiveRecommendType(item.labelId)
     setPageLoadingFull(false);
-    await getColumnList(1, item.labelId,true);
   }
 
   const onRefresh = React.useCallback(() => {
@@ -85,7 +76,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     setActiveRecommendType('0');
     setPageLoadingFull(false);
     console.log('onRefresh-------------------_>');
-    initPageData().then(() => setRefreshing(false));
+    getColumnList(1, undefined,true, true).then(() => setRefreshing(false));
   }, []);
 
   const [pageLoading, setPageLoading] = useState(false);
@@ -93,7 +84,6 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const loadMore = async () => {
     if (pageLoading || pageLoadingFull) return;
     await getColumnList(page + 1, activeRecommendType);
-    setPageLoading(false);
   }
 
   const onMomentumScrollEnd = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -121,7 +111,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
         typeList={typeList}
         activeRecommendType={activeRecommendType}
         changeType={(item) => changeRecommendType(item)}/>
-      {isEmpty ? <Empty style={{ minHeight: 300 }} theme={'dark'} message={'暂无推荐视频'}/> : <>
+      {isEmpty ? <Empty style={{ height: 300 }} theme={'dark'} message={'暂无推荐视频'}/> : <>
         <Recommend videoList={videoList}/>
         <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
       </>}

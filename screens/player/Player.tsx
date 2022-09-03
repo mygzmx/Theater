@@ -99,7 +99,7 @@ export default function Player() {
         statusData={statusData}
         changeControl={changeControl}
         onAction={()=> {
-          !(statusData.isLoaded) || statusData.isPlaying ? player.current?.pauseAsync() : player.current?.playAsync()
+          (!statusData.isLoaded || statusData.isPlaying) ? player.current?.pauseAsync() : player.current?.playAsync()
         }}/>
     </View>
   );

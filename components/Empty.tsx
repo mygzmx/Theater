@@ -11,7 +11,6 @@ interface IProps {
 
 export default function Empty ({ theme = 'white', message = '暂无数据', style = {} }: IProps) {
   return <View style={{
-    ...style,
     width: '100%',
     // minWidth: 300,
     // maxWidth: width,
@@ -21,6 +20,7 @@ export default function Empty ({ theme = 'white', message = '暂无数据', styl
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    ...style,
   }}>
     <Image style={{
       width: 107,

@@ -2,7 +2,7 @@ import {
   View,
   StyleSheet,
   Image,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback, Pressable,
 } from "react-native";
 import React, {  useEffect, useState } from "react";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
@@ -24,15 +24,7 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
   useEffect(() => {
     setProgress(positionMillis / durationMillis || 0)
   }, [durationMillis, positionMillis]);
-  // 播放按钮
-  const StopArea = () => (
-    <TouchableWithoutFeedback onPressIn={onAction}>
-      <View style={styles.stopIcon}>
-        {!(statusData.isLoaded && statusData.isPlaying) &&
-        <Image source={ImgPlay} style={{ width: 70, height: 70 }}/>}
-      </View>
-    </TouchableWithoutFeedback>
-  )
+
   // 触摸开始
   const onStart = () => {
     setIsTouched(true)
@@ -45,7 +37,11 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
   return (
     <View style={styles.controlsWrap}>
       <LinearGradient style={styles.controlLinear} colors={["transparent", "rgba(0,0,0,0.9)"]}/>
-      <StopArea/>
+      {/* 播放按钮*/}
+      <Pressable style={styles.stopIcon} onPress={onAction}>
+        {!(statusData.isLoaded && statusData.isPlaying) &&
+        <Image source={ImgPlay} style={{ width: 70, height: 70 }}/>}
+      </Pressable>
       {!isTouched && <ControlMore/>}
       <ControlBar
         isTouched={isTouched}

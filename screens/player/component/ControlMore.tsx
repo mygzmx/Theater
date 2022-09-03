@@ -61,9 +61,9 @@ const ControlMore = (props: IProps) => {
     }
   }
   const confirm = async () => {
-    await netNoDramaVideo(bookId, EScene.播放页)
     dispatch(setIsInBookShelf(false))
-
+    setConfirmVisible(false)
+    await netNoDramaVideo(bookId, EScene.播放页)
   }
 
   const checkChapterList = async () => {

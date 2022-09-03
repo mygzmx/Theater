@@ -1,15 +1,16 @@
-import {
-  View,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, View, } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { AVPlaybackStatus, Video } from "expo-av";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
-import { netPreloadList, netVideoSource } from "../../apis/Player";
 import { RootState, useAppDispatch, useAppSelector } from "../../store";
-import { setBookId, setBookName, setChapterId, setChapterInfo, setAutoAdd } from "../../store/modules/player.module";
+import {
+  setChapterId,
+  videoInitAsync, videoSourceAsync
+} from "../../store/modules/player.module";
+import { EAutoPay, EConfirmPay, EIsRead, EScene } from "../../interfaces/player.interface";
+import { getLogTime } from "../../utils/logTime";
+import { netVideoFinish } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import Controls from "./component/Controls";
 
@@ -17,58 +18,66 @@ import Controls from "./component/Controls";
 export default function Player() {
   const route = useRoute()
   const dispatch = useAppDispatch();
-  const [chapterData, setChapterData] = useState();
-  const [nextChapterId, setNextChapterId] = useState('');
+  const [omap, setOmap] = useState({
+    origin: '在看-默认播放',
+    action: '2',
+    channel_id: 'zk',
+    channel_name: '在看',
+    channel_pos: 0,
+    column_id: 'zk_mrbf',
+    column_name: '在看-默认播放',
+    column_pos: 0,
+    content_id: '',
+    content_pos: 0,
+    content_type: '2',
+    trigger_time: getLogTime()
+  });
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
   const player = useRef<Video>({} as Video);
-  const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
+  const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
   useEffect(() => {
-    InitVideoData().then(() => {})
-  }, [bookId, chapterId]);
+    dispatch(videoInitAsync({ isRead: EIsRead.是 }));
+  }, []);
 
-  const InitVideoData = async () => {
-    const data = await netVideoSource({ bookId, chapterId });
-    const { chapterInfo = [], nextChapterId, bookName, autoAdd } = data;
-    dispatch(setBookName(bookName))
-    dispatch(setAutoAdd(autoAdd))
-    setNextChapterId(nextChapterId)
-    if (bookId && chapterId) {
-      chapterInfo.forEach((chapter: any) => {
-        if (chapter.chapterId === chapterId) {
-          setChapterData(chapter)
-          dispatch(chapter)
-        }
-      })
-    } else {
-      data.bookId && dispatch(setBookId(data.bookId))
-      data.chapterId && dispatch(setChapterId(data.chapterId))
-      setChapterData(chapterInfo[0])
-      dispatch(setChapterInfo(chapterInfo[0]))
-    }
-  }
-  const playbackCallback = (status: AVPlaybackStatus) => {
+  useEffect(() => {
+    dispatch(videoSourceAsync({
+      bookId,
+      chapterId,
+      autoPay: EAutoPay.否,
+      confirmPay: EConfirmPay.非确认订购扣费,
+      scene: EScene.播放页,
+      omap: JSON.stringify(omap) }));
+  }, [chapterId])
+
+  const playbackCallback = async (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
       setStatusData(status);
       if (status.didJustFinish) {
-        dispatch(setChapterId(nextChapterId))
+        await netVideoFinish({ bookId, chapterId, omap: JSON.stringify(omap) })
+        if (videoSource) {
+          dispatch(setChapterId(videoSource.nextChapterId));
+        }
       }
     }
   }
+
   useEffect(() => {
-    if (chapterData && route.name === 'Player') {
-      !statusData.isPlaying && player.current?.playAsync();
+    if (videoSource?.chapterInfo?.[0] && route.name === 'Player') {
+      console.log('videoSource next------->');
+      player.current?.playFromPositionAsync(0);
     }
-  }, [chapterData]);
+  }, [videoSource?.chapterInfo?.[0]]);
+
 
   useFocusEffect(
     useCallback(() => {
-      if (chapterData && !statusData.isPlaying && route.name === 'Player') {
+      if (videoSource?.chapterInfo?.[0] && route.name === 'Player') {
         player.current?.playAsync();
       }
       return () => {
-        (!statusData.isLoaded || statusData.isPlaying) && player.current?.pauseAsync();
+        player.current?.pauseAsync();
       };
-    }, [chapterData]),
+    }, []),
   );
 
   const changeControl = (positionMillis: number) => {
@@ -82,10 +91,8 @@ export default function Player() {
   // />
   return (
     <View style={styles.container}>
-
       <VideoUnion
         player={player}
-        chapterData={chapterData}
         onLoad={(status: AVPlaybackStatus) => { status.isLoaded && setStatusData(status) }}
         playbackCallback={playbackCallback}/>
       <Controls

@@ -1,5 +1,4 @@
-import {
-  Alert,
+import { Alert,
   Dimensions,
   Modal,
   StyleSheet,
@@ -11,42 +10,32 @@ import {
   FlatList
 } from "react-native";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setChapterId } from "../../../store/modules/player.module";
-import { EBookFinishStatus, EIsCharge } from "../../../interfaces/player.interface";
-// eslint-disable-next-line import/order
-import { RootState } from "../../../store";
-
-interface IProps {
-  modalVisible: boolean;
-  total: number;
-  close: () => void;
-  chapterList: any[];
-  chooseTab: (index: number) => void;
-  tabIndex: number;
-  bookFinishStatus: EBookFinishStatus;
-}
-
+import { RootState, useAppSelector } from "../../../store";
+import { EBookFinishStatus, EIsCharge, IChapterListItem } from "../../../interfaces/player.interface";
 const ImgClose = require('../../../assets/images/player/catalog-close.png');
 const ImgCatalogLock = require('../../../assets/images/player/catalog-lock.png');
 const ImgCatalogVip = require('../../../assets/images/player/catalog-vip.png');
 const ImgCatalogUnlock = require('../../../assets/images/player//catalog-unlock.png');
-
 const ImgEIsCharge = {
   [EIsCharge.收费]: ImgCatalogLock,
   [EIsCharge.vip免费]: ImgCatalogVip,
   [EIsCharge.收费已购买]: ImgCatalogUnlock,
 }
 
-export default function ChapterListLog ({ modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus }: IProps) {
+interface IProps {
+  modalVisible: boolean;
+  total: number;
+  close: () => void;
+  chapterList: IChapterListItem[];
+  chooseTab: (index: number) => void;
+  tabIndex: number;
+  bookFinishStatus: EBookFinishStatus;
+  chooseChapter: (chapter: IChapterListItem) => void;
+}
 
-  const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
+export default function ChapterListLog ({ modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus, chooseChapter }: IProps) {
 
-  const dispatch = useDispatch()
-
-  const chooseChapter = (chapter: any) => {
-    dispatch(setChapterId(chapter.chapterId));
-  }
+  const { videoSource, chapterId } = useAppSelector((state: RootState) => (state.player));
 
   const getTabs = (interval: number = 30): string[] => {
     if (total <= interval) {
@@ -74,15 +63,15 @@ export default function ChapterListLog ({ modalVisible, close, chapterList, tota
     }}
     visible={modalVisible}>
     <View style={styles.chapterLog}>
-      <TouchableWithoutFeedback onPressIn={() => close() }>
+      <TouchableWithoutFeedback onPress={() => close() }>
         <View style={styles.chapterLogMask}/>
       </TouchableWithoutFeedback>
       <View style={styles.chapterLogContent}>
-        <TouchableOpacity style={styles.chapterClose} onPressIn={() => close() }>
+        <TouchableOpacity style={styles.chapterClose} onPress={() => close() }>
           <Image style={styles.chapterCloseImg} source={ImgClose}/>
         </TouchableOpacity>
         <View style={styles.logTitleBox}>
-          { !!bookName && <Text style={styles.logTitleTxt} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>}
+          { !!videoSource?.bookName && <Text style={styles.logTitleTxt} numberOfLines={1} ellipsizeMode={'tail'}>{videoSource?.bookName}</Text>}
           { !!bookFinishStatus && <View style={styles.logTitleIcon}>
             <Text style={styles.logTitleIconTxt}>
               { bookFinishStatus === EBookFinishStatus.已完结 ? '已完结' : '更新中' }
@@ -106,7 +95,7 @@ export default function ChapterListLog ({ modalVisible, close, chapterList, tota
               onPressIn={() => chooseChapter(chapter)}
               style={{ ...styles.chapterItem,
                 backgroundColor: chapter.chapterId === chapterId ? 'rgba(255, 75, 0, 1)' : 'rgb(226,227,229)' }}>
-              { chapter.isCharge !== EIsCharge.免费 &&  <Image style={styles.chapterItemIcon} source={ImgEIsCharge[chapter.isCharge]}/> }
+              { Number(chapter.isCharge) !== EIsCharge.免费 &&  <Image style={styles.chapterItemIcon} source={ImgEIsCharge[Number(chapter.isCharge)]}/> }
               <Text style={{
                 ...styles.chapterNumber,
                 color: chapter.chapterId === chapterId ? '#FFFFFF' : "#404657",
@@ -142,8 +131,9 @@ const styles = StyleSheet.create({
   },
   chapterClose: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: 0,
+    right: 0,
+    padding: 20,
   },
   chapterCloseImg: {
     width: 25,

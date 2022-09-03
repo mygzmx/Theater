@@ -1,12 +1,4 @@
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View
-} from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useToast } from "react-native-toast-notifications";
@@ -19,6 +11,8 @@ import { netDramaVideo, netNoDramaVideo } from "../../apis/Theater";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import { setBookId, setChapterId } from "../../store/modules/player.module";
 import { useAppDispatch } from "../../store";
+import { EScene } from "../../interfaces/player.interface";
+
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const ImgHeartActive = require('../../assets/images/heart-active-icon.png')
 const ImgHeartGrey = require('../../assets/images/heart-grey.png')
@@ -88,9 +82,8 @@ export default function ViewingRecords () {
     omap.content_id = bookId;
     omap.trigger_time = getLogTime();
     if(isAdd === EIsAdd.否) {
-      const scene = '观看记录页';
       // 追剧
-      await netDramaVideo(bookId, scene, JSON.stringify(omap))
+      await netDramaVideo(bookId, EScene.观看记录页, JSON.stringify(omap))
       refreshData(bookId, EIsAdd.是);
       toast.show('追剧成功，可在剧场查看我的追剧');
     } else {
@@ -99,10 +92,9 @@ export default function ViewingRecords () {
     }
   }
   const confirm = async () => {
-    const scene = '观看记录页';
     omap.trigger_time = getLogTime();
     // 取消追剧
-    await netNoDramaVideo(bookIdS, scene, omap);
+    await netNoDramaVideo(bookIdS, EScene.观看记录页, omap);
     refreshData(bookIdS, EIsAdd.否);
     setConfirmationVisible(false);
     setBookIdS('');

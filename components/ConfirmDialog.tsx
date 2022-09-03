@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   btnLeft: {
     width: 100,
-    height: 59,
+    height: 50,
     borderRadius: 25,
     borderWidth: 1,
     borderStyle: 'solid',
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   btnRight: {
     width: 157,
-    height: 59,
+    height: 50,
     backgroundColor: '#FF4B00',
     borderRadius: 25,
     borderWidth: 1,

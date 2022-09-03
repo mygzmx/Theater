@@ -1,5 +1,6 @@
 import Service from './Service';
 import { EOperatingReportType } from "../interfaces/self.interface";
+import { EScene } from "../interfaces/player.interface";
 
 /**
  * 精选推荐
@@ -19,12 +20,12 @@ export const netDramaList = async ({ page = 1, size = 12 }: {page?: number, size
 }
 
 // 追剧-追
-export const netDramaVideo = async (bookId: string, scene: string, omap?: string) => {
+export const netDramaVideo = async (bookId: string, scene: EScene, omap?: string) => {
   return await Service.post('glory/video/2122', { bookId, scene, omap })
 }
 
 // 追剧-取消追剧
-export const netNoDramaVideo = async (bookId: string, scene: string, omap?: any) => {
+export const netNoDramaVideo = async (bookId: string, scene: EScene, omap?: any) => {
   return await Service.post('glory/video/2121', { bookIds: bookId, scene, omap: omap ? JSON.stringify(omap) : '', })
 }
 

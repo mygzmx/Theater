@@ -64,8 +64,7 @@ export const userSlice = createSlice({
       })
       .addCase(imeiAuthAsync.fulfilled, (state, action) => {
         console.log('imeiAuthAsync-------------------->', action.payload)
-      })
-    ;
+      });
   }
 });
 

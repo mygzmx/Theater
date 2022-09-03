@@ -43,6 +43,7 @@ export default class ControlBar extends React.Component<IProps, IState> {
   componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
     // prevProps.progress !== this.props.progress &&
     if (prevProps.progress !== this.state.progressValue && !prevProps.isTouched) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ progressValue: prevProps.progress })
     }
   }
@@ -51,7 +52,7 @@ export default class ControlBar extends React.Component<IProps, IState> {
    * 原因未知
    */
   onMove(gestureState: PanResponderGestureState) {
-    let touchPointX = gestureState.moveX;
+    const touchPointX = gestureState.moveX;
     let progress;
     if (touchPointX < 5) {
       progress = 0;
@@ -72,15 +73,15 @@ export default class ControlBar extends React.Component<IProps, IState> {
     const progressWidth = Math.round(progressValue * width);
     return (<View style={styles.controlBarWrap} >
       { isTouched && <ControlTime durationMillis={statusData.durationMillis} positionMillis={positionMillis}/>}
-        <View {...this.watcher} style={styles.controlBarBox}>
-          <View style={styles.controlBarBox2}>
-            <View style={[styles.controlBar, isTouched && { ...styles.controlBarActive }]}>
-              <View style={[styles.progress, isTouched && { ...styles.progressActive }, { width: progressWidth }]}>
-                <View style={[ styles.controlDot, isTouched && { ...styles.controlDotActive }]}/>
-              </View>
+      <View {...this.watcher} style={styles.controlBarBox}>
+        <View style={styles.controlBarBox2}>
+          <View style={[styles.controlBar, isTouched && { ...styles.controlBarActive }]}>
+            <View style={[styles.progress, isTouched && { ...styles.progressActive }, { width: progressWidth }]}>
+              <View style={[ styles.controlDot, isTouched && { ...styles.controlDotActive }]}/>
             </View>
           </View>
         </View>
+      </View>
     </View>)
   }
 }

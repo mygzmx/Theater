@@ -11,9 +11,11 @@ import * as React from "react";
 import { netChapterList } from "../../../apis/Player";
 import { RootState } from "../../../store";
 import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
-import { setAutoAdd } from "../../../store/modules/player.module";
-import { EBookFinishStatus, EIsRead } from "../../../interfaces/player.interface";
+import { setIsInBookShelf, setChapterId } from "../../../store/modules/player.module";
+import { EBookFinishStatus, EScene, IChapterListItem } from "../../../interfaces/player.interface";
 import ChapterListLog from "./ChapterListLog";
+import ConfirmDialog from "../../../components/ConfirmDialog";
+import { useToast } from "react-native-toast-notifications";
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')
@@ -23,16 +25,18 @@ interface IProps {
 }
 
 const ControlMore = (props: IProps) => {
+  const toast = useToast();
   const dispatch = useDispatch()
   const [isShowChapters, setIsShowChapters] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
-  const [chapters, setChapters] = useState([]);
+  const [chapters, setChapters] = useState<IChapterListItem[]>([]);
   const [bookFinishStatus, setBookFinishStatus] = useState<EBookFinishStatus>(0);
   const [total, setTotal] = useState(0);
-  const { bookId, chapterId, chapterInfo, bookName, autoAdd } = useSelector((state: RootState) => (state.player));
+  const { bookId, videoSource } = useSelector((state: RootState) => (state.player));
+  const [confirmVisible, setConfirmVisible] = useState(false);
   useEffect(() => {
     if (bookId) {
-      // getChapterList().then()
+      getChapterList(0).then(() => {})
     }
   }, [bookId]);
 
@@ -48,24 +52,45 @@ const ControlMore = (props: IProps) => {
   }
 
   const dramaVideo = async () => {
-    if (autoAdd === EIsRead.不是) {
-      await netDramaVideo(bookId, '在看页')
-      dispatch(setAutoAdd(EIsRead.是))
+    if (!videoSource?.isInBookShelf) {
+      await netDramaVideo(bookId, EScene.播放页)
+      toast.show('追剧成功，可在剧场查看我的追剧');
+      dispatch(setIsInBookShelf(true))
     } else {
-      await netNoDramaVideo(bookId, '在看页')
-      dispatch(setAutoAdd(EIsRead.不是))
+      setConfirmVisible(true);
     }
   }
+  const confirm = async () => {
+    await netNoDramaVideo(bookId, EScene.播放页)
+    dispatch(setIsInBookShelf(false))
+
+  }
+
   const checkChapterList = async () => {
     setIsShowChapters(true);
     await getChapterList(tabIndex)
   }
 
   const chooseTab = async (index: number) => {
+    if (tabIndex === index) return;
     setTabIndex(index);
     await getChapterList(index)
   }
+  const chooseChapter = (chapter: any) => {
+    dispatch(setChapterId(chapter.chapterId));
+    setIsShowChapters(false);
+  }
+
   return <View style={styles.moreWrap}>
+    <ConfirmDialog
+      visible={confirmVisible}
+      rightBtn={() => setConfirmVisible(false)}
+      leftBtn={() => confirm()}
+      close={() => setConfirmVisible(false)}
+      leftTxt="确认"
+      rightTxt="再想想"
+      title="确认取消追剧吗？"
+      message="取消后您将无法快速找到本剧"/>
     <ChapterListLog
       bookFinishStatus={bookFinishStatus}
       tabIndex={tabIndex}
@@ -73,15 +98,16 @@ const ControlMore = (props: IProps) => {
       chapterList={chapters}
       total={total}
       chooseTab={chooseTab}
+      chooseChapter={chooseChapter}
       close={() => setIsShowChapters(false)}/>
     <View style={styles.moreLeft}>
-      <Text style={styles.bookName}>{bookName}</Text>
-      <Text style={styles.chapterName}>{chapterInfo.chapterName}</Text>
+      <Text style={styles.bookName}>{ videoSource?.bookName }</Text>
+      <Text style={styles.chapterName}>{videoSource?.chapterInfo?.[0]?.chapterName}</Text>
     </View>
     <TouchableWithoutFeedback onPressIn={() => dramaVideo()}>
       <View style={styles.moreDrama}>
-        <Image style={styles.moreIcon} source={autoAdd === EIsRead.不是 ? ImgHeartWhite : ImgHeartActive}/>
-        <Text style={styles.chapterName}>{autoAdd === EIsRead.不是 ? '追剧' : '已追剧'}</Text>
+        <Image style={styles.moreIcon} source={ videoSource?.isInBookShelf ? ImgHeartActive : ImgHeartWhite }/>
+        <Text style={styles.chapterName}>{ videoSource?.isInBookShelf ? '已追剧' : '追剧'}</Text>
       </View>
     </TouchableWithoutFeedback>
     <TouchableWithoutFeedback onPressIn={() => checkChapterList()}>

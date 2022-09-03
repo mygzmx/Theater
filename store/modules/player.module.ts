@@ -1,34 +1,52 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EIsRead } from "../../interfaces/player.interface";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  IVideo2151,
+  IVideo2150,
+  IVideoSourceParams,
+  IVideoInitParams, EAutoAdd, IPreLoadParams, IVideo2152, IChapterInfo
+} from "../../interfaces/player.interface";
+import { netVideoPreload, netVideoInit, netVideoSource } from "../../apis/Player";
 
 export interface IPlayer {
+  videoSource: IVideo2151;
+  videoInit: IVideo2150;
+  videoPreload: IVideo2152;
   bookId: string;
   chapterId: string;
-  chapterInfo: IChapterInfo;
-  bookName: string;
-  autoAdd: EIsRead;
 }
-interface IChapterInfo {
-  chapterId: string;
-  chapterName: string;
-  chapterStatus: number;
-  chapterUrl: string;
-  content: {
-    m3u8: string;
-    mp4: string;
-    cost: number;
-  },
-}
+
+export const videoInitAsync = createAsyncThunk(
+  'player/getVideoInit',
+  (params: IVideoInitParams) => {
+    return netVideoInit(params);
+  }
+);
+
+export const videoSourceAsync = createAsyncThunk(
+  'player/getVideoSource',
+  (params: IVideoSourceParams) => {
+    return netVideoSource(params);
+  }
+);
+
+export const videoPreloadAsync = createAsyncThunk(
+  'player/getVideoPreload',
+  (params: IPreLoadParams) => {
+    return netVideoPreload(params);
+  }
+);
 
 export const playerSlice = createSlice({
   name: 'player',
   initialState: (): IPlayer => ({
+    videoInit: {} as IVideo2150,
+    videoSource: {
+      isInBookShelf: false,
+      chapterInfo: [] as IChapterInfo[]
+    } as IVideo2151,
+    videoPreload: {} as IVideo2152,
     bookId: '',
-    bookName: '',
     chapterId: '',
-    chapterInfo: {} as IChapterInfo,
-    autoAdd: EIsRead.不是,
-
   }),
   reducers: {
     setBookId: (state: IPlayer, action: PayloadAction<string>) => {
@@ -37,20 +55,29 @@ export const playerSlice = createSlice({
     setChapterId: (state: IPlayer, action: PayloadAction<string>) => {
       state.chapterId = action.payload;
     },
-    setChapterInfo: (state: IPlayer, action: PayloadAction<any>) => {
-      state.chapterInfo = JSON.parse(JSON.stringify(action.payload));
+    setIsInBookShelf: (state: IPlayer, action: PayloadAction<boolean>) => {
+      state.videoSource = { ...state.videoSource, isInBookShelf: action.payload }
     },
-    setBookName: (state: IPlayer, action: PayloadAction<string>) => {
-      state.bookName = action.payload;
-    },
-    setAutoAdd: (state: IPlayer, action: PayloadAction<EIsRead>) => {
-      state.autoAdd = action.payload;
-    }
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(videoSourceAsync.fulfilled, (state, action) => {
+        state.videoSource = action.payload;
+        if (!state.bookId) {
+          state.bookId = action.payload.bookId;
+        }
+      })
+      .addCase(videoInitAsync.fulfilled, (state, action) => {
+        state.videoInit = action.payload;
+      })
+      .addCase(videoPreloadAsync.fulfilled, (state, action) => {
+        state.videoPreload = action.payload;
+      })
+  }
 });
 
 
-export const { setBookId, setChapterId, setChapterInfo, setBookName, setAutoAdd } = playerSlice.actions;
+export const { setBookId, setChapterId, setIsInBookShelf } = playerSlice.actions;
 
 const playerReducer = playerSlice.reducer;
 

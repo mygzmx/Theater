@@ -4,15 +4,17 @@ import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus } from "expo-av";
 import React from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
+import { RootState, useAppSelector } from "../../../store";
 
 interface IProps {
-  chapterData: any;
   player: any;
   playbackCallback: (status: AVPlaybackStatus) => void;
   onLoad: (status: AVPlaybackStatus) => void;
 }
 
-export default function VideoUnion ({ chapterData, onLoad, player, playbackCallback }: IProps) {
+export default function VideoUnion ({ onLoad, player, playbackCallback }: IProps) {
+
+  const { videoSource } = useAppSelector((state: RootState) => (state.player));
 
   const errorCallback = (error: ErrorType) => {
     console.log('error---------------->', error)
@@ -48,10 +50,10 @@ export default function VideoUnion ({ chapterData, onLoad, player, playbackCallb
           shouldPlay: false,
           resizeMode: ResizeMode.COVER,
           posterSource: {
-            uri: chapterData?.videoUrl,
+            uri: videoSource?.chapterInfo?.[0]?.videoUrl,
           },
           source: {
-            uri: chapterData?.content?.mp4,
+            uri: videoSource?.chapterInfo?.[0]?.content?.mp4,
           },
           onLoad,
         }}

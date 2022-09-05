@@ -3,12 +3,11 @@ import * as React from "react";
 import { RootStackParamList, RootStackScreenProps } from "../@types";
 import Drama from "../screens/drama/Drama";
 import ViewingRecords from "../screens/viewingRecords/ViewingRecords";
-import ModalScreen from "../screens/ModalScreen";
 import AboutUs from "../screens/about/AboutUs";
 import FeedBack from "../screens/feedBack/FeedBack";
 import TaskCheckIn from "../screens/task/TaskCheckIn";
-import BottomTabNavigator from "./BottomTabNavigator";
 import Setting from "../screens/setting/Setting";
+import BottomTabNavigator from "./BottomTabNavigator";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -82,10 +81,6 @@ export default function RootNavigator() {
           headerTitleAlign: 'left',
         })}
       />
-
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen}/>
-      </Stack.Group>
     </Stack.Navigator>
   );
 }

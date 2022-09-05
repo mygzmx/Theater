@@ -31,7 +31,7 @@ export default function App() {
           normalColor={'#ffffff'}
           textStyle={{ fontSize: 12, color: '#333333' }}
           offset={70}
-          swipeEnabled={true}
+          swipeEnabled
         >
           <Provider store={store}>
             <Navigation colorScheme={colorScheme} />

@@ -1,21 +1,20 @@
-import { StyleSheet, View, } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Dimensions, StyleSheet, View, } from 'react-native';
+import React, { MutableRefObject, useCallback, useEffect, useState } from 'react'
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { AVPlaybackStatus, Video } from "expo-av";
-import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
+import { Video } from "expo-av";
+import { SwiperFlatList } from "react-native-swiper-flatlist/index";
 import { RootState, useAppDispatch, useAppSelector } from "../../store";
-import {
-  setChapterId,
-  videoInitAsync, videoSourceAsync
-} from "../../store/modules/player.module";
-import { EAutoPay, EConfirmPay, EIsRead, EScene } from "../../interfaces/player.interface";
+import { setChapterId, setVideoSource, videoInitAsync } from "../../store/modules/player.module";
+import { EAutoPay, EConfirmPay, EIsRead, EScene, IVideo2151 } from "../../interfaces/player.interface";
 import { getLogTime } from "../../utils/logTime";
-import { netVideoFinish } from "../../apis/Player";
+import { netVideoPreload, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
-import Controls from "./component/Controls";
+const { width, height } = Dimensions.get('window');
 
-
-export default function Player() {
+interface IVideoList extends IVideo2151 {
+  ref?: MutableRefObject<Video>
+}
+export default function Player () {
   const route = useRoute()
   const dispatch = useAppDispatch();
   const [omap, setOmap] = useState({
@@ -32,83 +31,104 @@ export default function Player() {
     content_type: '2',
     trigger_time: getLogTime()
   });
-  const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
-  const player = useRef<Video>({} as Video);
+  const [swiperIndex, setSwiperIndex] = useState(0);
   const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
+  const [videoList, setVideoList] = useState<IVideoList[]>([]);
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
+    getVideoSource().then(() => {})
   }, []);
-
-  useEffect(() => {
-    dispatch(videoSourceAsync({
-      bookId,
-      chapterId,
-      autoPay: EAutoPay.否,
-      confirmPay: EConfirmPay.非确认订购扣费,
-      scene: EScene.播放页,
-      omap: JSON.stringify(omap) }));
-  }, [chapterId])
-
-  const playbackCallback = async (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
-      setStatusData(status);
-      if (status.didJustFinish) {
-        await netVideoFinish({ bookId, chapterId, omap: JSON.stringify(omap) })
-        if (videoSource) {
-          dispatch(setChapterId(videoSource.nextChapterId));
-        }
-      }
-    }
+  const getVideoSource = async () => {
+    const _videoSource = await netVideoSource({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) })
+    setVideoList([{ ..._videoSource, ref: undefined }]);
+    dispatch(setVideoSource(_videoSource));
   }
+  useEffect(() => {
+    !!chapterId && getVideoSource().then(() => {});
+  }, [chapterId]);
 
   useEffect(() => {
-    if (videoSource?.chapterInfo?.[0] && route.name === 'Player') {
+    if (videoSource?.chapterInfo?.[0] && route.name === 'Player' && videoList?.[swiperIndex]) {
       console.log('videoSource next------->');
-      player.current?.playFromPositionAsync(0);
+      videoList?.[swiperIndex].ref?.current?.playFromPositionAsync(0);
+      getVideoPreload().then(() => {});
     }
-  }, [videoSource?.chapterInfo?.[0]]);
+  }, [videoSource]);
 
+  // 章节预加载
+  const getVideoPreload = async () => {
+    const videoPreload = await netVideoPreload({ bookId, chapterId: videoSource?.chapterInfo?.[0].chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) })
+    setVideoList(prevState => [...prevState, { ...videoPreload, ref: undefined }]);
+  }
 
   useFocusEffect(
     useCallback(() => {
-      if (videoSource?.chapterInfo?.[0] && route.name === 'Player') {
-        player.current?.playAsync();
+      if (videoList[swiperIndex]) {
+        videoList[swiperIndex].ref?.current?.playAsync();
       }
       return () => {
-        player.current?.pauseAsync();
+        if (videoList[swiperIndex]?.ref){
+          videoList[swiperIndex].ref?.current?.pauseAsync();
+        }
       };
     }, []),
   );
 
-  const changeControl = (positionMillis: number) => {
-    player.current?.playFromPositionAsync(positionMillis);
+  // 播放结束回调
+  const onVideoEnd = () => {
+    if (videoSource) {
+      dispatch(setChapterId(videoSource.nextChapterId));
+    }
   }
-  // <FlatList
-  //   pagingEnabled
-  //   data={['1','2']}
-  //   renderItem={() =>  ()}
-  //   keyExtractor={item => item}
-  // />
-  return (
-    <View style={styles.container}>
+  // 切换swiper
+  const onChangeIndex = ({ index,  prevIndex }: { index: number; prevIndex: number }) => {
+    console.log('onChangeIndex--------->', index, prevIndex )
+    videoList[prevIndex].ref?.current?.pauseAsync();
+    videoList[index].ref?.current?.playFromPositionAsync(0);
+    setSwiperIndex(index);
+  }
+
+  const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
+    return <View style={styles.container}>
       <VideoUnion
-        player={player}
-        onLoad={(status: AVPlaybackStatus) => { status.isLoaded && setStatusData(status) }}
-        playbackCallback={playbackCallback}/>
-      <Controls
-        statusData={statusData}
-        changeControl={changeControl}
-        onAction={()=> {
-          (!statusData.isLoaded || statusData.isPlaying) ? player.current?.pauseAsync() : player.current?.playAsync()
-        }}/>
+        omap={JSON.stringify(omap)}
+        coverImg={item?.chapterInfo?.[0]?.chapterUrl}
+        source={item?.chapterInfo?.[0]?.content?.mp4}
+        getRef={(player) => {
+          setVideoList(prevState => prevState.map((val, ind) =>
+            ind === index ? { ...val, ref: player } : val
+          ));
+        }}
+        onVideoEnd={onVideoEnd}/>
     </View>
-  );
+  }
+  return <SwiperFlatList
+    style={styles.swiperBox}
+    autoplay={false}
+    autoplayLoopKeepAnimation
+    // index={swiperIndex}
+    data={videoList}
+    renderItem={VideoItem}
+    keyExtractor={(item, index) => String(item.chapterIndex) + index}
+    vertical
+    onChangeIndex={onChangeIndex}
+    showPagination
+    paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
+    paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
+    paginationStyle={{
+      bottom: 25,
+      alignItems: 'flex-end'
+    }}
+  />
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
+  swiperBox: {
     backgroundColor: 'rgba(25, 25, 25, 1)',
+  },
+  container: {
+    width,
+    height: height - 167,
+    overflow: "hidden"
   },
 });

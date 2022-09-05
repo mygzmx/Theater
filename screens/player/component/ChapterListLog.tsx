@@ -35,8 +35,8 @@ interface IProps {
 
 export default function ChapterListLog ({ modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus, chooseChapter }: IProps) {
 
-  const { videoSource, chapterId } = useAppSelector((state: RootState) => (state.player));
-
+  const { videoSource } = useAppSelector((state: RootState) => (state.player));
+  const chapterId = videoSource?.chapterInfo?.[0]?.chapterId || '';
   const getTabs = (interval: number = 30): string[] => {
     if (total <= interval) {
       return [`1-${total}`];

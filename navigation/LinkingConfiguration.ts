@@ -31,7 +31,6 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
-      Modal: 'modal',
       Drama: 'Drama',
       ViewingRecords: 'ViewingRecords',
       FeedBack: 'FeedBack',

@@ -46,10 +46,10 @@ export const initAxios = (store: Store<RootState>) => {
   // 5分钟检查一次token等信息
   // setTimeout(() => initAxios(store), 5 * 60 * 1000);
 }
-const tempHeader = getHeader() as { [key: string]: any }
 // 添加请求拦截器
 Service.interceptors.request.use(
-  (request: AxiosRequestConfig) => {
+  async (request: AxiosRequestConfig) => {
+    const tempHeader = await getHeader() as { [key: string]: any }
     request.headers = {
       ...request.headers,
       ...tempHeader,

@@ -3,14 +3,14 @@ import {
   IVideo2151,
   IVideo2150,
   IVideoSourceParams,
-  IVideoInitParams, EAutoAdd, IPreLoadParams, IVideo2152, IChapterInfo
+  IVideoInitParams,
+  IChapterInfo
 } from "../../interfaces/player.interface";
-import { netVideoPreload, netVideoInit, netVideoSource } from "../../apis/Player";
+import { netVideoInit, netVideoSource } from "../../apis/Player";
 
 export interface IPlayer {
   videoSource: IVideo2151;
   videoInit: IVideo2150;
-  videoPreload: IVideo2152;
   bookId: string;
   chapterId: string;
 }
@@ -29,13 +29,6 @@ export const videoSourceAsync = createAsyncThunk(
   }
 );
 
-export const videoPreloadAsync = createAsyncThunk(
-  'player/getVideoPreload',
-  (params: IPreLoadParams) => {
-    return netVideoPreload(params);
-  }
-);
-
 export const playerSlice = createSlice({
   name: 'player',
   initialState: (): IPlayer => ({
@@ -44,7 +37,6 @@ export const playerSlice = createSlice({
       isInBookShelf: false,
       chapterInfo: [] as IChapterInfo[]
     } as IVideo2151,
-    videoPreload: {} as IVideo2152,
     bookId: '',
     chapterId: '',
   }),
@@ -58,26 +50,21 @@ export const playerSlice = createSlice({
     setIsInBookShelf: (state: IPlayer, action: PayloadAction<boolean>) => {
       state.videoSource = { ...state.videoSource, isInBookShelf: action.payload }
     },
+    setVideoSource: (state: IPlayer, action: PayloadAction<IVideo2151>) => {
+      state.videoSource = { ...state.videoSource, ...action.payload }
+      state.bookId = action.payload.bookId;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(videoSourceAsync.fulfilled, (state, action) => {
-        state.videoSource = action.payload;
-        if (!state.bookId) {
-          state.bookId = action.payload.bookId;
-        }
-      })
       .addCase(videoInitAsync.fulfilled, (state, action) => {
         state.videoInit = action.payload;
-      })
-      .addCase(videoPreloadAsync.fulfilled, (state, action) => {
-        state.videoPreload = action.payload;
       })
   }
 });
 
 
-export const { setBookId, setChapterId, setIsInBookShelf } = playerSlice.actions;
+export const { setBookId, setChapterId, setIsInBookShelf, setVideoSource } = playerSlice.actions;
 
 const playerReducer = playerSlice.reducer;
 

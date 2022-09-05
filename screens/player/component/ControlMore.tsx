@@ -8,14 +8,14 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as React from "react";
+import { useToast } from "react-native-toast-notifications";
 import { netChapterList } from "../../../apis/Player";
 import { RootState } from "../../../store";
 import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setIsInBookShelf, setChapterId } from "../../../store/modules/player.module";
 import { EBookFinishStatus, EScene, IChapterListItem } from "../../../interfaces/player.interface";
-import ChapterListLog from "./ChapterListLog";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import { useToast } from "react-native-toast-notifications";
+import ChapterListLog from "./ChapterListLog";
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')

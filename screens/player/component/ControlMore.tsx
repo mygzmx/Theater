@@ -15,13 +15,14 @@ import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setIsInBookShelf, setChapterId } from "../../../store/modules/player.module";
 import { EBookFinishStatus, EScene, IChapterListItem } from "../../../interfaces/player.interface";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import { IVideoList } from "../Player";
 import ChapterListLog from "./ChapterListLog";
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')
 
 interface IProps {
-
+  source: IVideoList;
 }
 
 const ControlMore = (props: IProps) => {
@@ -92,6 +93,7 @@ const ControlMore = (props: IProps) => {
       title="确认取消追剧吗？"
       message="取消后您将无法快速找到本剧"/>
     <ChapterListLog
+      chapterId={ props.source.chapterId }
       bookFinishStatus={bookFinishStatus}
       tabIndex={tabIndex}
       modalVisible={isShowChapters}
@@ -102,7 +104,7 @@ const ControlMore = (props: IProps) => {
       close={() => setIsShowChapters(false)}/>
     <View style={styles.moreLeft}>
       <Text style={styles.bookName}>{ videoSource?.bookName }</Text>
-      <Text style={styles.chapterName}>{videoSource?.chapterInfo?.[0]?.chapterName}</Text>
+      <Text style={styles.chapterName}>{ props.source.chapterName }</Text>
     </View>
     <TouchableWithoutFeedback onPressIn={() => dramaVideo()}>
       <View style={styles.moreDrama}>

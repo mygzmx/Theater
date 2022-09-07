@@ -2,22 +2,24 @@ import {
   View,
   StyleSheet,
   Image,
-  TouchableWithoutFeedback, Pressable,
+  Pressable,
 } from "react-native";
 import React, {  useEffect, useState } from "react";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import { LinearGradient } from 'expo-linear-gradient';
+import { IVideoList } from "../Player";
 import ControlBar from "./ControlBar";
 import ControlMore from "./ControlMore";
 const ImgPlay = require("../../../assets/images/player/player-play.png")
 interface IProps {
+  source: IVideoList;
   statusData: AVPlaybackStatusSuccess;
   onAction: () => void;
   changeControl: (positionMillis: number) => void;
 }
 
 
-export default function Controls ({ statusData, onAction, changeControl }: IProps) {
+export default function Controls ({ source, statusData, onAction, changeControl }: IProps) {
   const [progress, setProgress] = useState(0);
   const [isTouched, setIsTouched] = useState(false);
   const { durationMillis = 0, positionMillis = 0 } = statusData;
@@ -42,7 +44,7 @@ export default function Controls ({ statusData, onAction, changeControl }: IProp
         {!(statusData.isLoaded && statusData.isPlaying) &&
         <Image source={ImgPlay} style={{ width: 70, height: 70 }}/>}
       </Pressable>
-      {!isTouched && <ControlMore/>}
+      {!isTouched && <ControlMore source={source}/>}
       <ControlBar
         isTouched={isTouched}
         onStart={onStart}

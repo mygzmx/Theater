@@ -1,9 +1,8 @@
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useToast } from "react-native-toast-notifications";
 import { ETaskAction, ETaskStatus, ETaskType, ITaskItem, ITaskSetItem } from "../../../interfaces/self.interface";
 import { netReceiveTask, netUpdateUserInfo } from "../../../apis/Self";
-import { useToast } from "react-native-toast-notifications";
-import { useNavigation } from "@react-navigation/native";
-
 const ImgMiddleLine = require('../../../assets/images/self/line.png');
 const ImgCoin1 = require('../../../assets/images/self/coin.png')
 

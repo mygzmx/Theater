@@ -4,7 +4,7 @@ import {
   IVideo2150,
   IVideoSourceParams,
   IVideoInitParams,
-  IChapterInfo
+  IChapterInfo, IVideo2152
 } from "../../interfaces/player.interface";
 import { netVideoInit, netVideoSource } from "../../apis/Player";
 

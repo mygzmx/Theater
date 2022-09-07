@@ -55,7 +55,7 @@ export default function Checkin ({ signText, continueDay, signRecordVos, isSign,
         <ImageBackground style={styles.checkinRule} source={ImgRuleBg}>
           <Text style={styles.checkinRuleTxt}>规则</Text>
         </ImageBackground>
-      </TouchableWithoutFeedback>  }
+      </TouchableWithoutFeedback> }
     </View>
     <Image style={styles.middleLine} source={ImgMiddleLine} />
     <View style={styles.signboard}>

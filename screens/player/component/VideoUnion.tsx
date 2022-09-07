@@ -2,30 +2,48 @@ import VideoPlayer from "expo-video-player";
 import { StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus, Video } from "expo-av";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
+import { useFocusEffect } from "@react-navigation/native";
 import { netVideoFinish } from "../../../apis/Player";
 import { RootState, useAppSelector } from "../../../store";
+import { IVideoList } from "../Player";
 import Controls from "./Controls";
 
 interface IProps {
   onVideoEnd: () => void;
-  coverImg?: string;
-  source?: string;
-  getRef: (player: MutableRefObject<Video>) => void;
+  source: IVideoList;
   omap?: string;
 }
 
-export default function VideoUnion ({ onVideoEnd, coverImg, source = '', getRef, omap }: IProps) {
+export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
 
   const player = useRef<Video>({} as Video);
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
   const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
 
   useEffect(() => {
-    getRef(player)
-  }, []);
+    if (!player.current || !player.current?.playFromPositionAsync) return;
+    if (source.isViewable) {
+      player.current?.playFromPositionAsync(0);
+    } else {
+      player.current?.pauseAsync();
+    }
+  }, [source, player]);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!player.current || !player.current?.playFromPositionAsync || !source.isViewable) return;
+      player.current?.playAsync();
+      return () => {
+        if (source.isViewable) {
+          player.current?.pauseAsync();
+        }
+      };
+    }, []),
+  );
 
   const playback = async (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
@@ -75,18 +93,19 @@ export default function VideoUnion ({ onVideoEnd, coverImg, source = '', getRef,
           status: {
             progressUpdateIntervalMillis: 100,
           },
-          shouldPlay: false,
+          shouldPlay: source.isViewable,
           resizeMode: ResizeMode.COVER,
           posterSource: {
-            uri: coverImg,
+            uri: source.chapterUrl,
           },
           source: {
-            uri: source,
+            uri: source.content.mp4,
           },
           onLoad,
         }}
       />
       <Controls
+        source={source}
         statusData={statusData}
         changeControl={(positionMillis) => changeControl(positionMillis)}
         onAction={()=> {

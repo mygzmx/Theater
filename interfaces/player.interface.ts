@@ -80,6 +80,13 @@ export interface IChapterInfo {
     mp4: string;
     cost: number;
   },
+  cost?: number;
+  isRecoBook?: number;
+  isafd?: number;
+  nextChapterId?: string;
+  nextChapterName?: string;
+  preChapterId?: string;
+  preChapterName?: string;
 }
 
 

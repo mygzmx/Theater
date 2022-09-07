@@ -1,6 +1,6 @@
-import { Dimensions, StyleSheet, View, ViewToken, } from 'react-native';
-import React, { useEffect, useState } from 'react'
-import { useRoute } from "@react-navigation/native";
+import { Dimensions, StyleSheet, View, Text, ViewToken, Animated, } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { SwiperFlatList } from "react-native-swiper-flatlist/index";
 import { RootState, useAppDispatch, useAppSelector } from "../../store";
 import { setChapterId, setVideoSource, videoInitAsync } from "../../store/modules/player.module";
@@ -8,6 +8,7 @@ import { EAutoPay, EConfirmPay, EIsRead, EScene, IChapterInfo } from "../../inte
 import { getLogTime } from "../../utils/logTime";
 import { netVideoPreload, netVideoSource } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
+import SwiperFlatListNoData from "./component/SwiperFlatListNoData";
 const { width, height } = Dimensions.get('window');
 
 export interface IVideoList extends IChapterInfo {
@@ -17,6 +18,15 @@ export interface IVideoList extends IChapterInfo {
 export default function Player () {
 
   const route = useRoute()
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('swiperIndex------------>', swiperIndex)
+      return () => {
+        console.log('swiperIndex------------>', swiperIndex)
+      };
+    }, []),
+  );
 
   const dispatch = useAppDispatch();
   const [omap, setOmap] = useState({
@@ -36,6 +46,7 @@ export default function Player () {
   const [swiperIndex, setSwiperIndex] = useState(0);
   const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
   const [videoList, setVideoList] = useState<IVideoList[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
@@ -46,13 +57,13 @@ export default function Player () {
     const _videoSource = await netVideoSource({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) })
     dispatch(setVideoSource(_videoSource));
     setVideoList(_videoSource.chapterInfo)
-    await getVideoPreload(_videoSource.bookId, _videoSource.chapterInfo[0].chapterId)
+    await getVideoPreload(_videoSource.bookId, _videoSource.nextChapterId);
   }
 
   useEffect(() => {
     !!chapterId && getVideoSource().then(() => {});
   }, [chapterId]);
-  
+
   // 章节预加载
   const getVideoPreload = async ( bookId: string, chapterId: string ) => {
     const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
@@ -83,7 +94,21 @@ export default function Player () {
     //
     // }
   }
-
+  const sliderHeight = useRef(new Animated.Value(-44)).current;
+  const onRefresh = async () => {
+    if(!videoSource.preChapterId) {
+      Animated.timing(sliderHeight, { toValue: 0, duration: 1000, useNativeDriver: false }).start(({ finished }) => {
+        /* 动画完成的回调函数 */
+        if (finished) {
+          Animated.timing(sliderHeight, { toValue: -44, duration: 1000, delay: 1000, useNativeDriver: false }).start()
+        }
+      });
+    } else {
+      setIsRefreshing(true)
+      await dispatch(setChapterId(videoSource.preChapterId));
+      setIsRefreshing(false)
+    }
+  }
   const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
     return <View style={styles.container}>
       <VideoUnion
@@ -92,26 +117,34 @@ export default function Player () {
         onVideoEnd={onVideoEnd}/>
     </View>
   }
-  return <SwiperFlatList
-    style={styles.swiperBox}
-    index={swiperIndex}
-    data={videoList}
-    renderItem={VideoItem}
-    keyExtractor={(item, index) => String(item.chapterIndex) + index}
-    vertical
-    onChangeIndex={onChangeIndex}
-    onViewableItemsChanged={(info) => onViewableItemsChanged(info)}
-    showPagination
-    paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
-    paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
-    paginationStyle={{
-      bottom: 25,
-      alignItems: 'flex-end'
-    }}
-  />
+  return <View style={styles.playerWrap}>
+    <SwiperFlatList
+      refreshing={isRefreshing}
+      onRefresh={onRefresh}
+      style={styles.swiperBox}
+      index={swiperIndex}
+      data={videoList}
+      renderItem={VideoItem}
+      keyExtractor={(item, index) => String(item.chapterIndex) + index}
+      vertical
+      onChangeIndex={onChangeIndex}
+      onViewableItemsChanged={(info) => onViewableItemsChanged(info)}
+      showPagination
+      paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
+      paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
+      paginationStyle={{
+        bottom: 25,
+        alignItems: 'flex-end'
+      }}
+    />
+    <SwiperFlatListNoData sliderHeight={sliderHeight}/>
+  </View>
 }
 
 const styles = StyleSheet.create({
+  playerWrap: {
+    position: "relative",
+  },
   swiperBox: {
     backgroundColor: 'rgba(25, 25, 25, 1)',
   },

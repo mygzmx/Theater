@@ -1,12 +1,12 @@
-import { Dimensions, StyleSheet, View, Text, ViewToken, Animated, } from 'react-native';
+import { Dimensions, StyleSheet, View, Animated, } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { SwiperFlatList } from "react-native-swiper-flatlist/index";
 import { RootState, useAppDispatch, useAppSelector } from "../../store";
-import { setChapterId, setVideoSource, videoInitAsync } from "../../store/modules/player.module";
+import { setChapterId, videoInitAsync, videoSourceAsync } from "../../store/modules/player.module";
 import { EAutoPay, EConfirmPay, EIsRead, EScene, IChapterInfo } from "../../interfaces/player.interface";
 import { getLogTime } from "../../utils/logTime";
-import { netVideoPreload, netVideoSource } from "../../apis/Player";
+import { netVideoPreload } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import SwiperFlatListNoData from "./component/SwiperFlatListNoData";
 const { width, height } = Dimensions.get('window');
@@ -14,87 +14,90 @@ const { width, height } = Dimensions.get('window');
 export interface IVideoList extends IChapterInfo {
   isViewable?: boolean;
 }
+const omap = {
+  origin: '在看-默认播放',
+  action: '2',
+  channel_id: 'zk',
+  channel_name: '在看',
+  channel_pos: 0,
+  column_id: 'zk_mrbf',
+  column_name: '在看-默认播放',
+  column_pos: 0,
+  content_id: '',
+  content_pos: 0,
+  content_type: '2',
+  trigger_time: getLogTime()
+};
 
 export default function Player () {
-
   const route = useRoute()
-
+  const dispatch = useAppDispatch();
+  const [swiperIndex, setSwiperIndex] = useState(0);
+  const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
+  const [videoList, setVideoList] = useState<IVideoList[]>([]);
+  const isRefresh = useRef(false);
+  const flatRef = useRef<SwiperFlatList>({} as SwiperFlatList);
   useFocusEffect(
     useCallback(() => {
-      console.log('swiperIndex------------>', swiperIndex)
+      // console.log('swiperIndex------------>', swiperIndex)
       return () => {
-        console.log('swiperIndex------------>', swiperIndex)
+        // console.log('swiperIndex------------>', swiperIndex)
       };
     }, []),
   );
 
-  const dispatch = useAppDispatch();
-  const [omap, setOmap] = useState({
-    origin: '在看-默认播放',
-    action: '2',
-    channel_id: 'zk',
-    channel_name: '在看',
-    channel_pos: 0,
-    column_id: 'zk_mrbf',
-    column_name: '在看-默认播放',
-    column_pos: 0,
-    content_id: '',
-    content_pos: 0,
-    content_type: '2',
-    trigger_time: getLogTime()
-  });
-  const [swiperIndex, setSwiperIndex] = useState(0);
-  const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
-  const [videoList, setVideoList] = useState<IVideoList[]>([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
-    getVideoSource().then(() => {})
   }, []);
-
-  const getVideoSource = async () => {
-    const _videoSource = await netVideoSource({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) })
-    dispatch(setVideoSource(_videoSource));
-    setVideoList(_videoSource.chapterInfo)
-    await getVideoPreload(_videoSource.bookId, _videoSource.nextChapterId);
-  }
-
   useEffect(() => {
-    !!chapterId && getVideoSource().then(() => {});
+    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }))
   }, [chapterId]);
 
+  useEffect(() => {
+    if (videoSource.bookId && videoSource.chapterInfo[0].chapterId) {
+      isRefresh.current = true;
+      setSwiperIndex(0);
+      getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
+    }
+  }, [videoSource]);
+  useEffect(() => {
+    if (isRefresh.current && videoList.length === 2) {
+      isRefresh.current = false;
+      flatRef.current.scrollToIndex({ index: 0 })
+    }
+  }, [videoList]);
+
   // 章节预加载
-  const getVideoPreload = async ( bookId: string, chapterId: string ) => {
+  const getVideoPreload = async ( bookId: string, chapterId: string, sourceData: IVideoList[] = [], isExist?: boolean) => {
     const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
-    const _preVideo = videoPreload.chapterInfo.filter(val => videoList.findIndex(v => v.chapterId === val.chapterId) === -1 );
-    setVideoList(prevState => ([...prevState, ..._preVideo]))
+    if (isExist) return; // videoList是否存在数据
+    if (sourceData.length > 0) {
+      const _preVideo = videoPreload.chapterInfo.filter(val => sourceData.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
+      setVideoList([...sourceData, ..._preVideo])
+    } else {
+      const _preVideo = videoPreload.chapterInfo.filter(val => videoList.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
+      setVideoList(pre => [...pre, ..._preVideo])
+    }
   }
   // 播放结束回调
   const onVideoEnd = () => {
-    if (videoSource) {
-      dispatch(setChapterId(videoSource.nextChapterId));
+    const _chapterId = videoList[swiperIndex]?.nextChapterId;
+    if (_chapterId) {
+      dispatch(setChapterId(_chapterId));
     }
   }
   const onChangeIndex = async ({ index, prevIndex }: { index: number; prevIndex: number }) => {
+    if (isRefresh.current) return;
     console.log('onChangeIndex--------->', index, prevIndex )
-    if (index > swiperIndex) {
-
+    if (index === videoList.length - 1) {
+      await getVideoPreload(videoSource.bookId, videoList[index].chapterId);
     } else {
-
+      await getVideoPreload(videoSource.bookId, videoList[index].chapterId, [], true);
     }
-    await getVideoPreload(videoSource.bookId, videoList[index].chapterId);
     setSwiperIndex(index);
   }
-
-  const onViewableItemsChanged = async (info: { viewableItems: ViewToken[], changed: ViewToken[] }) => {
-    // if (info.viewableItems.length === 0) return;
-    // const { index, item, isViewable } = info.viewableItems[0];
-    // if (typeof index === 'number') {
-    //
-    // }
-  }
   const sliderHeight = useRef(new Animated.Value(-44)).current;
+
   const onRefresh = async () => {
     if(!videoSource.preChapterId) {
       Animated.timing(sliderHeight, { toValue: 0, duration: 1000, useNativeDriver: false }).start(({ finished }) => {
@@ -104,11 +107,10 @@ export default function Player () {
         }
       });
     } else {
-      setIsRefreshing(true)
       await dispatch(setChapterId(videoSource.preChapterId));
-      setIsRefreshing(false)
     }
   }
+
   const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
     return <View style={styles.container}>
       <VideoUnion
@@ -119,23 +121,19 @@ export default function Player () {
   }
   return <View style={styles.playerWrap}>
     <SwiperFlatList
-      refreshing={isRefreshing}
-      onRefresh={onRefresh}
       style={styles.swiperBox}
-      index={swiperIndex}
+      ref={flatRef}
+      refreshing={false}
+      onRefresh={onRefresh}
       data={videoList}
       renderItem={VideoItem}
-      keyExtractor={(item, index) => String(item.chapterIndex) + index}
+      keyExtractor={(item, index) => item.chapterId + index}
+      removeClippedSubviews
       vertical
       onChangeIndex={onChangeIndex}
-      onViewableItemsChanged={(info) => onViewableItemsChanged(info)}
       showPagination
       paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
-      paginationStyle={{
-        bottom: 25,
-        alignItems: 'flex-end'
-      }}
     />
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
   </View>

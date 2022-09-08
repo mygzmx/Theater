@@ -6,6 +6,7 @@ import { getHeader } from "../utils/auth";
 declare module 'axios' {
   export interface AxiosInstance {
     redux: Store<RootState>;
+    headerConfig: { [key: string]: any }
   }
   export interface AxiosResponse<T = any> extends Promise<T> { }
 }
@@ -31,7 +32,7 @@ const Service = axios.create({
   timeout: 5000
 });
 
-export const initAxios = (store: Store<RootState>) => {
+export const initAxios = async (store: Store<RootState>) => {
   if (!Service.redux) {
     Object.defineProperty(Service, 'redux', {
       get() {
@@ -39,6 +40,14 @@ export const initAxios = (store: Store<RootState>) => {
       },
     });
     // window.addEventListener('pageshow', () => initAxios(store));
+  }
+  if (!Service.headerConfig) {
+    const headerConfig = await getHeader() as { [key: string]: any }
+    Object.defineProperty(Service, 'headerConfig', {
+      get() {
+        return headerConfig;
+      },
+    });
   }
   // @ts-ignore
   // store.dispatch(userInfoAsync())
@@ -49,10 +58,10 @@ export const initAxios = (store: Store<RootState>) => {
 // 添加请求拦截器
 Service.interceptors.request.use(
   async (request: AxiosRequestConfig) => {
-    const tempHeader = await getHeader() as { [key: string]: any }
+
     request.headers = {
       ...request.headers,
-      ...tempHeader,
+      ...Service.headerConfig,
       userId: Service.redux.getState().user.user.userId,
     }
     request.cancelToken = new CancelToken((c) => {
@@ -86,6 +95,7 @@ Service.interceptors.response.use(
       return Promise.resolve(response.data?.data)
     } else {
       console.log('error--------------------------->', response.data)
+      console.log(response.config.url)
       return Promise.reject(response.data)
     }
   },

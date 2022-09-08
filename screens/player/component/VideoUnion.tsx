@@ -1,5 +1,5 @@
 import VideoPlayer from "expo-video-player";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus, Video } from "expo-av";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -22,11 +22,11 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
   const player = useRef<Video>({} as Video);
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
   const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    if (!player.current || !player.current?.playFromPositionAsync) return;
+    if (!player.current || !player.current?.replayAsync) return;
     if (source.isViewable) {
-      player.current?.playFromPositionAsync(0);
+      player.current?.replayAsync();
     } else {
       player.current?.pauseAsync();
     }
@@ -35,7 +35,7 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
 
   useFocusEffect(
     useCallback(() => {
-      if (!player.current || !player.current?.playFromPositionAsync || !source.isViewable) return;
+      if (!player.current || !player.current?.playAsync || !source.isViewable) return;
       player.current?.playAsync();
       return () => {
         if (source.isViewable) {
@@ -57,6 +57,7 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
 
   const onLoad = (status: AVPlaybackStatus) => {
     status.isLoaded && setStatusData(status)
+    setIsLoading(false);
   }
 
   const errorCallback = (error: ErrorType) => {
@@ -67,8 +68,9 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
     player.current?.playFromPositionAsync(positionMillis);
   }
   return(
-    <View style={styles.videoWrap}>
-      <VideoPlayer
+    <View style={styles.videoWrap} >
+      { (!source.isViewable || isLoading) && <Image style={styles.coverWrap} source={{ uri: source.chapterUrl }}/> }
+      { source.isViewable && <VideoPlayer
         animation={{}}
         activityIndicator={{}}
         defaultControlsVisible={false}
@@ -95,15 +97,13 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
           },
           shouldPlay: source.isViewable,
           resizeMode: ResizeMode.COVER,
-          posterSource: {
-            uri: source.chapterUrl,
-          },
+          usePoster: false,
           source: {
-            uri: source.content.mp4,
+            uri: source.content.m3u8,
           },
           onLoad,
         }}
-      />
+      /> }
       <Controls
         source={source}
         statusData={statusData}
@@ -120,4 +120,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  coverWrap: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  }
 });

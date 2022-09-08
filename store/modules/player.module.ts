@@ -4,7 +4,8 @@ import {
   IVideo2150,
   IVideoSourceParams,
   IVideoInitParams,
-  IChapterInfo, IVideo2152
+  IChapterInfo,
+  IVideo2152
 } from "../../interfaces/player.interface";
 import { netVideoInit, netVideoSource } from "../../apis/Player";
 
@@ -59,6 +60,10 @@ export const playerSlice = createSlice({
     builder
       .addCase(videoInitAsync.fulfilled, (state, action) => {
         state.videoInit = action.payload;
+      })
+      .addCase(videoSourceAsync.fulfilled, (state, action) => {
+        state.videoSource = action.payload;
+        state.bookId = action.payload.bookId;
       })
   }
 });

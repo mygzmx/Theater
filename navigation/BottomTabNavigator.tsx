@@ -36,6 +36,16 @@ export default function BottomTabNavigator() {
       initialRouteName="Player"
       screenOptions={{
         tabBarActiveTintColor: '#FFFFFF',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 20,
+          paddingTop: 10,
+        },
+        tabBarLabelStyle: {
+          fontSize: 18,
+          color: '#7F7F7F',
+        },
+        tabBarIcon: () => null,
         tabBarBackground: () => <View
           style={{ width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)' }}/>
       }}>
@@ -48,9 +58,8 @@ export default function BottomTabNavigator() {
           headerTitleStyle: {
             opacity: 0
           },
-          // headerTitleAlign: 'left',
           headerBackground: () => <HomeHeader title={'繁花剧场'}/>,
-          tabBarIcon: ({ color }) => <Entypo name="grid" size={24} color={color}/>,
+          // tabBarIcon: ({ color }) => <Entypo name="grid" size={24} color={color}/>,
         })}
       />
       <BottomTab.Screen
@@ -62,7 +71,7 @@ export default function BottomTabNavigator() {
           headerTitleStyle: {
             opacity: 0
           },
-          tabBarIcon: ({ color }) => <AntDesign name="play" size={24} color={color}/>,
+          // tabBarIcon: ({ color }) => <AntDesign name="play" size={24} color={color}/>,
           headerBackground: () => <HomeHeader title={'繁花剧场'}/>,
         })}
       />
@@ -77,7 +86,7 @@ export default function BottomTabNavigator() {
               opacity: 0
             },
             headerBackground: () => <HomeHeader title={'个人中心'}/>,
-            tabBarIcon: ({ color }) => <AntDesign name="smileo" size={24} color={color}/>,
+            // tabBarIcon: ({ color }) => <AntDesign name="smileo" size={24} color={color}/>,
           }
         )}
       />

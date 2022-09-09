@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   },
   controlBarBox2: {
     width: '100%',
-    height: 12,
-    backgroundColor: 'black',
+    height: 20,
+    backgroundColor: 'rgba(15, 15, 15, 1)',
     display: "flex",
     justifyContent: 'center',
   },

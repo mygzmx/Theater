@@ -1,6 +1,5 @@
-import { Dimensions, StyleSheet, View, Animated, } from 'react-native';
+import { Dimensions, StyleSheet, View, Animated } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { SwiperFlatList } from "react-native-swiper-flatlist/index";
 import { RootState, useAppDispatch, useAppSelector } from "../../store";
 import { setChapterId, videoInitAsync, videoSourceAsync } from "../../store/modules/player.module";
@@ -9,7 +8,8 @@ import { getLogTime } from "../../utils/logTime";
 import { netVideoPreload } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import SwiperFlatListNoData from "./component/SwiperFlatListNoData";
-const { width, height } = Dimensions.get('window');
+import { useFocusEffect } from "@react-navigation/native";
+const { width, height } = Dimensions.get('screen');
 
 export interface IVideoList extends IChapterInfo {
   isViewable?: boolean;
@@ -30,21 +30,12 @@ const omap = {
 };
 
 export default function Player () {
-  const route = useRoute()
   const dispatch = useAppDispatch();
   const [swiperIndex, setSwiperIndex] = useState(0);
   const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
   const [videoList, setVideoList] = useState<IVideoList[]>([]);
   const isRefresh = useRef(false);
   const flatRef = useRef<SwiperFlatList>({} as SwiperFlatList);
-  useFocusEffect(
-    useCallback(() => {
-      // console.log('swiperIndex------------>', swiperIndex)
-      return () => {
-        // console.log('swiperIndex------------>', swiperIndex)
-      };
-    }, []),
-  );
 
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
@@ -63,7 +54,7 @@ export default function Player () {
   useEffect(() => {
     if (isRefresh.current && videoList.length === 2) {
       isRefresh.current = false;
-      flatRef.current.scrollToIndex({ index: 0 })
+      // flatRef.current.scrollToIndex({ index: 0 })
     }
   }, [videoList]);
 
@@ -128,7 +119,12 @@ export default function Player () {
       data={videoList}
       renderItem={VideoItem}
       keyExtractor={(item, index) => item.chapterId + index}
-      removeClippedSubviews
+      getItemLayout={(data, index) => (
+        { length: height - 150, offset: (height - 150) * index, index }
+      )}
+      viewabilityConfig={{
+        itemVisiblePercentThreshold: 95,
+      }}
       vertical
       onChangeIndex={onChangeIndex}
       showPagination
@@ -136,19 +132,23 @@ export default function Player () {
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
     />
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
-  </View>
+  </View>;
+
 }
 
 const styles = StyleSheet.create({
   playerWrap: {
+    flex: 1,
     position: "relative",
   },
   swiperBox: {
     backgroundColor: 'rgba(25, 25, 25, 1)',
+    width: '100%',
+    height: '100%',
   },
   container: {
     width,
-    height: height - 167,
+    height: height - 150,
     overflow: "hidden"
   },
 });

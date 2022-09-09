@@ -1,15 +1,16 @@
 import VideoPlayer from "expo-video-player";
-import { Image, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { ResizeMode } from "expo-av/src/Video.types";
 import { AVPlaybackStatus, Video } from "expo-av";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { netVideoFinish } from "../../../apis/Player";
 import { RootState, useAppSelector } from "../../../store";
 import { IVideoList } from "../Player";
 import Controls from "./Controls";
+const { width, height } = Dimensions.get('screen');
 
 interface IProps {
   onVideoEnd: () => void;
@@ -18,29 +19,25 @@ interface IProps {
 }
 
 export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
-
+  const route = useRoute()
   const player = useRef<Video>({} as Video);
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
   const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
-  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    if (!player.current || !player.current?.replayAsync) return;
-    if (source.isViewable) {
-      player.current?.replayAsync();
-    } else {
+    console.log('player active0---------------->', !player.current)
+    return () => {
+      console.log('player leave1--------------->', !player.current)
+      if (!player.current || !player.current?.pauseAsync) return;
       player.current?.pauseAsync();
-    }
-  }, [source, player]);
-
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      if (!player.current || !player.current?.playAsync || !source.isViewable) return;
+      if (!player.current || !player.current?.playAsync || statusData.isPlaying) return;
       player.current?.playAsync();
       return () => {
-        if (source.isViewable) {
-          player.current?.pauseAsync();
-        }
+        player.current?.pauseAsync();
       };
     }, []),
   );
@@ -57,7 +54,6 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
 
   const onLoad = (status: AVPlaybackStatus) => {
     status.isLoaded && setStatusData(status)
-    setIsLoading(false);
   }
 
   const errorCallback = (error: ErrorType) => {
@@ -69,8 +65,7 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
   }
   return(
     <View style={styles.videoWrap} >
-      { (!source.isViewable || isLoading) && <Image style={styles.coverWrap} source={{ uri: source.chapterUrl }}/> }
-      { source.isViewable && <VideoPlayer
+      <VideoPlayer
         animation={{}}
         activityIndicator={{}}
         defaultControlsVisible={false}
@@ -80,6 +75,7 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
         textStyle={{}}
         timeVisible={false}
         style={{
+          height: height - 150,
           videoBackgroundColor: 'transparent'
         }}
         autoHidePlayer
@@ -95,15 +91,21 @@ export default function VideoUnion ({ onVideoEnd,  source, omap }: IProps) {
           status: {
             progressUpdateIntervalMillis: 100,
           },
-          shouldPlay: source.isViewable,
-          resizeMode: ResizeMode.COVER,
-          usePoster: false,
+          shouldPlay: route.name === "Player" && source.isViewable,
+          resizeMode: ResizeMode.CONTAIN,
+          usePoster: true,
+          posterSource: {
+            uri: source.chapterUrl
+          },
+          posterStyle: {
+            resizeMode: 'contain'
+          },
           source: {
             uri: source.content.m3u8,
           },
           onLoad,
         }}
-      /> }
+      />
       <Controls
         source={source}
         statusData={statusData}
@@ -120,9 +122,4 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  coverWrap: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-  }
 });

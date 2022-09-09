@@ -117,6 +117,7 @@ export default function TaskCheckIn ( ) {
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   taskWrap: {
+    paddingTop: 15,
     width,
     minHeight: height,
     backgroundColor: 'rgba(243, 245, 249, 1)',

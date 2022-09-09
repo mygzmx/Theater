@@ -54,7 +54,7 @@ export default function Player () {
   useEffect(() => {
     if (isRefresh.current && videoList.length === 2) {
       isRefresh.current = false;
-      // flatRef.current.scrollToIndex({ index: 0 })
+      flatRef.current.goToFirstIndex()
     }
   }, [videoList]);
 

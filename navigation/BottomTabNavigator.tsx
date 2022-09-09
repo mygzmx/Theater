@@ -53,7 +53,7 @@ export default function BottomTabNavigator() {
           style={{ width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)' }}/>
       }}>
       <BottomTab.Screen
-        navigationKey="Player"
+        navigationKey="Theater"
         name="Theater"
         component={Theater}
         options={({ navigation }: RootTabScreenProps<'Theater'>) => ({

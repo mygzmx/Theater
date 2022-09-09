@@ -5,15 +5,17 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
-  Pressable,
+  Pressable, Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
+import React from "react";
 import { IDramaItem } from "../../../interfaces/theater.interface";
 import { setBookId, setChapterId } from "../../../store/modules/player.module";
 const ImgEmpty = require('../../../assets/images/img-empty.png');
 const UpdateIcon = require('../../../assets/images/update-icon.png');
 const MoreIcon = require('../../../assets/images/more-icon.png');
+const { width } = Dimensions.get('screen');
 
 interface IProps {
   dramaList: IDramaItem[],
@@ -28,7 +30,7 @@ export default function MyDrama({ dramaList }: IProps) {
     navigation.navigate('Player')
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
-    return <Pressable style={styles.bookItem} onPress={() => linkToPlayer(item)}>
+    return <Pressable onPress={() => linkToPlayer(item)}>
       <ImageBackground
         style={styles.coverImg}
         source={{ uri: item.coverImage }}
@@ -50,9 +52,13 @@ export default function MyDrama({ dramaList }: IProps) {
     </View>
     <FlatList
       style={styles.flatListBox}
+      ItemSeparatorComponent={() => <View style={{ width: 12 }}/>}
       horizontal
       data={dramaList}
       renderItem={renderItem}
+      ListFooterComponent={() => <Pressable style={[styles.dramaLink, { paddingLeft: 20, width: 120, height: 120, alignItems: 'center' }]} onPress={() => navigation.navigate('Drama')}>
+        <Text style={styles.dramaLinkTxt}>{'more >>'}</Text>
+      </Pressable>}
       keyExtractor={item => item.bookId}
     />
   </View>)
@@ -95,13 +101,10 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   flatListBox: {
-    paddingLeft: 14,
-    paddingRight: 14,
+    width,
+    paddingLeft: 20,
+    paddingRight: 20,
     paddingBottom: 12,
-  },
-  bookItem: {
-    marginRight: 6,
-    marginLeft: 6,
   },
   coverImg: {
     width: 100,

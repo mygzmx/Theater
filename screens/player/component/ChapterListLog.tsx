@@ -47,7 +47,7 @@ const ChapterListLog  = (props: IProps) => {
     }
   }, [chapterListVisible]);
 
-  const chooseChapter = (chapter: any) => {
+  const chooseChapter = (chapter: IChapterListItem) => {
     dispatch(setChapterId(chapter.chapterId));
     dispatch(setChapterListVisible(false));
   }
@@ -57,6 +57,7 @@ const ChapterListLog  = (props: IProps) => {
     setTabIndex(index);
     await getChapterList(index)
   }
+
   const getChapterList = async (tab: number) => {
     const { chapterList = [], totalChapters = '0', bookFinishStatus } = await netChapterList({
       bookId,

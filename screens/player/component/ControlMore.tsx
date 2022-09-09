@@ -3,20 +3,17 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as React from "react";
 import { useToast } from "react-native-toast-notifications";
 import { RootState } from "../../../store";
-import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
-import { setIsInBookShelf, setChapterId } from "../../../store/modules/player.module";
+import { netDramaVideo } from "../../../apis/Theater";
+import { setIsInBookShelf } from "../../../store/modules/player.module";
 import { EScene } from "../../../interfaces/player.interface";
-import ConfirmDialog from "../../../components/ConfirmDialog";
 import { IVideoList } from "../Player";
-import ChapterListLog from "./ChapterListLog";
-import { setChapterListVisible } from "../../../store/modules/control.module";
+import { setCancelDramaVisible, setChapterListVisible } from "../../../store/modules/control.module";
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')
@@ -28,9 +25,7 @@ interface IProps {
 const ControlMore = (props: IProps) => {
   const toast = useToast();
   const dispatch = useDispatch()
-  const [isShowChapters, setIsShowChapters] = useState(false);
   const { bookId, videoSource } = useSelector((state: RootState) => (state.player));
-  const [confirmVisible, setConfirmVisible] = useState(false);
 
   const dramaVideo = async () => {
     if (!videoSource?.isInBookShelf) {
@@ -38,14 +33,8 @@ const ControlMore = (props: IProps) => {
       toast.show('追剧成功，可在剧场查看我的追剧');
       dispatch(setIsInBookShelf(true))
     } else {
-      setConfirmVisible(true);
+      dispatch(setCancelDramaVisible(true))
     }
-  }
-
-  const confirm = async () => {
-    dispatch(setIsInBookShelf(false))
-    setConfirmVisible(false)
-    await netNoDramaVideo(bookId, EScene.播放页)
   }
 
   const checkChapterList = async () => {
@@ -53,31 +42,19 @@ const ControlMore = (props: IProps) => {
   }
 
   return <View style={styles.moreWrap}>
-    <ConfirmDialog
-      visible={confirmVisible}
-      rightBtn={() => setConfirmVisible(false)}
-      leftBtn={() => confirm()}
-      close={() => setConfirmVisible(false)}
-      leftTxt="确认"
-      rightTxt="再想想"
-      title="确认取消追剧吗？"
-      message="取消后您将无法快速找到本剧"/>
+
     <View style={styles.moreLeft}>
       <Text style={styles.bookName}>{ videoSource?.bookName }</Text>
       <Text style={styles.chapterName}>{ props.source.chapterName }</Text>
     </View>
-    <TouchableWithoutFeedback onPressIn={() => dramaVideo()}>
-      <View style={styles.moreDrama}>
-        <Image style={styles.moreIcon} source={ videoSource?.isInBookShelf ? ImgHeartActive : ImgHeartWhite }/>
-        <Text style={styles.chapterName}>{ videoSource?.isInBookShelf ? '已追剧' : '追剧'}</Text>
-      </View>
-    </TouchableWithoutFeedback>
-    <TouchableWithoutFeedback onPressIn={() => checkChapterList()}>
-      <View style={styles.moreDrama}>
-        <Image style={styles.moreIcon} source={ImgPlayerCatalog}/>
-        <Text style={styles.chapterName}>选集</Text>
-      </View>
-    </TouchableWithoutFeedback>
+    <Pressable style={styles.moreDrama} onPressIn={() => dramaVideo()}>
+      <Image style={styles.moreIcon} source={ videoSource?.isInBookShelf ? ImgHeartActive : ImgHeartWhite }/>
+      <Text style={styles.chapterName}>{ videoSource?.isInBookShelf ? '已追剧' : '追剧'}</Text>
+    </Pressable>
+    <Pressable style={styles.moreDrama} onPress={() => checkChapterList()}>
+      <Image style={styles.moreIcon} source={ImgPlayerCatalog}/>
+      <Text style={styles.chapterName}>选集</Text>
+    </Pressable>
   </View>
 }
 

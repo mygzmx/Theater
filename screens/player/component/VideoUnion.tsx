@@ -10,22 +10,21 @@ import { netVideoFinish } from "../../../apis/Player";
 import { RootState, useAppSelector } from "../../../store";
 import { IVideoList } from "../Player";
 import Controls from "./Controls";
-import { useStore } from "react-redux";
-const { width, height } = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
 interface IProps {
   onVideoEnd: () => void;
   source: IVideoList;
   omap?: string;
-  index: number;
 }
 
-export default function VideoUnion ({ onVideoEnd, index, source, omap }: IProps) {
+export default function VideoUnion ({ onVideoEnd, source, omap }: IProps) {
   const route = useRoute()
   const player = useRef<Video>({} as Video);
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
-  const { bookId, chapterId, swiperIndex } = useAppSelector((state: RootState) => (state.player));
+  const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
   useEffect(() => {
+    console.log('player useEffect---------------->', source.isViewable)
     return () => {
       if (!player.current || !player.current?.pauseAsync) return;
       player.current?.pauseAsync();
@@ -38,6 +37,7 @@ export default function VideoUnion ({ onVideoEnd, index, source, omap }: IProps)
       if (!player.current || !player.current?.playAsync || statusData.isPlaying || !source.isViewable) return;
       player.current?.playAsync();
       return () => {
+        console.log('player leave---------------->')
         player.current?.pauseAsync();
       };
     }, []),
@@ -65,7 +65,7 @@ export default function VideoUnion ({ onVideoEnd, index, source, omap }: IProps)
     player.current?.playFromPositionAsync(positionMillis);
   }
   return(
-    <View style={styles.videoWrap} >
+    <View style={styles.videoWrap}>
       <VideoPlayer
         animation={{}}
         activityIndicator={{}}

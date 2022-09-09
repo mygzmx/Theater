@@ -14,7 +14,8 @@ export interface IPlayer {
   bookId: string;
   chapterId: string;
   swiperIndex: number;
-  videoList: IChapterInfo[]
+  videoList: IChapterInfo[];
+  isLeave: boolean;
 }
 
 export const videoInitAsync = createAsyncThunk(
@@ -42,7 +43,8 @@ export const playerSlice = createSlice({
     bookId: '',
     chapterId: '',
     swiperIndex: 0,
-    videoList: []
+    videoList: [],
+    isLeave: false,
   }),
   reducers: {
     setBookId: (state: IPlayer, action: PayloadAction<string>) => {
@@ -67,9 +69,12 @@ export const playerSlice = createSlice({
     // 离开播放器 释放资源
     doLeavePlayer: (state: IPlayer, action) => {
       const { swiperIndex, videoList } = state
-      console.log('_swiperIndex----------->', swiperIndex)
       state.videoList = videoList[swiperIndex] ? JSON.parse(JSON.stringify([videoList[swiperIndex]])) : [];
       state.swiperIndex = 0;
+      state.isLeave = true;
+    },
+    setIsLeave:(state: IPlayer, action) => {
+      state.isLeave = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -85,4 +90,4 @@ export const playerSlice = createSlice({
 });
 
 
-export const { setBookId, setChapterId, setIsInBookShelf, setVideoSource, setSwiperIndex, setVideoList, doLeavePlayer } = playerSlice.actions;
+export const { setBookId, setChapterId, setIsInBookShelf, setVideoSource, setSwiperIndex, setVideoList, doLeavePlayer, setIsLeave } = playerSlice.actions;

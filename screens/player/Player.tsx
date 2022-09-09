@@ -6,7 +6,7 @@ import { useSelector, useStore } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import {
   doLeavePlayer,
-  setChapterId,
+  setChapterId, setIsInBookShelf, setIsLeave,
   setSwiperIndex,
   setVideoList,
   videoInitAsync,
@@ -15,6 +15,9 @@ import {
 import { EAutoPay, EConfirmPay, EIsRead, EScene, IChapterInfo } from "../../interfaces/player.interface";
 import { getLogTime } from "../../utils/logTime";
 import { netVideoPreload } from "../../apis/Player";
+import ConfirmDialog from "../../components/ConfirmDialog";
+import { setCancelDramaVisible } from "../../store/modules/control.module";
+import { netNoDramaVideo } from "../../apis/Theater";
 import VideoUnion from "./component/VideoUnion";
 import SwiperFlatListNoData from "./component/SwiperFlatListNoData";
 import ChapterListLog from "./component/ChapterListLog";
@@ -42,44 +45,40 @@ export default function Player () {
   const dispatch = useAppDispatch();
   const store =  useStore<RootState>()
   const { bookId, chapterId, videoSource, swiperIndex, videoList } = useSelector((state: RootState) => (state.player));
-  // const [videoList, setVideoList] = useState<IVideoList[]>([]);
-  const isRefresh = useRef(false);
+  const { cancelDramaVisible } = useSelector((state: RootState) => (state.control));
   const isLeave = useRef(false); // 是否离开
   const flatRef = useRef<SwiperFlatList>({} as SwiperFlatList);
   useFocusEffect(
     useCallback(() => {
       isLeave.current = false;
+      dispatch(setIsLeave(false))
       const storePlayer = store.getState().player;
       dispatch(setSwiperIndex(storePlayer.swiperIndex));
-      if (storePlayer.videoSource && storePlayer.videoSource?.bookId) {
-        getVideoPreload(storePlayer.videoSource.bookId, storePlayer.videoSource.chapterInfo[0].chapterId, storePlayer.videoSource.chapterInfo)
+      if (storePlayer.videoSource && storePlayer.videoList.length > 0) {
+        getVideoPreload(storePlayer.videoSource.bookId, storePlayer.videoList[0].chapterId, storePlayer.videoList)
       }
       return () => {
         isLeave.current = true;
+        dispatch(setIsLeave(true))
         dispatch(doLeavePlayer('leave'))
       };
     }, []),
   );
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
-  }, []);
+  }, [bookId]);
   useEffect(() => {
-    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }))
+    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
   }, [chapterId]);
 
   useEffect(() => {
+    if (isLeave.current) return;
     if (videoSource.bookId && videoSource.chapterInfo[0].chapterId) {
-      isRefresh.current = true;
-      dispatch(setSwiperIndex(0));
+      // dispatch(setSwiperIndex(0));
       getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
+      flatRef.current?.goToFirstIndex && flatRef.current?.goToFirstIndex();
     }
   }, [videoSource]);
-  useEffect(() => {
-    if (isRefresh.current && videoList.length === 2) {
-      isRefresh.current = false;
-      flatRef.current.goToFirstIndex()
-    }
-  }, [videoList]);
   // 章节预加载
   const getVideoPreload = async ( bookId: string, chapterId: string, sourceData: IVideoList[] = [], isExist?: boolean) => {
     const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
@@ -100,7 +99,7 @@ export default function Player () {
     }
   }
   const onChangeIndex = async ({ index, prevIndex }: { index: number; prevIndex: number }) => {
-    if (isRefresh.current || isLeave.current) return;
+    if (isLeave.current) return;
     console.log('onChangeIndex--------->', index, prevIndex )
     if (index === videoList.length - 1) {
       await getVideoPreload(videoSource.bookId, videoList[index].chapterId);
@@ -128,13 +127,12 @@ export default function Player () {
     return <View style={styles.container}>
       <VideoUnion
         omap={JSON.stringify(omap)}
-        index={index}
-        source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex }}
+        source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex && !store.getState().player.isLeave }}
         onVideoEnd={onVideoEnd}/>
     </View>
   }
   return <View style={styles.playerWrap}>
-    <SwiperFlatList
+    {videoList.length > 0 ? <SwiperFlatList
       windowSize={3}
       style={styles.swiperBox}
       ref={flatRef}
@@ -154,9 +152,22 @@ export default function Player () {
       showPagination
       paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
-    />
+    /> : null }
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
     <ChapterListLog/>
+    <ConfirmDialog
+      visible={cancelDramaVisible}
+      rightBtn={() => dispatch(setCancelDramaVisible(false))}
+      leftBtn={() => {
+        dispatch(setIsInBookShelf(false))
+        dispatch(setCancelDramaVisible(false))
+        netNoDramaVideo(bookId, EScene.播放页)
+      }}
+      close={() => dispatch(setCancelDramaVisible(false))}
+      leftTxt="确认"
+      rightTxt="再想想"
+      title="确认取消追剧吗？"
+      message="取消后您将无法快速找到本剧"/>
   </View>;
 
 }

@@ -66,15 +66,15 @@ export default function Player () {
   );
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
+    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
   }, [bookId]);
   useEffect(() => {
-    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
+
   }, [chapterId]);
 
   useEffect(() => {
     if (isLeave.current) return;
-    if (videoSource.bookId && videoSource.chapterInfo[0].chapterId) {
-      // dispatch(setSwiperIndex(0));
+    if (videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId) {
       getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
       flatRef.current?.goToFirstIndex && flatRef.current?.goToFirstIndex();
     }
@@ -154,7 +154,7 @@ export default function Player () {
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
     /> : null }
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
-    <ChapterListLog/>
+    <ChapterListLog omap={JSON.stringify(omap)}/>
     <ConfirmDialog
       visible={cancelDramaVisible}
       rightBtn={() => dispatch(setCancelDramaVisible(false))}

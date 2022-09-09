@@ -59,9 +59,11 @@ export const playerSlice = createSlice({
     setVideoSource: (state: IPlayer, action: PayloadAction<IVideo2151>) => {
       state.videoSource = { ...state.videoSource, ...action.payload }
       state.bookId = action.payload.bookId;
+      state.chapterId = action.payload?.chapterInfo?.[0]?.chapterId || '';
     },
     setSwiperIndex: (state: IPlayer, action: PayloadAction<number>) => {
       state.swiperIndex = action.payload;
+      state.chapterId = state.videoList?.[action.payload]?.chapterId;
     },
     setVideoList: (state: IPlayer, action: PayloadAction<IChapterInfo[]>) => {
       state.videoList = [...action.payload];

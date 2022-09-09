@@ -11,11 +11,16 @@ import { Alert,
 } from "react-native";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { RootState, useAppSelector } from "../../../store";
-import { EBookFinishStatus, EIsCharge, IChapterListItem } from "../../../interfaces/player.interface";
+import { RootState, useAppDispatch, useAppSelector } from "../../../store";
+import {
+  EAutoPay,
+  EBookFinishStatus,
+  EConfirmPay,
+  EIsCharge, EScene,
+  IChapterListItem
+} from "../../../interfaces/player.interface";
 import { netChapterList } from "../../../apis/Player";
-import { setChapterId } from "../../../store/modules/player.module";
+import { setChapterId, videoSourceAsync } from "../../../store/modules/player.module";
 import { setChapterListVisible } from "../../../store/modules/control.module";
 const ImgClose = require('../../../assets/images/player/catalog-close.png');
 const ImgCatalogLock = require('../../../assets/images/player/catalog-lock.png');
@@ -28,10 +33,11 @@ const ImgEIsCharge = {
 }
 
 interface IProps {
+  omap: string;
 }
 
-const ChapterListLog  = (props: IProps) => {
-  const dispatch = useDispatch()
+const ChapterListLog  = ({ omap }: IProps) => {
+  const dispatch = useAppDispatch()
   const state = useAppSelector((state: RootState) => (state));
   const chapterListVisible = state.control.chapterListVisible;
   const { videoSource, bookId, swiperIndex } = state.player;
@@ -50,6 +56,14 @@ const ChapterListLog  = (props: IProps) => {
   const chooseChapter = (chapter: IChapterListItem) => {
     dispatch(setChapterId(chapter.chapterId));
     dispatch(setChapterListVisible(false));
+    dispatch(videoSourceAsync({
+      bookId,
+      chapterId: chapter.chapterId,
+      autoPay: EAutoPay.否,
+      confirmPay: EConfirmPay.非确认订购扣费,
+      scene: EScene.播放页,
+      omap
+    }));
   }
 
   const chooseTab = async (index: number) => {

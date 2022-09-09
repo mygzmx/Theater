@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
-  Dimensions,
+  Dimensions, Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
@@ -13,10 +13,11 @@ import { setBookId, setChapterId } from "../../../store/modules/player.module";
 const ImgEmpty = require('../../../assets/images/img-empty.png')
 
 interface IProps {
-  videoList: IVideoListItem[];
+  item: IVideoListItem;
+  index: number;
 }
 
-export default function Recommend({ videoList }: IProps) {
+export default function Recommend({ item, index }: IProps) {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const linkToPlayer = async (item: IVideoListItem) => {
@@ -25,34 +26,20 @@ export default function Recommend({ videoList }: IProps) {
     // @ts-ignore
     navigation.navigate('Player')
   }
-
-  return (<View style={styles.flatListBox}>
-    {videoList.map((videoItem, videoInd) => {
-      const { bookName, bookId } = videoItem
-      return (<TouchableWithoutFeedback key={`${bookId}_${videoInd}`} onPress={() => linkToPlayer(videoItem)}>
-        <View style={styles.recommendItem}>
-          <Image style={styles.recommendImg} source={{ uri: videoItem.coverWap }} defaultSource={ImgEmpty}/>
-          <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
-        </View>
-      </TouchableWithoutFeedback>)
-    })}
-  </View>)
+  const { bookName, bookId } = item
+  return (<Pressable style={styles.recommendItem} onPress={() => linkToPlayer(item)}>
+    <Image style={styles.recommendImg} source={{ uri: item.coverWap }} defaultSource={ImgEmpty}/>
+    <Text style={styles.recommendBookName} numberOfLines={1} ellipsizeMode={'tail'}>{bookName}</Text>
+  </Pressable>
+  )
 }
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
-  flatListBox: {
-    marginLeft: 20,
-    width: width - 20,
-    display: "flex",
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-  },
   recommendItem: {
     width: (width - 72)/3,
     marginRight: 16,
-    marginBottom: 17,
+    // marginBottom: 17,
   },
   recommendImg: {
     height: 145,

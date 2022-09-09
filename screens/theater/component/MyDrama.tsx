@@ -5,7 +5,7 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
-  TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
@@ -28,29 +28,25 @@ export default function MyDrama({ dramaList }: IProps) {
     navigation.navigate('Player')
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
-    return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>
-      <View style={styles.bookItem}>
-        <ImageBackground
-          style={styles.coverImg}
-          source={{ uri: item.coverImage }}
-          defaultSource={ImgEmpty}>
-          {item.isUpdate === 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
-        </ImageBackground>
-        <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
-        <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
-      </View>
-    </TouchableWithoutFeedback>
+    return <Pressable style={styles.bookItem} onPress={() => linkToPlayer(item)}>
+      <ImageBackground
+        style={styles.coverImg}
+        source={{ uri: item.coverImage }}
+        defaultSource={ImgEmpty}>
+        {item.isUpdate === 1 && <Image style={styles.updateImg} source={UpdateIcon}/>}
+      </ImageBackground>
+      <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
+      <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
+    </Pressable>
   }
 
   return (<View style={styles.dramaWrap}>
     <View style={styles.dramaHeader}>
       <Text style={styles.dramaTitle}>我的追剧</Text>
-      <TouchableWithoutFeedback onPress={() => navigation.navigate('Drama')}>
-        <View style={styles.dramaLink}>
-          <Text style={styles.dramaLinkTxt}>查看全部</Text>
-          <Image style={styles.dramaLinkIcon} source={MoreIcon}/>
-        </View>
-      </TouchableWithoutFeedback>
+      <Pressable style={styles.dramaLink} onPress={() => navigation.navigate('Drama')}>
+        <Text style={styles.dramaLinkTxt}>查看全部</Text>
+        <Image style={styles.dramaLinkIcon} source={MoreIcon}/>
+      </Pressable>
     </View>
     <FlatList
       style={styles.flatListBox}
@@ -65,8 +61,8 @@ export default function MyDrama({ dramaList }: IProps) {
 const styles = StyleSheet.create({
   dramaWrap: {
     paddingTop:  4,
-    paddingBottom: 24,
     flexDirection: 'column',
+    paddingBottom: 12,
   },
   dramaHeader: {
     paddingLeft: 20,
@@ -101,6 +97,7 @@ const styles = StyleSheet.create({
   flatListBox: {
     paddingLeft: 14,
     paddingRight: 14,
+    paddingBottom: 12,
   },
   bookItem: {
     marginRight: 6,

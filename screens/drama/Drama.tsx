@@ -1,12 +1,12 @@
 import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableWithoutFeedback,
   Dimensions,
   FlatList,
-  ImageBackground,
+  Image,
+  ImageBackground, Pressable,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -18,13 +18,14 @@ import { setBookId, setChapterId } from "../../store/modules/player.module";
 import { getLogTime } from "../../utils/logTime";
 import LoadMore from "../../components/LoadMore";
 import Empty from "../../components/Empty";
+import { EScene } from "../../interfaces/player.interface";
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const UpdateIcon = require('../../assets/images/update-icon.png');
 const ImgEdit = require('../../assets/images/theater/edit.png')
 const ImgCancel = require('../../assets/images/cancel.png')
 const ImgUnchecked = require('../../assets/images/theater/unchecked-icon.png')
 const ImgChecked = require('../../assets/images/theater/checked-icon.png')
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 // eslint-disable-next-line no-unused-vars
 enum ECheckedState {
@@ -148,46 +149,39 @@ export default function Drama () {
         indexArr.push(index);
       }
     });
-    const scene = '我的追剧';
     setOmap(prevState => ({ ...prevState, content_pos: indexArr.join(','), content_id: deleteArr.join(','), trigger_time: getLogTime() }))
-    await netNoDramaVideo(deleteArr.join(','), scene, omap)
+    await netNoDramaVideo(deleteArr.join(','), EScene.我的追剧, omap)
     setIsEdit(false);
     setPage(1);
     await getDramaData(1);
     toast.show('删除成功');
   }
   const renderItem = ({ item }: { item: IDramaItem }) => {
-    return <TouchableWithoutFeedback onPress={() => linkToPlayer(item)}>
-      <View style={styles.bookItem}>
-        <ImageBackground
-          style={styles.coverImg}
-          source={{ uri: item.coverImage }}
-          defaultSource={ImgEmpty}>
-          {item.isUpdate === EIsUpdate.yes && <Image style={styles.updateImg} source={UpdateIcon}/>}
-          {isEdit && (item.isChecked ? <Image source={ImgChecked} style={styles.checkedIcon} /> :
-            <Image style={styles.checkedIcon} source={ImgUnchecked}/>
-          )}
-        </ImageBackground>
-        <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
-        <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
-      </View>
-    </TouchableWithoutFeedback>
+    return <Pressable style={styles.bookItem} onPress={() => linkToPlayer(item)}>
+      <ImageBackground
+        style={styles.coverImg}
+        source={{ uri: item.coverImage }}
+        defaultSource={ImgEmpty}>
+        {item.isUpdate === EIsUpdate.yes && <Image style={styles.updateImg} source={UpdateIcon}/>}
+        {isEdit && (item.isChecked ? <Image source={ImgChecked} style={styles.checkedIcon} /> :
+          <Image style={styles.checkedIcon} source={ImgUnchecked}/>
+        )}
+      </ImageBackground>
+      <Text style={styles.bookName} numberOfLines={1} ellipsizeMode={'tail'}>{item.bookName}</Text>
+      <Text style={styles.bookEpisode} numberOfLines={1} ellipsizeMode={'tail'}>{item.cname}</Text>
+    </Pressable>
   }
 
   return <View style={styles.dramaPage}>
     { bingeList.length > 0 && <View style={styles.operations}>
-      { isEdit ? <TouchableWithoutFeedback onPress={() => cancel()}>
-        <View style={styles.operationItem}>
-          <Text style={styles.operationTxt}>取消</Text>
-          <Image style={styles.operationImg} source={ImgCancel}/>
-        </View>
-      </TouchableWithoutFeedback> :
-        <TouchableWithoutFeedback onPress={() => edit()}>
-          <View style={styles.operationItem}>
-            <Text style={styles.operationTxt}>编辑</Text>
-            <Image style={styles.operationImg} source={ImgEdit}/>
-          </View>
-        </TouchableWithoutFeedback>
+      { isEdit ? <Pressable style={styles.operationItem} onPress={() => cancel()}>
+        <Text style={styles.operationTxt}>取消</Text>
+        <Image style={styles.operationImg} source={ImgCancel}/>
+      </Pressable> :
+        <Pressable style={styles.operationItem} onPress={() => edit()}>
+          <Text style={styles.operationTxt}>编辑</Text>
+          <Image style={styles.operationImg} source={ImgEdit}/>
+        </Pressable>
       }
     </View> }
     <FlatList
@@ -203,18 +197,13 @@ export default function Drama () {
       ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
     />
     { isEdit && <View style={styles.footer}>
-      <TouchableWithoutFeedback onPress={() => allIn()}>
-        <View style={styles.footerItem}>
-          <Text style={{ ...styles.footerItemTxt, color: checkedState === ECheckedState.全选中 ? '#7F7F7F' : '#ffffff' }} >全选</Text>
-        </View>
-      </TouchableWithoutFeedback>
-
+      <Pressable style={styles.footerItem} onPress={() => allIn()}>
+        <Text style={{ ...styles.footerItemTxt, color: checkedState === ECheckedState.全选中 ? '#7F7F7F' : '#ffffff' }} >全选</Text>
+      </Pressable>
       <View style={styles.footerLine}/>
-      <TouchableWithoutFeedback onPress={() => deleteEvent()}>
-        <View style={styles.footerItem}>
-          <Text style={{ ...styles.footerItemTxt, color: checkedState === ECheckedState.全没选中 ? '#7F7F7F' : '#ffffff' }} >删除</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      <Pressable style={styles.footerItem} onPress={() => deleteEvent()}>
+        <Text style={{ ...styles.footerItemTxt, color: checkedState === ECheckedState.全没选中 ? '#7F7F7F' : '#ffffff' }} >删除</Text>
+      </Pressable>
     </View>
     }
   </View>
@@ -226,9 +215,6 @@ const styles = StyleSheet.create({
     height,
     paddingTop: 16,
     position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     backgroundColor: 'rgba(25, 25, 25, 1)',
   },
   operations: {
@@ -242,7 +228,7 @@ const styles = StyleSheet.create({
     height: 45,
     padding: 10,
     justifyContent: 'center',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexDirection: 'row',
   },
   operationTxt: {
@@ -257,8 +243,7 @@ const styles = StyleSheet.create({
   flatListBox: {
     paddingLeft: 20,
     paddingRight: 20,
-    // flex: 1,
-    height: height - 240,
+    minHeight: height - 219,
     flexGrow: 0,
   },
   bookItem: {
@@ -299,7 +284,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     width,
-    height: 60,
+    height: 70,
+    paddingBottom: 10,
     backgroundColor: '#0F0F0F',
     display: 'flex',
     justifyContent: 'space-between',

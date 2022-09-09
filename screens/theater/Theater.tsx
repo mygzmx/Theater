@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { StyleSheet, FlatList, View } from 'react-native';
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { RootTabScreenProps } from '../../@types';
@@ -19,7 +19,6 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const [activeRecommendType, setActiveRecommendType] = useState('0');
   const [typeList, setTypeList] = useState<IClassificationItem[]>([]);
   const [videoList, setVideoList] = useState<IVideoListItem[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getColumnList(1, activeRecommendType === "0" ? undefined : activeRecommendType,true, true).then(() => {})
@@ -71,12 +70,11 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   }
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
     setPage(1)
     setActiveRecommendType('0');
     setPageLoadingFull(false);
     console.log('onRefresh-------------------_>');
-    getColumnList(1, undefined,true, true).then(() => setRefreshing(false));
+    getColumnList(1, undefined,true, true)
   }, []);
 
   const [pageLoading, setPageLoading] = useState(false);
@@ -86,37 +84,29 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     await getColumnList(page + 1, activeRecommendType);
   }
 
-  const onMomentumScrollEnd = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offSetY = event.nativeEvent.contentOffset.y; // 获取滑动的距离
-    const contentSizeHeight = event.nativeEvent.contentSize.height; // scrollView  contentSize 高度
-    const oriageScrollHeight = event.nativeEvent.layoutMeasurement.height; // scrollView高度
-    // console.log(`offSetY${offSetY}`);
-    // console.log(`oriageScrollHeight${oriageScrollHeight}`);
-    // console.log(`contentSizeHeight${contentSizeHeight}`);
-    if (offSetY + oriageScrollHeight >= contentSizeHeight - 1) {
-      if (!pageLoadingFull) {
-        await loadMore();
-      }
-    }
-  }
-  return (
-    <ScrollView
-      overScrollMode={'auto'}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      onScrollEndDrag={(e) => onMomentumScrollEnd(e)}
-      style={styles.container}>
-      {bannerList.length> 0 && <SwiperNormal bannerList={bannerList}/>}
-      {dramaList.length > 0 && <MyDrama dramaList={dramaList}/>}
+  return <FlatList
+    style={styles.container}
+    ListHeaderComponent={() => <>
+      { bannerList.length> 0 && <SwiperNormal bannerList={bannerList}/> }
+      { dramaList.length > 0 && <MyDrama dramaList={dramaList}/> }
       <RecommendTitle
         typeList={typeList}
         activeRecommendType={activeRecommendType}
         changeType={(item) => changeRecommendType(item)}/>
-      {isEmpty ? <Empty style={{ height: 300 }} theme={'dark'} message={'暂无推荐视频'}/> : <>
-        <Recommend videoList={videoList}/>
-        <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>
-      </>}
-    </ScrollView>
-  );
+    </>}
+    ListEmptyComponent={() => isEmpty ? <Empty style={{ height: 300 }} theme={'dark'} message={'暂无推荐视频'}/> : null}
+    refreshing={false}
+    onRefresh={onRefresh}
+    numColumns={3}
+    columnWrapperStyle={{ paddingLeft: 20, paddingRight: 20 }}
+    ItemSeparatorComponent={() => <View style={{ height: 16 }}/>}
+    horizontal={false}
+    data={videoList}
+    renderItem={({ item, index }) => <Recommend item={item} index={index}/> }
+    onEndReached={(info) => !isEmpty && loadMore()}
+    ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
+    keyExtractor={(item) => item.bookId}
+  />
 }
 
 const styles = StyleSheet.create({

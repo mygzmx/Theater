@@ -33,24 +33,27 @@ export default function BottomTabNavigator() {
   );
   return (
     <BottomTab.Navigator
-      initialRouteName="Player"
+      initialRouteName="Theater"
       screenOptions={{
-        tabBarActiveTintColor: '#FFFFFF',
         tabBarStyle: {
           height: 60,
-          paddingBottom: 20,
-          paddingTop: 10,
+          paddingBottom: 25,
+          borderTopWidth: 0,
+        },
+        headerStyle: {
+          height: 90,
         },
         tabBarLabelStyle: {
           fontSize: 18,
-          color: '#7F7F7F',
+          // color: '#7F7F7F',
         },
+        tabBarActiveTintColor: '#FFFFFF',
         tabBarIcon: () => null,
         tabBarBackground: () => <View
           style={{ width: '100%', height: '100%', backgroundColor: 'rgba(15, 15, 15, 1)' }}/>
       }}>
       <BottomTab.Screen
-        navigationKey="Theater"
+        navigationKey="Player"
         name="Theater"
         component={Theater}
         options={({ navigation }: RootTabScreenProps<'Theater'>) => ({

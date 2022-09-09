@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#7F7F7F',
-    lineHeight: 21,
   },
   typeListActiveBoxTxt: {
     padding: 12,

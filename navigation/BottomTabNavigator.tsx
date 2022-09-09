@@ -33,7 +33,7 @@ export default function BottomTabNavigator() {
   );
   return (
     <BottomTab.Navigator
-      initialRouteName="Theater"
+      initialRouteName="Player"
       screenOptions={{
         tabBarStyle: {
           height: 60,

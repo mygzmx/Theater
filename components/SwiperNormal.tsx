@@ -21,7 +21,7 @@ export default function SwiperNormal ({ bannerList, bannerLink }: IProps) {
       onEndReached={() => {
         flatRef.current?.goToFirstIndex()
       }}
-      ListFooterComponent={() => <View style={{ width: 10, height: 10 }}/>}
+      ListFooterComponent={() => <View style={{ width: 5, height: 5 }}/>}
       renderItem={({ item, index }) => (
         <Pressable style={styles.swiperItem} onPress={() => {
           bannerLink && bannerLink(item, index)

@@ -5,18 +5,18 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as React from "react";
 import { useToast } from "react-native-toast-notifications";
-import { netChapterList } from "../../../apis/Player";
 import { RootState } from "../../../store";
 import { netDramaVideo, netNoDramaVideo } from "../../../apis/Theater";
 import { setIsInBookShelf, setChapterId } from "../../../store/modules/player.module";
-import { EBookFinishStatus, EScene, IChapterListItem } from "../../../interfaces/player.interface";
+import { EScene } from "../../../interfaces/player.interface";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import { IVideoList } from "../Player";
 import ChapterListLog from "./ChapterListLog";
+import { setChapterListVisible } from "../../../store/modules/control.module";
 const ImgHeartWhite = require('../../../assets/images/heart-white.png')
 const ImgHeartActive = require('../../../assets/images/heart-active-icon.png')
 const ImgPlayerCatalog = require('../../../assets/images/player/player-catalog.png')
@@ -29,28 +29,8 @@ const ControlMore = (props: IProps) => {
   const toast = useToast();
   const dispatch = useDispatch()
   const [isShowChapters, setIsShowChapters] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
-  const [chapters, setChapters] = useState<IChapterListItem[]>([]);
-  const [bookFinishStatus, setBookFinishStatus] = useState<EBookFinishStatus>(0);
-  const [total, setTotal] = useState(0);
   const { bookId, videoSource } = useSelector((state: RootState) => (state.player));
   const [confirmVisible, setConfirmVisible] = useState(false);
-  useEffect(() => {
-    if (bookId) {
-      getChapterList(0).then(() => {})
-    }
-  }, [bookId]);
-
-  const getChapterList = async (tab: number) => {
-    const { chapterList = [], totalChapters = '0', bookFinishStatus } = await netChapterList({
-      bookId,
-      startIndex: tab * 30 + 1,
-      endIndex: (tab + 1) * 30
-    });
-    setChapters(chapterList);
-    setTotal(Number(totalChapters));
-    setBookFinishStatus(bookFinishStatus)
-  }
 
   const dramaVideo = async () => {
     if (!videoSource?.isInBookShelf) {
@@ -61,6 +41,7 @@ const ControlMore = (props: IProps) => {
       setConfirmVisible(true);
     }
   }
+
   const confirm = async () => {
     dispatch(setIsInBookShelf(false))
     setConfirmVisible(false)
@@ -68,18 +49,7 @@ const ControlMore = (props: IProps) => {
   }
 
   const checkChapterList = async () => {
-    setIsShowChapters(true);
-    await getChapterList(tabIndex)
-  }
-
-  const chooseTab = async (index: number) => {
-    if (tabIndex === index) return;
-    setTabIndex(index);
-    await getChapterList(index)
-  }
-  const chooseChapter = (chapter: any) => {
-    dispatch(setChapterId(chapter.chapterId));
-    setIsShowChapters(false);
+    dispatch(setChapterListVisible(true));
   }
 
   return <View style={styles.moreWrap}>
@@ -92,16 +62,6 @@ const ControlMore = (props: IProps) => {
       rightTxt="再想想"
       title="确认取消追剧吗？"
       message="取消后您将无法快速找到本剧"/>
-    <ChapterListLog
-      chapterId={ props.source.chapterId }
-      bookFinishStatus={bookFinishStatus}
-      tabIndex={tabIndex}
-      modalVisible={isShowChapters}
-      chapterList={chapters}
-      total={total}
-      chooseTab={chooseTab}
-      chooseChapter={chooseChapter}
-      close={() => setIsShowChapters(false)}/>
     <View style={styles.moreLeft}>
       <Text style={styles.bookName}>{ videoSource?.bookName }</Text>
       <Text style={styles.chapterName}>{ props.source.chapterName }</Text>

@@ -2,13 +2,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import userReducer from './modules/user.module';
 import commonReducer from './modules/common.module';
-import playerReducer from "./modules/player.module";
+import { playerSlice } from "./modules/player.module";
+import { controlSlice } from "./modules/control.module";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     common: commonReducer,
-    player: playerReducer,
+    player: playerSlice.reducer,
+    control: controlSlice.reducer
   },
 });
 

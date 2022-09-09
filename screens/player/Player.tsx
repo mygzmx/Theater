@@ -1,14 +1,23 @@
 import { Dimensions, StyleSheet, View, Animated } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { SwiperFlatList } from "react-native-swiper-flatlist/index";
-import { RootState, useAppDispatch, useAppSelector } from "../../store";
-import { setChapterId, videoInitAsync, videoSourceAsync } from "../../store/modules/player.module";
+import { useFocusEffect } from "@react-navigation/native";
+import { useSelector, useStore } from "react-redux";
+import { RootState, useAppDispatch } from "../../store";
+import {
+  doLeavePlayer,
+  setChapterId,
+  setSwiperIndex,
+  setVideoList,
+  videoInitAsync,
+  videoSourceAsync
+} from "../../store/modules/player.module";
 import { EAutoPay, EConfirmPay, EIsRead, EScene, IChapterInfo } from "../../interfaces/player.interface";
 import { getLogTime } from "../../utils/logTime";
 import { netVideoPreload } from "../../apis/Player";
 import VideoUnion from "./component/VideoUnion";
 import SwiperFlatListNoData from "./component/SwiperFlatListNoData";
-import { useFocusEffect } from "@react-navigation/native";
+import ChapterListLog from "./component/ChapterListLog";
 const { width, height } = Dimensions.get('screen');
 
 export interface IVideoList extends IChapterInfo {
@@ -31,12 +40,26 @@ const omap = {
 
 export default function Player () {
   const dispatch = useAppDispatch();
-  const [swiperIndex, setSwiperIndex] = useState(0);
-  const { bookId, chapterId, videoSource } = useAppSelector((state: RootState) => (state.player));
-  const [videoList, setVideoList] = useState<IVideoList[]>([]);
+  const store =  useStore<RootState>()
+  const { bookId, chapterId, videoSource, swiperIndex, videoList } = useSelector((state: RootState) => (state.player));
+  // const [videoList, setVideoList] = useState<IVideoList[]>([]);
   const isRefresh = useRef(false);
+  const isLeave = useRef(false); // 是否离开
   const flatRef = useRef<SwiperFlatList>({} as SwiperFlatList);
-
+  useFocusEffect(
+    useCallback(() => {
+      isLeave.current = false;
+      const storePlayer = store.getState().player;
+      dispatch(setSwiperIndex(storePlayer.swiperIndex));
+      if (storePlayer.videoSource && storePlayer.videoSource?.bookId) {
+        getVideoPreload(storePlayer.videoSource.bookId, storePlayer.videoSource.chapterInfo[0].chapterId, storePlayer.videoSource.chapterInfo)
+      }
+      return () => {
+        isLeave.current = true;
+        dispatch(doLeavePlayer('leave'))
+      };
+    }, []),
+  );
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
   }, []);
@@ -47,7 +70,7 @@ export default function Player () {
   useEffect(() => {
     if (videoSource.bookId && videoSource.chapterInfo[0].chapterId) {
       isRefresh.current = true;
-      setSwiperIndex(0);
+      dispatch(setSwiperIndex(0));
       getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
     }
   }, [videoSource]);
@@ -57,17 +80,16 @@ export default function Player () {
       flatRef.current.goToFirstIndex()
     }
   }, [videoList]);
-
   // 章节预加载
   const getVideoPreload = async ( bookId: string, chapterId: string, sourceData: IVideoList[] = [], isExist?: boolean) => {
     const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
     if (isExist) return; // videoList是否存在数据
     if (sourceData.length > 0) {
       const _preVideo = videoPreload.chapterInfo.filter(val => sourceData.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
-      setVideoList([...sourceData, ..._preVideo])
+      dispatch(setVideoList([...sourceData, ..._preVideo]))
     } else {
       const _preVideo = videoPreload.chapterInfo.filter(val => videoList.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
-      setVideoList(pre => [...pre, ..._preVideo])
+      dispatch(setVideoList([...videoList, ..._preVideo]))
     }
   }
   // 播放结束回调
@@ -78,14 +100,14 @@ export default function Player () {
     }
   }
   const onChangeIndex = async ({ index, prevIndex }: { index: number; prevIndex: number }) => {
-    if (isRefresh.current) return;
+    if (isRefresh.current || isLeave.current) return;
     console.log('onChangeIndex--------->', index, prevIndex )
     if (index === videoList.length - 1) {
       await getVideoPreload(videoSource.bookId, videoList[index].chapterId);
     } else {
       await getVideoPreload(videoSource.bookId, videoList[index].chapterId, [], true);
     }
-    setSwiperIndex(index);
+    dispatch(setSwiperIndex(index));
   }
   const sliderHeight = useRef(new Animated.Value(-44)).current;
 
@@ -106,12 +128,14 @@ export default function Player () {
     return <View style={styles.container}>
       <VideoUnion
         omap={JSON.stringify(omap)}
-        source={{ ...item, isViewable: swiperIndex === index }}
+        index={index}
+        source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex }}
         onVideoEnd={onVideoEnd}/>
     </View>
   }
   return <View style={styles.playerWrap}>
     <SwiperFlatList
+      windowSize={3}
       style={styles.swiperBox}
       ref={flatRef}
       refreshing={false}
@@ -132,6 +156,7 @@ export default function Player () {
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
     />
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
+    <ChapterListLog/>
   </View>;
 
 }

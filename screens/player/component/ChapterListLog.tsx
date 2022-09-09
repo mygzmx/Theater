@@ -10,8 +10,13 @@ import { Alert,
   FlatList
 } from "react-native";
 import * as React from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { RootState, useAppSelector } from "../../../store";
 import { EBookFinishStatus, EIsCharge, IChapterListItem } from "../../../interfaces/player.interface";
+import { netChapterList } from "../../../apis/Player";
+import { setChapterId } from "../../../store/modules/player.module";
+import { setChapterListVisible } from "../../../store/modules/control.module";
 const ImgClose = require('../../../assets/images/player/catalog-close.png');
 const ImgCatalogLock = require('../../../assets/images/player/catalog-lock.png');
 const ImgCatalogVip = require('../../../assets/images/player/catalog-vip.png');
@@ -23,20 +28,45 @@ const ImgEIsCharge = {
 }
 
 interface IProps {
-  modalVisible: boolean;
-  total: number;
-  close: () => void;
-  chapterList: IChapterListItem[];
-  chooseTab: (index: number) => void;
-  tabIndex: number;
-  bookFinishStatus: EBookFinishStatus;
-  chooseChapter: (chapter: IChapterListItem) => void;
-  chapterId: string;
 }
 
-export default function ChapterListLog ({ chapterId, modalVisible, close, chapterList, total, tabIndex, chooseTab, bookFinishStatus, chooseChapter }: IProps) {
+const ChapterListLog  = (props: IProps) => {
+  const dispatch = useDispatch()
+  const state = useAppSelector((state: RootState) => (state));
+  const chapterListVisible = state.control.chapterListVisible;
+  const { videoSource, bookId, swiperIndex } = state.player;
+  const chapterId = state.player.videoList?.[swiperIndex]?.chapterId || state.player.chapterId;
+  const [chapters, setChapters] = useState<IChapterListItem[]>([]);
+  const [bookFinishStatus, setBookFinishStatus] = useState<EBookFinishStatus>(0);
+  const [total, setTotal] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
 
-  const { videoSource } = useAppSelector((state: RootState) => (state.player));
+  useEffect(() => {
+    if (chapterListVisible && videoSource.bookId) {
+      getChapterList(0).then(() => {})
+    }
+  }, [chapterListVisible]);
+
+  const chooseChapter = (chapter: any) => {
+    dispatch(setChapterId(chapter.chapterId));
+    dispatch(setChapterListVisible(false));
+  }
+
+  const chooseTab = async (index: number) => {
+    if (tabIndex === index) return;
+    setTabIndex(index);
+    await getChapterList(index)
+  }
+  const getChapterList = async (tab: number) => {
+    const { chapterList = [], totalChapters = '0', bookFinishStatus } = await netChapterList({
+      bookId,
+      startIndex: tab * 30 + 1,
+      endIndex: (tab + 1) * 30
+    });
+    setChapters(chapterList);
+    setTotal(Number(totalChapters));
+    setBookFinishStatus(bookFinishStatus)
+  }
 
   const getTabs = (interval: number = 30): string[] => {
     if (total <= interval) {
@@ -58,17 +88,17 @@ export default function ChapterListLog ({ chapterId, modalVisible, close, chapte
 
   return <Modal
     animationType="slide"
-    transparent={modalVisible}
+    transparent={chapterListVisible}
     onRequestClose={() => {
       Alert.alert("Modal has been closed.");
     }}
-    visible={modalVisible}>
+    visible={chapterListVisible}>
     <View style={styles.chapterLog}>
-      <TouchableWithoutFeedback onPress={() => close() }>
+      <TouchableWithoutFeedback onPress={() => dispatch(setChapterListVisible(false)) }>
         <View style={styles.chapterLogMask}/>
       </TouchableWithoutFeedback>
       <View style={styles.chapterLogContent}>
-        <TouchableOpacity style={styles.chapterClose} onPress={() => close() }>
+        <TouchableOpacity style={styles.chapterClose} onPress={() => dispatch(setChapterListVisible(false)) }>
           <Image style={styles.chapterCloseImg} source={ImgClose}/>
         </TouchableOpacity>
         <View style={styles.logTitleBox}>
@@ -90,7 +120,7 @@ export default function ChapterListLog ({ chapterId, modalVisible, close, chapte
             </TouchableOpacity>)}
           keyExtractor={item => item}/> }
         <View style={{ ...styles.chapterListBox, marginTop: getTabs(30).length > 1 ? 0 : 28 }}>
-          {chapterList.map(chapter => (
+          {chapters.map(chapter => (
             <TouchableOpacity
               key={chapter.chapterId}
               onPressIn={() => chooseChapter(chapter)}
@@ -110,7 +140,7 @@ export default function ChapterListLog ({ chapterId, modalVisible, close, chapte
   </Modal>
 }
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
   chapterLog: {
     width,
@@ -219,3 +249,6 @@ const styles = StyleSheet.create({
     color: '#404657',
   }
 })
+
+
+export default ChapterListLog;

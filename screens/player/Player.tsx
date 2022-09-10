@@ -47,6 +47,7 @@ export default function Player () {
   const dispatch = useAppDispatch();
   const store =  useStore<RootState>()
   const { bookId, chapterId, videoSource } = useSelector((state: RootState) => (state.player));
+  // store.getState()获得的值暂时不能作为useEffect的依赖项
   const { videoList, swiperIndex } = store.getState().player;
   const { cancelDramaVisible } = store.getState().control;
   const isLeave = useRef(false); // 是否离开
@@ -74,7 +75,6 @@ export default function Player () {
 
   useEffect(() => {
     if (isLeave.current) return;
-    console.log('videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId', videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId)
     if (videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId) {
       getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
       flatRef.current?.goToFirstIndex && flatRef.current?.goToFirstIndex();

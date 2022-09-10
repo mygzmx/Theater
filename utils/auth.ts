@@ -1,13 +1,15 @@
 import { Dimensions } from "react-native";
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+import { expo } from '../app.json';
 import { getLogTime, getUtdidTmp } from "./logTime";
-import appConfig from "./app.config";
 const { width, height } = Dimensions.get('screen')
 const { brand, modelName, osName, osVersion, osInternalBuildId, DeviceType, isDevice, getDeviceTypeAsync } = Device
-const { domain, channelCode } = appConfig;
+const { domain, channelCode } = expo.extra;
 
 export const getHeader = async () => {
-  return {
+  console.log('Constants-------->', Constants)
+  const header = {
     os: osName,
     brand,
     channelCode,
@@ -31,4 +33,6 @@ export const getHeader = async () => {
     utdidTmp: getUtdidTmp(),
     uuid: "",
   }
+  console.log('header=============================>',header)
+  return header;
 };

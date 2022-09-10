@@ -7,6 +7,14 @@
     "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "owner": "Mygz",
+    "privacy": "hidden",
+    "extra": {
+      "appName": "com.dianzhong.fhjc",
+      "appVersion": "ver=100&appVer=1.0.0",
+      "channelCode": "Vdz_fhjc",
+      "domain": 15
+    },
     "splash": {
       "image": "./assets/images/logo_xz.png",
       "resizeMode": "contain",

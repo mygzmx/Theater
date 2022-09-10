@@ -6,31 +6,38 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { netVideoFinish } from "../../../apis/Player";
-import { RootState, useAppSelector } from "../../../store";
+import { useStore } from "react-redux";
+import { netVideoFinish, netVideoPreload } from "../../../apis/Player";
+import { RootState, useAppDispatch } from "../../../store";
 import { IVideoList } from "../Player";
+import { setChapterId, setVideoList } from "../../../store/modules/player.module";
+import { EAutoPay, EScene } from "../../../interfaces/player.interface";
 import Controls from "./Controls";
 const { height } = Dimensions.get('screen');
 
 interface IProps {
-  onVideoEnd: () => void;
   source: IVideoList;
   omap?: string;
 }
 
-export default function VideoUnion ({ onVideoEnd, source, omap }: IProps) {
+export default function VideoUnion ({ source, omap }: IProps) {
   const route = useRoute()
   const player = useRef<Video>({} as Video);
+  const store =  useStore<RootState>()
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
-  const { bookId, chapterId } = useAppSelector((state: RootState) => (state.player));
+  const { bookId, chapterId, videoList, swiperIndex, videoSource } = store.getState().player;
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     console.log('player useEffect---------------->', source.isViewable)
+    if (source.content.m3u8 && source.isViewable ) {
+      player.current?.playFromPositionAsync && player.current?.playFromPositionAsync(0)
+    }
     return () => {
       if (!player.current || !player.current?.pauseAsync) return;
       player.current?.pauseAsync();
     };
-  }, []);
-
+  }, [source.content.m3u8]);
   useFocusEffect(
     useCallback(() => {
       // console.log('player active---------------->', swiperIndex)
@@ -63,6 +70,19 @@ export default function VideoUnion ({ onVideoEnd, source, omap }: IProps) {
   // 控制条
   const changeControl = (positionMillis: number) => {
     player.current?.playFromPositionAsync(positionMillis);
+  }
+
+  // 播放结束回调
+  const onVideoEnd = async () => {
+    const _chapterId = videoList[swiperIndex]?.nextChapterId || videoSource.nextChapterId;
+    if (_chapterId) {
+      dispatch(setChapterId(_chapterId));
+      const videoPreload = await netVideoPreload({ bookId, chapterId: _chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
+      const _preVideo = videoPreload.chapterInfo.filter(val => videoList.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
+      const _videoList = JSON.parse(JSON.stringify(videoList));
+      _videoList.splice(swiperIndex, 1);
+      dispatch(setVideoList([..._videoList, ..._preVideo]))
+    }
   }
   return(
     <View style={styles.videoWrap}>

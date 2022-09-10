@@ -6,7 +6,9 @@ import { useSelector, useStore } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import {
   doLeavePlayer,
-  setChapterId, setIsInBookShelf, setIsLeave,
+  setChapterId,
+  setIsInBookShelf,
+  setIsLeave,
   setSwiperIndex,
   setVideoList,
   videoInitAsync,
@@ -44,8 +46,9 @@ const omap = {
 export default function Player () {
   const dispatch = useAppDispatch();
   const store =  useStore<RootState>()
-  const { bookId, chapterId, videoSource, swiperIndex, videoList } = useSelector((state: RootState) => (state.player));
-  const { cancelDramaVisible } = useSelector((state: RootState) => (state.control));
+  const { bookId, chapterId, videoSource } = useSelector((state: RootState) => (state.player));
+  const { videoList, swiperIndex } = store.getState().player;
+  const { cancelDramaVisible } = store.getState().control;
   const isLeave = useRef(false); // 是否离开
   const flatRef = useRef<SwiperFlatList>({} as SwiperFlatList);
   useFocusEffect(
@@ -68,12 +71,10 @@ export default function Player () {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
     dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
   }, [bookId]);
-  useEffect(() => {
-
-  }, [chapterId]);
 
   useEffect(() => {
     if (isLeave.current) return;
+    console.log('videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId', videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId)
     if (videoSource.bookId && videoSource?.chapterInfo?.length > 0 && videoSource.chapterInfo?.[0]?.chapterId) {
       getVideoPreload(videoSource.bookId, videoSource.chapterInfo[0].chapterId, videoSource.chapterInfo);
       flatRef.current?.goToFirstIndex && flatRef.current?.goToFirstIndex();
@@ -91,16 +92,10 @@ export default function Player () {
       dispatch(setVideoList([...videoList, ..._preVideo]))
     }
   }
-  // 播放结束回调
-  const onVideoEnd = () => {
-    const _chapterId = videoList[swiperIndex]?.nextChapterId;
-    if (_chapterId) {
-      dispatch(setChapterId(_chapterId));
-    }
-  }
+
   const onChangeIndex = async ({ index, prevIndex }: { index: number; prevIndex: number }) => {
     if (isLeave.current) return;
-    console.log('onChangeIndex--------->', index, prevIndex )
+    console.log('onChangeIndex--------->', index, prevIndex, swiperIndex )
     if (index === videoList.length - 1) {
       await getVideoPreload(videoSource.bookId, videoList[index].chapterId);
     } else {
@@ -110,8 +105,10 @@ export default function Player () {
   }
   const sliderHeight = useRef(new Animated.Value(-44)).current;
 
-  const onRefresh = async () => {
-    if(!videoSource.preChapterId) {
+  const onRefresh = () => {
+    const preChapterId = videoList?.[0]?.preChapterId || videoSource.preChapterId;
+    console.log('preChapterId------------->', preChapterId, swiperIndex)
+    if( swiperIndex === 0 && !preChapterId) {
       Animated.timing(sliderHeight, { toValue: 0, duration: 1000, useNativeDriver: false }).start(({ finished }) => {
         /* 动画完成的回调函数 */
         if (finished) {
@@ -119,7 +116,8 @@ export default function Player () {
         }
       });
     } else {
-      await dispatch(setChapterId(videoSource.preChapterId));
+      dispatch(setChapterId(preChapterId));
+      dispatch(videoSourceAsync({ bookId, chapterId: preChapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
     }
   }
 
@@ -128,7 +126,7 @@ export default function Player () {
       <VideoUnion
         omap={JSON.stringify(omap)}
         source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex && !store.getState().player.isLeave }}
-        onVideoEnd={onVideoEnd}/>
+      />
     </View>
   }
   return <View style={styles.playerWrap}>

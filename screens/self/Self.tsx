@@ -1,18 +1,16 @@
 import { StyleSheet } from 'react-native';
 import * as WebBrowser from "expo-web-browser";
-import { useNavigation } from "@react-navigation/native";
 import { View } from '../../components/Themed';
 import { RootState, useAppSelector } from "../../store";
 import { EIsZhichi } from "../../interfaces/self.interface";
-import { RootStackParamList } from "../../@types";
+import { RootStackParamList, RootTabScreenProps } from "../../@types";
 import SelfHeader from "./component/SelfHeader";
 import VipCard from "./component/VipCard";
 import SelfLink, { ILinkItem } from "./component/SelfLink";
 
 
-export default function Self () {
+export default function Self ({ navigation }: RootTabScreenProps<'Self'>) {
   const { user, amount, zhiChiUrl, isZhichi } = useAppSelector((state: RootState) => state.user)
-  const navigation = useNavigation()
   // 登录
   const handleLogin = () => {
 
@@ -28,7 +26,7 @@ export default function Self () {
   }
 
   const routerToAc = () => {
-    // navigation.navigate('Wallet')
+    navigation.navigate('Wallet')
   }
   const linkPay = () => {
 

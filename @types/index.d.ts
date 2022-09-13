@@ -8,6 +8,7 @@ import { CompositeScreenProps, NavigatorScreenParams, useNavigation } from '@rea
 import {  NativeStackScreenProps } from '@react-navigation/native-stack';
 import PrivacyPop from "../screens/loginPrivacy/PrivacyPop";
 import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
+import Wallet from "../screens/wallet/Wallet";
 
 declare global {
   export namespace ReactNavigation {
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   TaskCheckIn: undefined;
   Setting: undefined;
   LoginPrivacy: undefined;
+  Wallet: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

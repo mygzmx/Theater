@@ -9,6 +9,7 @@ import TaskCheckIn from "../screens/task/TaskCheckIn";
 import Setting from "../screens/setting/Setting";
 import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import BottomTabNavigator from "./BottomTabNavigator";
+import Wallet from "../screens/wallet/Wallet";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -88,6 +89,13 @@ export default function RootNavigator() {
           headerTitleAlign: 'left',
         })}
       />
+      <Stack.Screen
+        name="Wallet"
+        component={Wallet}
+        options={({ navigation }: RootStackScreenProps<'Wallet'>) => ({
+          ...whiteOptions('我的账户'),
+          headerTitleAlign: 'left',
+        })}/>
     </Stack.Navigator>
   );
 }

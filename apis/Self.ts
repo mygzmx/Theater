@@ -53,7 +53,10 @@ export const netUpdateUserInfo = (data: any) => {
 export const netSetting = () => {
   return Service.post('glory/video/2150')
 }
-
+/** 用户账户余额详情*/
+export const netWallet = () => {
+  return Service.post('glory/video/2190')
+}
 
 // export default {
 
@@ -96,9 +99,6 @@ export const netSetting = () => {
 //   netOrderRecord({ timeStr, lastId = 0 }) {
 //     return http.post('glory/video/2191', { timeStr, lastId })
 //   },
-//   // 用户账户余额详情
-//   netWallet() {
-//     return http.post('glory/video/2190')
-//   },
+
 //
 // }

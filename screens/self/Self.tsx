@@ -13,7 +13,7 @@ export default function Self ({ navigation }: RootTabScreenProps<'Self'>) {
   const { user, amount, zhiChiUrl, isZhichi } = useAppSelector((state: RootState) => state.user)
   // 登录
   const handleLogin = () => {
-
+    navigation.push('Login');
   }
 
   const linkTo = (item: ILinkItem) => {

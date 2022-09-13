@@ -41,6 +41,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       Setting: 'Setting',
       LoginPrivacy: 'LoginPrivacy',
       Wallet: 'Wallet',
+      Login: 'Login',
+      VerificationCode: 'VerificationCode',
     },
   },
 };

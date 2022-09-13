@@ -9,6 +9,8 @@ import {  NativeStackScreenProps } from '@react-navigation/native-stack';
 import PrivacyPop from "../screens/loginPrivacy/PrivacyPop";
 import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import Wallet from "../screens/wallet/Wallet";
+import Login from "../screens/login/Login";
+import VerificationCode from "../screens/login/VerificationCode";
 
 declare global {
   export namespace ReactNavigation {
@@ -18,6 +20,8 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList>;
+  Login: undefined;
+  VerificationCode: undefined;
   Drama: undefined;
   ViewingRecords: undefined;
   AboutUs: undefined;

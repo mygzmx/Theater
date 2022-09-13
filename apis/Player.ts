@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import {
   IChapterParams, IChapterResponse, IFinishParams,
   IPreLoadParams,
@@ -5,12 +6,11 @@ import {
   IVideoInitParams,
   IVideoSourceParams
 } from "../interfaces/player.interface";
-import appConfig from "../utils/app.config";
 import Service from './Service';
 
 // 初始化
 export const netVideoInit = async (params: IVideoInitParams): Promise<IVideo2150> => {
-  return await Service.post('glory/video/2150', { ...params, sourceChannelCode: appConfig.channelCode })
+  return await Service.post('glory/video/2150', { ...params, sourceChannelCode: Constants.expoConfig?.extra?.channelCode || '',})
 }
 
 // 单集加载(订购)

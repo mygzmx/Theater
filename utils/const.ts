@@ -1,4 +1,3 @@
-import appConfig from "./app.config";
 
 /**接口域名 */
 export const ENVIRONMENT = {
@@ -7,7 +6,9 @@ export const ENVIRONMENT = {
   'test': 'http://223.kky.dzods.cn',
 }
 
-export const API = ENVIRONMENT[appConfig.env];
+const env = 'test';
+
+export const API = ENVIRONMENT[env];
 
 export const AGREEMENT_H5 = {
   USER: `${API}/huodong/short_video/fhjc/agreement/user.html`,

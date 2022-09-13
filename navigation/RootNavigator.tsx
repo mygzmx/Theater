@@ -10,6 +10,8 @@ import Setting from "../screens/setting/Setting";
 import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import BottomTabNavigator from "./BottomTabNavigator";
 import Wallet from "../screens/wallet/Wallet";
+import Login from "../screens/login/Login";
+import VerificationCode from "../screens/login/VerificationCode";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -35,6 +37,21 @@ export default function RootNavigator() {
         options={({ navigation }: RootStackScreenProps<'LoginPrivacy'>) => ({
           headerShown: false,
         })}/>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={({ navigation }: RootStackScreenProps<'Login'>) => ({
+          ...whiteOptions('登录'),
+          headerTitleAlign: 'left',
+        })}/>
+      <Stack.Screen
+        name="VerificationCode"
+        component={VerificationCode}
+        options={({ navigation }: RootStackScreenProps<'VerificationCode'>) => ({
+          ...whiteOptions('登录'),
+          headerTitleAlign: 'left',
+        })}/>
+
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }}/>
       <Stack.Screen
         navigationKey="Drama"

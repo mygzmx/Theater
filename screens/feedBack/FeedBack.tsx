@@ -1,17 +1,16 @@
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Pressable,
-  TextInput, Dimensions,
+  TextInput,
+  Dimensions,
 } from "react-native";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useNavigation } from "@react-navigation/native";
 import { netFeedBack } from "../../apis/Self";
-
-export const regPhone  = /^1[3456789]\d{9}$/; // 手机号
+import { regPhone } from "../../utils/reg";
 
 export default function FeedBack () {
 

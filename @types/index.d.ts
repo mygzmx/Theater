@@ -6,6 +6,8 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams, useNavigation } from '@react-navigation/native';
 import {  NativeStackScreenProps } from '@react-navigation/native-stack';
+import PrivacyPop from "../screens/loginPrivacy/PrivacyPop";
+import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 
 declare global {
   export namespace ReactNavigation {
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   FeedBack: undefined;
   TaskCheckIn: undefined;
   Setting: undefined;
+  LoginPrivacy: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

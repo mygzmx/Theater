@@ -6,12 +6,6 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { store } from "./store";
-import { initAxios } from "./apis/Service";
-import { userInfoAsync } from "./store/modules/user.module";
-import PrivacyPop from "./components/PrivacyPop";
-
-initAxios(store);
-store.dispatch(userInfoAsync());
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -22,7 +16,6 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <PrivacyPop/>
         <ToastProvider
           placement="bottom"
           duration={2500}

@@ -28,20 +28,22 @@ const { width, height } = Dimensions.get('screen');
 export interface IVideoList extends IChapterInfo {
   isViewable?: boolean;
 }
-const omap = {
-  origin: '在看-默认播放',
-  action: '2',
-  channel_id: 'zk',
-  channel_name: '在看',
-  channel_pos: 0,
-  column_id: 'zk_mrbf',
-  column_name: '在看-默认播放',
-  column_pos: 0,
-  content_id: '',
-  content_pos: 0,
-  content_type: '2',
-  trigger_time: getLogTime()
-};
+const getOmap = (): string => (
+  JSON.stringify({
+    origin: '在看-默认播放',
+    action: '2',
+    channel_id: 'zk',
+    channel_name: '在看',
+    channel_pos: 0,
+    column_id: 'zk_mrbf',
+    column_name: '在看-默认播放',
+    column_pos: 0,
+    content_id: '',
+    content_pos: 0,
+    content_type: '2',
+    trigger_time: getLogTime()
+  })
+);
 
 export default function Player () {
   const dispatch = useAppDispatch();
@@ -70,7 +72,7 @@ export default function Player () {
   );
   useEffect(() => {
     dispatch(videoInitAsync({ isRead: EIsRead.是 }));
-    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
+    dispatch(videoSourceAsync({ bookId, chapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: getOmap() }));
   }, [bookId]);
 
   useEffect(() => {
@@ -82,7 +84,7 @@ export default function Player () {
   }, [videoSource]);
   // 章节预加载
   const getVideoPreload = async ( bookId: string, chapterId: string, sourceData: IVideoList[] = [], isExist?: boolean) => {
-    const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
+    const videoPreload = await netVideoPreload({ bookId, chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: getOmap() });
     if (isExist) return; // videoList是否存在数据
     if (sourceData.length > 0) {
       const _preVideo = videoPreload.chapterInfo.filter(val => sourceData.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
@@ -117,14 +119,14 @@ export default function Player () {
       });
     } else {
       dispatch(setChapterId(preChapterId));
-      dispatch(videoSourceAsync({ bookId, chapterId: preChapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: JSON.stringify(omap) }));
+      dispatch(videoSourceAsync({ bookId, chapterId: preChapterId, autoPay: EAutoPay.否, confirmPay: EConfirmPay.非确认订购扣费, scene: EScene.播放页, omap: getOmap() }));
     }
   }
 
   const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
     return <View style={styles.container}>
       <VideoUnion
-        omap={JSON.stringify(omap)}
+        omap={getOmap()}
         source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex && !store.getState().player.isLeave }}
       />
     </View>
@@ -152,7 +154,7 @@ export default function Player () {
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
     /> : null }
     <SwiperFlatListNoData sliderHeight={sliderHeight}/>
-    <ChapterListLog omap={JSON.stringify(omap)}/>
+    <ChapterListLog omap={getOmap()}/>
     <ConfirmDialog
       visible={cancelDramaVisible}
       rightBtn={() => dispatch(setCancelDramaVisible(false))}

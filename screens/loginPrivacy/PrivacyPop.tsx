@@ -1,12 +1,10 @@
 /**
  * 隐私保护说明
  */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  BackHandler,
   Dimensions,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,31 +13,16 @@ import {
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { LinearGradient } from "expo-linear-gradient";
-import process from 'process';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { expo as appName } from '../app.json';
-import { AGREEMENT_H5 } from "../utils/const";
+import Constants from "expo-constants";
+import { AGREEMENT_H5 } from "../../utils/const";
+const appName = Constants.expoConfig?.name || '繁花剧场'
+interface IProps {
+  visible: boolean;
+  cancel: () => void;
+  confirm: () => Promise<void>;
+}
 
-
-export default function PrivacyPop() {
-
-  // { label: "用户协议", icon: ImgMore, uri: AGREEMENT_H5.USER },
-  // { label: "隐私政策", icon: ImgMore, uri: AGREEMENT_H5.PRIVACY },
-  const [visible, setVisible] = useState(true);
-  useEffect(() => {
-
-  }, []);
-
-  const confirm = async () => {
-
-    await AsyncStorage.setItem('', '1')
-  }
-
-  const cancel = () => {
-    console.log('退出app');
-    setVisible(false);
-    Platform.OS === "android" ? BackHandler.exitApp() : process.exit && process.exit(1);
-  }
+export default function PrivacyPop({ visible, cancel, confirm }: IProps) {
 
   return <Modal
     animationType={'fade'}
@@ -50,7 +33,7 @@ export default function PrivacyPop() {
       <View style={styles.confirmBox}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode={'tail'}>隐私保护说明</Text>
         <ScrollView style={styles.content}>
-          <Text style={styles.message}>欢迎使用{appName.name}!</Text>
+          <Text style={styles.message}>欢迎使用{appName}!</Text>
           <Text style={styles.message}> 1、我们将通过
             <Pressable onPress={() => WebBrowser.openBrowserAsync(AGREEMENT_H5.USER)}>
               <Text style={{ color: '#24a7f5' }}>《用户协议》</Text>

@@ -1,7 +1,7 @@
 import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosPromise } from 'axios'
 import { Store } from "redux";
 import { RootState } from "../store";
-import { getHeader } from "../utils/auth";
+import { getStorageHeader } from "../utils/auth";
 
 declare module 'axios' {
   export interface AxiosInstance {
@@ -32,7 +32,7 @@ const Service = axios.create({
   timeout: 5000
 });
 
-export const initAxios = async (store: Store<RootState>) => {
+export const initAxios = async (store: Store<RootState>, headerConfig?: {[key: string]: any}) => {
   if (!Service.redux) {
     Object.defineProperty(Service, 'redux', {
       get() {
@@ -42,10 +42,11 @@ export const initAxios = async (store: Store<RootState>) => {
     // window.addEventListener('pageshow', () => initAxios(store));
   }
   if (!Service.headerConfig) {
-    const headerConfig = await getHeader() as { [key: string]: any }
+    const _header = await getStorageHeader();
+    const _headerConfig = headerConfig ? { ...headerConfig, ..._header } : _header;
     Object.defineProperty(Service, 'headerConfig', {
       get() {
-        return headerConfig;
+        return _headerConfig;
       },
     });
   }
@@ -57,12 +58,10 @@ export const initAxios = async (store: Store<RootState>) => {
 }
 // 添加请求拦截器
 Service.interceptors.request.use(
-  async (request: AxiosRequestConfig) => {
-
+  (request: AxiosRequestConfig) => {
     request.headers = {
       ...request.headers,
       ...Service.headerConfig,
-      userId: Service.redux.getState().user.user.userId,
     }
     request.cancelToken = new CancelToken((c) => {
       pending.push({
@@ -87,11 +86,9 @@ Service.interceptors.response.use(
       // router.push({ path: '/404' })
     }
     if (response.status === 200 && response.data.retCode === 0) {
-      //   if (response.data.code === 6) {
-      //     // 清除用户信息
-      //     UserModule.ResetToken();
+      // 清除用户信息
+      // location.reload();
       //     ElMessage.error('登录失效');
-      //   }
       return Promise.resolve(response.data?.data)
     } else {
       console.log('error--------------------------->', response.data)
@@ -100,7 +97,7 @@ Service.interceptors.response.use(
     }
   },
   (err: AxiosError) => {
-    console.log('axios err--------------------------->', err)
+    console.log('axios err--------------------------->', err.message, err?.config?.url)
     const navigator = window.navigator
     if (!navigator.onLine) {
       // ElMessage.error('offline')

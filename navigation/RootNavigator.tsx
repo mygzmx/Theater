@@ -7,6 +7,7 @@ import AboutUs from "../screens/about/AboutUs";
 import FeedBack from "../screens/feedBack/FeedBack";
 import TaskCheckIn from "../screens/task/TaskCheckIn";
 import Setting from "../screens/setting/Setting";
+import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import BottomTabNavigator from "./BottomTabNavigator";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
@@ -27,6 +28,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function RootNavigator() {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="LoginPrivacy"
+        component={LoginPrivacy}
+        options={({ navigation }: RootStackScreenProps<'LoginPrivacy'>) => ({
+          headerShown: false,
+        })}/>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }}/>
       <Stack.Screen
         navigationKey="Drama"

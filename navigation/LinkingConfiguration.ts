@@ -7,6 +7,7 @@
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 import { RootStackParamList } from '../@types';
+import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.createURL('/')],
@@ -36,7 +37,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       FeedBack: 'FeedBack',
       AboutUs: 'AboutUs',
       TaskCheckIn: 'TaskCheckIn',
-      Setting: 'Setting'
+      Setting: 'Setting',
+      LoginPrivacy: 'LoginPrivacy',
     },
   },
 };

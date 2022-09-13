@@ -57,7 +57,6 @@ export default function MyDrama({ dramaList }: IProps) {
       data={dramaList}
       renderItem={renderItem}
       ListFooterComponent={() => <Pressable style={[styles.dramaLink, { paddingLeft: 20, width: 120, height: 120, alignItems: 'center' }]} onPress={() => navigation.navigate('Drama')}>
-        <Text style={styles.dramaLinkTxt}>{'more >>'}</Text>
       </Pressable>}
       keyExtractor={item => item.bookId}
     />

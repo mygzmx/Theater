@@ -22,6 +22,11 @@ export const netReportStart = (data: IReportStartParams) => {
   return Service.post('glory/video/2173', data)
 }
 
+// 投放上报
+export const netReportLand = (data: {sourceCid: string; startMode: string; uuid: string}) => {
+  return Service.post('glory/video/2172', data)
+}
+
 // export default {
 //   // 发送短信验证码
 //   netSendCode(data) {
@@ -31,11 +36,6 @@ export const netReportStart = (data: IReportStartParams) => {
 //   netLogin(data) {
 //     return http.post('glory/video/2105', data)
 //   },
-//   // 初始化
-//   netInit(data) {
-//     return http.post('glory/video/2150', data)
-//   },
-//   // 授权绑定游客账号
 //   // 注销账号
 //   netLogout(data) {
 //     return http.post('glory/video/2109', data)
@@ -44,10 +44,6 @@ export const netReportStart = (data: IReportStartParams) => {
 //   netLogoutSure(data) {
 //     return http.post('glory/video/2110', data)
 //   },
-//   //启动上报
 
-//   //投放上报
-//   netReportLand(data) {
-//     return http.post('glory/video/2172', data)
-//   }
+
 // }

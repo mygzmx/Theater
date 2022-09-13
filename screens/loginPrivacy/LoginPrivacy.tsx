@@ -13,16 +13,17 @@ import { getStorageHeader, setStorageHeader } from "../../utils/auth";
 import { userInfoAsync } from "../../store/modules/user.module";
 import { getUtdidTmp } from "../../utils/logTime";
 import { RootStackScreenProps } from "../../@types";
-import { netImeiAuth, netRegister, netReportStart } from "../../apis/User";
+import { netImeiAuth, netRegister, netReportLand, netReportStart } from "../../apis/User";
 import PrivacyPop from "./PrivacyPop";
 import DeviceAuth from "./DeviceAuth";
 const { brand = '', modelName, osInternalBuildId = '' } = Device;
 const { deviceName = '' } = Constants;
-const { extra = {} } = (Constants.expoConfig as ExpoConfig) || {}
+const { extra = {} } = (Constants.expoConfig as ExpoConfig) || {};
 const { appVersion, channelCode, domain } = extra;
+const { width, height } = Dimensions.get('screen');
 
 
-export default function LoginPrivacy ({ navigation }: RootStackScreenProps<'LoginPrivacy'>) {
+export default function LoginPrivacy({ navigation }: RootStackScreenProps<'LoginPrivacy'>) {
   const toast = useToast();
   const dispatch = useAppDispatch()
   const [visible, setVisible] = useState(false);
@@ -53,6 +54,11 @@ export default function LoginPrivacy ({ navigation }: RootStackScreenProps<'Logi
         startMode,
         uuid
       });
+      await netReportLand({
+        sourceCid: channelCode,
+        startMode,
+        uuid,
+      });
       dispatch(userInfoAsync());
       navigation.replace('Root', { screen: 'Player' });
     }
@@ -78,7 +84,7 @@ export default function LoginPrivacy ({ navigation }: RootStackScreenProps<'Logi
   // 设备授权
   const deviceConfirm = async () => {
     const utdid = Device.osInternalBuildId as string;
-    const { userId = '', utdidTmp } = await Storage.getItem('header');
+    const { userId = '', utdidTmp, startMode, uuid } = await Storage.getItem('header');
     await setStorageHeader({ utdid });
     await netImeiAuth({
       androidId: osInternalBuildId || '',
@@ -87,14 +93,19 @@ export default function LoginPrivacy ({ navigation }: RootStackScreenProps<'Logi
       userId,
       utdid,
       utdidTmp,
-    })
+    });
+    await netReportLand({
+      sourceCid: channelCode,
+      startMode,
+      uuid,
+    });
     setDeviceVisible(false);
     navigation.replace('Root', { screen: 'Player' });
   }
 
   const nextStep = async () => {
     const utdid = getUtdidTmp();
-    const registerData =  await netRegister({
+    const registerData = await netRegister({
       ei: deviceName,
       appVersion,
       androidId: osInternalBuildId || '',
@@ -124,15 +135,12 @@ export default function LoginPrivacy ({ navigation }: RootStackScreenProps<'Logi
     dispatch(userInfoAsync());
   }
 
-
   return <View style={styles.loginPrivacyWrap}>
     <PrivacyPop visible={visible} cancel={cancel} confirm={confirm}/>
     <DeviceAuth visible={deviceVisible} cancel={deviceCancel} confirm={deviceConfirm}/>
   </View>
 }
 
-
-const { width, height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
   loginPrivacyWrap: {
     width,

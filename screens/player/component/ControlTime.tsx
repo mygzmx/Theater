@@ -36,7 +36,6 @@ export const ControlTime = ({ durationMillis = 0, positionMillis = 0 }: IProps) 
 
 const styles = StyleSheet.create({
   timeBox: {
-    display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row'

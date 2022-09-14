@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width,
     height,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.7)',

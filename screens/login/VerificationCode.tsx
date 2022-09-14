@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width: '100%',
     height: 4,
-    display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row'

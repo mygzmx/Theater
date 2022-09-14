@@ -17,7 +17,6 @@ export default function Empty ({ theme = 'white', message = '暂无数据', styl
     // minHeight: 600,
     // maxHeight: height,
     height: '100%',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     ...style,

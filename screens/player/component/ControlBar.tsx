@@ -4,7 +4,7 @@ import {
   Dimensions,
   StyleSheet,
   GestureResponderHandlers,
-  PanResponderGestureState,
+  PanResponderGestureState, ScrollView,
 } from "react-native";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import usePanResponder from "../../../hooks/usePanResponder";
@@ -91,21 +91,18 @@ const styles = StyleSheet.create({
     width,
     // height: 300,
     // backgroundColor: 'rgba(255,255,255,0.58)',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   controlBarBox: {
     width,
     height: 30,
-    display: 'flex',
     justifyContent: 'flex-end',
   },
   controlBarBox2: {
     width: '100%',
     height: 18,
     backgroundColor: 'rgba(15, 15, 15, 0.8)',
-    display: "flex",
     justifyContent: 'center',
   },
   controlBar: {
@@ -121,7 +118,6 @@ const styles = StyleSheet.create({
     // width: 0,
     height: '100%',
     backgroundColor: 'rgba(255,255,255,0.4)',
-    display: 'flex',
     alignItems: 'flex-end',
     justifyContent: 'center',
   },

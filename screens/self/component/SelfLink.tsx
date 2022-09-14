@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     height: 57,
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    display: 'flex',
   },
   linkItemLeftImg: {
     width: 20,

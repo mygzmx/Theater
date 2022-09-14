@@ -50,12 +50,10 @@ const styles = StyleSheet.create({
   typeListBox: {
     paddingLeft: 8,
     paddingBottom: 4,
-    display: 'flex',
     height: 45,
     marginBottom: 4,
   },
   typeListBoxItem: {
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',

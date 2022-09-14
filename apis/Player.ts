@@ -32,15 +32,9 @@ export const netVideoFinish = (params: IFinishParams) => {
   return Service.post('glory/video/2177', params)
 }
 
-// removeFromShelf(data){
-//   return http.post('glory/video/2121', data)
-// },
 export default {
   // preloadVideo(url, data) {
   //   return http.get(url + '?' + $utils.getAppConfig('appVersion'), data)
-  // },
-  // addToShelf(data){
-  //   return http.post('glory/video/2122', data)
   // },
   // getRecomment(data){
   //   return http.post('glory/video/2113', data)

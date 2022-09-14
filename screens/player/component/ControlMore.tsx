@@ -60,7 +60,6 @@ const ControlMore = (props: IProps) => {
 
 const styles = StyleSheet.create({
   moreWrap: {
-    display: "flex",
     alignItems: 'center',
     flexDirection: 'row',
     paddingLeft: 20,
@@ -69,12 +68,10 @@ const styles = StyleSheet.create({
   },
   moreLeft: {
     flex: 1,
-    display: 'flex',
     justifyContent: 'center',
   },
   moreDrama: {
     width: 58,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },

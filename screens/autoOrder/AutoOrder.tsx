@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   bookMsg: {
-    display: "flex",
     flex: 1,
     paddingLeft: 12,
     paddingRight: 12,

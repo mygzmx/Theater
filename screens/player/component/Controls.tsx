@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   controlsWrap: {
     width: '100%',
     height: '100%',
-    display: 'flex',
     flexDirection: 'column',
     ...StyleSheet.absoluteFillObject,
   },
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
   stopIcon: {
     height: 400,
     flex: 1,
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },

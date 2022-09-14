@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
   },
   top: {
     paddingBottom: 26,
-    display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'row',
     width: '100%',
@@ -95,13 +94,11 @@ const styles = StyleSheet.create({
   },
   accountBalance: {
     width: '100%',
-    display: "flex",
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
   accountBalanceLeft: {
     flex: 1,
-    display: 'flex',
     flexDirection: 'column',
   },
   accountBalanceLeftTitle: {
@@ -109,7 +106,6 @@ const styles = StyleSheet.create({
     color: '#222222',
   },
   accountBalanceLeftCountBox: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginTop: 12
@@ -124,7 +120,6 @@ const styles = StyleSheet.create({
     width: 72,
   },
   accountBalanceRightLink: {
-    display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -143,7 +138,6 @@ const styles = StyleSheet.create({
     height: 28,
     backgroundColor: '#FF4B00',
     borderRadius: 14,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },

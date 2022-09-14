@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
   chapterLog: {
     width,
     height,
-    display: 'flex',
   },
   chapterLogMask: {
     flex: 1,
@@ -186,7 +185,6 @@ const styles = StyleSheet.create({
     height: 25,
   },
   logTitleBox: {
-    display: 'flex',
     flexDirection: 'row',
   },
   logTitleTxt: {
@@ -215,7 +213,6 @@ const styles = StyleSheet.create({
   tabItem: {
     width: 45,
     height: 57,
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -226,7 +223,6 @@ const styles = StyleSheet.create({
   tabIntervalBox: {
     width: 1,
     height: 57,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -237,14 +233,12 @@ const styles = StyleSheet.create({
     height: 12,
   },
   chapterListBox: {
-    display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   chapterItem: {
     width: (width - 100) / 6,
     height: (width - 100) / 6,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,

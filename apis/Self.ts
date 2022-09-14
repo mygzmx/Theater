@@ -60,19 +60,6 @@ export const netWallet = () => {
 
 // export default {
 
-
-//   // 追剧-追
-//   netDramaVideo({ bookId, scene, omap }) {
-//     return http.post('glory/video/2122', {
-//       bookId,
-//       scene,
-//       omap: omap ? JSON.stringify(omap) : '',
-//     })
-//   },
-
-
-
-
 //   // 解锁的剧集列表
 //   netUnlockRecord({ index = 1 }) {
 //     return http.post('glory/video/2194', { index })

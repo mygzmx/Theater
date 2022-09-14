@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
     height: (width - 72) / 3 * 1.4,
     borderRadius: 6,
     overflow: 'hidden',
-    display: 'flex',
     alignItems: 'flex-end',
   },
   updateImg: {
@@ -283,7 +282,6 @@ const styles = StyleSheet.create({
     height: 70,
     paddingBottom: 10,
     backgroundColor: '#0F0F0F',
-    display: 'flex',
     justifyContent: 'space-between',
     alignItems: "center",
     flexDirection: 'row',

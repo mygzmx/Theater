@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   },
   avatarBox: {
     marginTop: 30,
-    display: "flex",
     height: 54,
     paddingRight: 20,
     paddingLeft: 20,
@@ -80,7 +79,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#FFFFFF',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },

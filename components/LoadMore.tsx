@@ -21,7 +21,6 @@ export default function LoadMore (props: IProps) {
 const styles = StyleSheet.create({
   loadWrap: {
     height: 80,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },

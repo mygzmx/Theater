@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     width: '100%',
-    display: 'flex',
     flexDirection: 'row',
     height: 36,
     justifyContent: 'space-between',
@@ -83,7 +82,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dramaLink: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: "center",
     height: 20,

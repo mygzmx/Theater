@@ -19,7 +19,6 @@ export default function BottomTabNavigator() {
       width: '100%',
       height: '100%',
       backgroundColor: 'rgba(15, 15, 15, 1)',
-      display: 'flex',
       justifyContent: 'flex-end'
     }}>
       <Text style={{

@@ -11,6 +11,7 @@ import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import Wallet from "../screens/wallet/Wallet";
 import Login from "../screens/login/Login";
 import VerificationCode from "../screens/login/VerificationCode";
+import Player from "../screens/player/Player";
 
 declare global {
   export namespace ReactNavigation {
@@ -20,6 +21,7 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList>;
+  SecondaryPlayer: undefined;
   Login: undefined;
   VerificationCode: undefined;
   Drama: undefined;

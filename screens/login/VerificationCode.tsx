@@ -19,6 +19,7 @@ import { ELoginAccountType, ELoginType } from "../../interfaces/user.interface";
 import { setStorageHeader } from "../../utils/auth";
 import { initAxios } from "../../apis/Service";
 import { store } from "../../store";
+import { ESwParam } from "../../interfaces/common.interface";
 const { height } = Dimensions.get('screen');
 const ImgLogo = require('../../assets/images/user/logo.png');
 
@@ -47,7 +48,7 @@ export default function VerificationCode ({ navigation }: RootStackScreenProps<'
         type: ELoginType.登录,
         accountType: ELoginAccountType.手机号,
         bindId: Base64.encode(phone), // 登录标志	openId标志/手机号码
-        swParam: 1, // base64
+        swParam: ESwParam.base, // base64
         from: 2,
         noCode: 0, // 需要验证码
       });

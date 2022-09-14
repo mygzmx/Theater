@@ -1,12 +1,14 @@
 import { StyleSheet, FlatList, View } from 'react-native';
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import { RootTabScreenProps } from '../../@types';
 import { netDramaList, netRecommendData } from "../../apis/Theater";
 import SwiperNormal from "../../components/SwiperNormal";
 import { IClassificationItem, IDramaItem, IVideoListItem } from "../../interfaces/theater.interface";
 import LoadMore from "../../components/LoadMore";
 import Empty from "../../components/Empty";
+import { setBookId, setChapterId } from "../../store/modules/player.module";
 import Recommend from "./component/Recommend";
 import MyDrama from "./component/MyDrama";
 import RecommendTitle from "./component/RecommendTitle";
@@ -73,7 +75,6 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     setPage(1)
     setActiveRecommendType('0');
     setPageLoadingFull(false);
-    console.log('onRefresh-------------------_>');
     getColumnList(1, undefined,true, true)
   }, []);
 
@@ -82,6 +83,13 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const loadMore = async () => {
     if (pageLoading || pageLoadingFull) return;
     await getColumnList(page + 1, activeRecommendType);
+  }
+
+  const dispatch = useDispatch()
+  const linkToPlayer = async (item: IVideoListItem) => {
+    dispatch(setBookId(item.bookId))
+    dispatch(setChapterId(item.chapterId))
+    navigation.navigate('SecondaryPlayer')
   }
 
   return <FlatList
@@ -102,7 +110,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
     ItemSeparatorComponent={() => <View style={{ height: 16 }}/>}
     horizontal={false}
     data={videoList}
-    renderItem={({ item, index }) => <Recommend item={item} index={index}/> }
+    renderItem={({ item, index }) => <Recommend linkToPlayer={linkToPlayer} item={item} index={index}/> }
     onEndReached={(info) => !isEmpty && loadMore()}
     ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
     keyExtractor={(item) => item.bookId}

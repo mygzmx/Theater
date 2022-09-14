@@ -42,7 +42,6 @@ export const userSlice = createSlice({
         // state.status = 'loading';
       })
       .addCase(userInfoAsync.fulfilled, (state, action) => {
-        console.log('userInfoAsync-------------------->', action.payload);
         return { ...state, ...action.payload, user: { ...state.user, ...action.payload.user } }
       });
   }

@@ -112,7 +112,7 @@ export default function VideoUnion ({ source, omap }: IProps) {
           status: {
             progressUpdateIntervalMillis: 100,
           },
-          shouldPlay: route.name === "Player" && source.isViewable,
+          shouldPlay: (route.name === "Player" || route.name === "SecondaryPlayer") && source.isViewable,
           resizeMode: ResizeMode.CONTAIN,
           usePoster: true,
           posterSource: {

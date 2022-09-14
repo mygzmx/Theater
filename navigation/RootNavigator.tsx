@@ -11,8 +11,9 @@ import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
 import Wallet from "../screens/wallet/Wallet";
 import Login from "../screens/login/Login";
 import VerificationCode from "../screens/login/VerificationCode";
-import BottomTabNavigator from "./BottomTabNavigator";
 import AutoOrder from "../screens/autoOrder/AutoOrder";
+import SecondaryPlayer from "../screens/secondaryPlayer/SecondaryPlayer";
+import BottomTabNavigator from "./BottomTabNavigator";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -54,6 +55,19 @@ export default function RootNavigator() {
         })}/>
 
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }}/>
+      <Stack.Screen
+        navigationKey="SecondaryPlayer"
+        name="SecondaryPlayer"
+        component={SecondaryPlayer}
+        options={({ navigation }: RootStackScreenProps<'SecondaryPlayer'>) => ({
+          // headerBackTitle: '返回',
+          headerTitle: '',
+          // headerTitleStyle: { color: '#FFFFFF' },
+          headerTintColor: '#FFFFFF',
+          headerTitleAlign: 'left',
+          gestureEnabled: true, // 手势可操作
+          headerStyle: { backgroundColor: '#0F0F0F' },
+        })}/>
       <Stack.Screen
         navigationKey="Drama"
         name="Drama"

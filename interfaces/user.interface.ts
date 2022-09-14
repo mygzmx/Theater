@@ -1,4 +1,5 @@
 import { ESex } from "./self.interface";
+import { ESwParam } from "./common.interface";
 
 export interface IRegisterParams {
   ei: string; // imei
@@ -70,7 +71,7 @@ export interface ILoginParams {
   validCode?: string; //	手机验证码	手机验证才有
   nickName?: string; // 昵称	(暂未使用)
   avatar?: string; // 头像	(暂未使用)
-  swParam: number;	// M	加密方式	1-base64
+  swParam: ESwParam;	// M	加密方式	1-base64
   noCode?: number; // 一键登录不需要验证码	(暂未使用)1 不需要验证码
   confirmPop?: number;
   from?: number;

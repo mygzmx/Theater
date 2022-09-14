@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { IUserData } from "../interfaces/self.interface";
 import {
   IImeiAuthParams,
@@ -6,8 +7,8 @@ import {
   IRegisterResult,
   IReportStartParams
 } from "../interfaces/user.interface";
+import { ESwParam } from "../interfaces/common.interface";
 import Service from "./Service";
-import Constants from "expo-constants";
 
 // 免授权注册游客账号
 export const netRegister = (data: IRegisterParams): Promise<IRegisterResult> => {
@@ -36,7 +37,7 @@ export const netReportLand = (data: {sourceCid: string; startMode: string; uuid:
 // 发送短信验证码
 export const netSendCode = (phoneNum: string) => {
   const appName = Constants.expoConfig?.name || '繁花剧场'
-  return Service.post('glory/video/2102', { appName, phoneNum, swParam: 1 })
+  return Service.post('glory/video/2102', { appName, phoneNum, swParam: ESwParam.base })
 }
 
 // 登录

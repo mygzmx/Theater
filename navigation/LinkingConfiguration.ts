@@ -33,6 +33,7 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
+      SecondaryPlayer: 'SecondaryPlayer',
       Drama: 'Drama',
       ViewingRecords: 'ViewingRecords',
       FeedBack: 'FeedBack',

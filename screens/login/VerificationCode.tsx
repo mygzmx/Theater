@@ -18,13 +18,12 @@ import { encrypt } from "../../utils/rsa";
 import { ELoginAccountType, ELoginType } from "../../interfaces/user.interface";
 import { setStorageHeader } from "../../utils/auth";
 import { initAxios } from "../../apis/Service";
-import { store, useAppDispatch } from "../../store";
-import { userInfoAsync } from "../../store/modules/user.module";
+import { store } from "../../store";
 const { height } = Dimensions.get('screen');
 const ImgLogo = require('../../assets/images/user/logo.png');
 
 export default function VerificationCode ({ navigation }: RootStackScreenProps<'VerificationCode'>) {
-  const dispatch = useAppDispatch();
+
   const route = useRoute()
   const toast = useToast()
   const [phone, setPhone] = useState('');
@@ -42,7 +41,7 @@ export default function VerificationCode ({ navigation }: RootStackScreenProps<'
   const onchange = async (txt: string) => {
     setVCode(txt);
     if (txt.length === 4) {
-      const data = await netLogin({
+      const { result, message } = await netLogin({
         validCode: txt || '',
         confirmPop: 1,
         type: ELoginType.登录,
@@ -52,11 +51,10 @@ export default function VerificationCode ({ navigation }: RootStackScreenProps<'
         from: 2,
         noCode: 0, // 需要验证码
       });
-      console.log('data-----------------_>', data);
-      const { token, userId } = data.result;
+      const { token, userId } = result;
       await setStorageHeader({ t: token, userId });
       await initAxios(store, { t: token, userId });
-      dispatch(userInfoAsync());
+      toast.show(message);
       navigation.replace('Root', { screen: 'Self' })
     }
   }
@@ -90,10 +88,12 @@ export default function VerificationCode ({ navigation }: RootStackScreenProps<'
 
 const styles = StyleSheet.create({
   loginWrap: {
+    flex: 1,
     height,
     alignItems: 'center',
     paddingLeft: 40,
     paddingRight: 40,
+    backgroundColor: '#FFFFFF',
   },
   loginLogo: {
     width: 80,

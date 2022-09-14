@@ -40,7 +40,7 @@ export const netSendCode = (phoneNum: string) => {
 }
 
 // 登录
-export const netLogin = (data: ILoginParams): Promise<{ result: ILoginResult }> => {
+export const netLogin = (data: ILoginParams): Promise<{ result: ILoginResult, message: string; code: number }> => {
   return Service.post('glory/video/2105', data)
 }
 // export default {

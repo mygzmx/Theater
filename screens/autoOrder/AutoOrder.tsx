@@ -5,32 +5,16 @@ import { netViewRecordsList } from "../../apis/Self";
 import { EIsAdd, IBookVoListItem } from "../../interfaces/viewingRecords.interface";
 import Empty from "../../components/Empty";
 import LoadMore from "../../components/LoadMore";
-import { getLogTime } from "../../utils/logTime";
-import { netDramaVideo, netNoDramaVideo } from "../../apis/Theater";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import { setBookId, setChapterId } from "../../store/modules/player.module";
 import { useAppDispatch } from "../../store";
-import { EScene } from "../../interfaces/player.interface";
 import { RootStackScreenProps } from "../../@types";
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const ImgHeartActive = require('../../assets/images/heart-active-icon.png')
 const ImgHeartGrey = require('../../assets/images/heart-grey.png')
 
-export default function ViewingRecords ({ navigation }: RootStackScreenProps<'ViewingRecords'>) {
-  const omap = {
-    origin: '观看记录',
-    action: '2',
-    channel_id: 'gkjl',
-    channel_name: '观看记录',
-    channel_pos: 0,
-    column_id: 'gkjl',
-    column_name: '观看记录',
-    column_pos: 0,
-    content_id: '',
-    content_pos: 0,
-    content_type: '2',
-    trigger_time: ''
-  }
+export default function AutoOrder ({ navigation }: RootStackScreenProps<'AutoOrder'>) {
+
   const dispatch = useAppDispatch();
   const toast = useToast();
   const [page, setPage] = useState(1);
@@ -75,12 +59,8 @@ export default function ViewingRecords ({ navigation }: RootStackScreenProps<'Vi
   }
 
   const dramaVideo = async ({ bookId, isAdd }: IBookVoListItem) => {
-    omap.content_pos = list.findIndex((l) => l.bookId === bookId);
-    omap.content_id = bookId;
-    omap.trigger_time = getLogTime();
     if(isAdd === EIsAdd.否) {
       // 追剧
-      await netDramaVideo(bookId, EScene.观看记录页, JSON.stringify(omap))
       refreshData(bookId, EIsAdd.是);
       toast.show('追剧成功，可在剧场查看我的追剧');
     } else {
@@ -89,9 +69,7 @@ export default function ViewingRecords ({ navigation }: RootStackScreenProps<'Vi
     }
   }
   const confirm = async () => {
-    omap.trigger_time = getLogTime();
     // 取消追剧
-    await netNoDramaVideo(bookIdS, EScene.观看记录页, omap);
     refreshData(bookIdS, EIsAdd.否);
     setConfirmationVisible(false);
     setBookIdS('');

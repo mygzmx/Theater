@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   recommendItem: {
     width: (width - 72)/3,
     marginRight: 16,
-    // marginBottom: 17,
   },
   recommendImg: {
     height: 145,

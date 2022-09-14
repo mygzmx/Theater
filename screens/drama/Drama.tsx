@@ -5,13 +5,11 @@ import {
   ImageBackground, Pressable,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
-import { useNavigation } from "@react-navigation/native";
 import { EIsUpdate, IDramaItem } from "../../interfaces/theater.interface";
 import { netDramaList, netNoDramaVideo } from "../../apis/Theater";
 import { setBookId, setChapterId } from "../../store/modules/player.module";
@@ -19,6 +17,7 @@ import { getLogTime } from "../../utils/logTime";
 import LoadMore from "../../components/LoadMore";
 import Empty from "../../components/Empty";
 import { EScene } from "../../interfaces/player.interface";
+import { RootStackScreenProps } from "../../@types";
 const ImgEmpty = require('../../assets/images/img-empty.png');
 const UpdateIcon = require('../../assets/images/update-icon.png');
 const ImgEdit = require('../../assets/images/theater/edit.png')
@@ -27,15 +26,13 @@ const ImgUnchecked = require('../../assets/images/theater/unchecked-icon.png')
 const ImgChecked = require('../../assets/images/theater/checked-icon.png')
 const { width, height } = Dimensions.get('screen');
 
-// eslint-disable-next-line no-unused-vars
-enum ECheckedState {
+export enum ECheckedState {
   全没选中 = 0,
   全选中 = 1,
   部分选中 = 2,
 }
 
-export default function Drama () {
-  const navigation = useNavigation()
+export default function Drama ({ navigation }: RootStackScreenProps<'Drama'>) {
   const toast = useToast();
   const [pageLoading, setPageLoading] = useState(true);
   const [pageLoadingFull, setPageLoadingFull] = useState(false);
@@ -60,7 +57,7 @@ export default function Drama () {
   });
   const dispatch = useDispatch();
   useEffect(() => {
-    getDramaData(1, true)
+    getDramaData(1, true).then(() => {})
   }, []);
 
   useEffect(() => {
@@ -130,8 +127,7 @@ export default function Drama () {
     } else {
       dispatch(setBookId(item.bookId))
       dispatch(setChapterId(item.chapterId))
-      // @ts-ignore
-      navigation.navigate('Player')
+      navigation.replace('Root', { screen: 'Player' })
     }
   }
   // 全选
@@ -193,7 +189,7 @@ export default function Drama () {
       renderItem={renderItem}
       keyExtractor={(item) => item.bookId}
       ListEmptyComponent={() => isEmpty ? <Empty style={{ height: 600 }} theme={'dark'} message={'暂无追剧'}/> : null}
-      onEndReached={(info) => !isEmpty && loadMore()}
+      onEndReached={() => !isEmpty && loadMore()}
       ListFooterComponent={() =>  isEmpty ? null : <LoadMore loading={pageLoading} hasMore={!pageLoadingFull}/>}
     />
     { isEdit && <View style={styles.footer}>

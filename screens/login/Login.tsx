@@ -9,7 +9,7 @@ import {
   Pressable,
   TouchableWithoutFeedback
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { useToast } from "react-native-toast-notifications";
 import { Base64 } from 'js-base64'
@@ -43,7 +43,7 @@ export default function Login ({ navigation }: RootStackScreenProps<'Login'>) {
 
     netSendCode(Base64.encode(phone) || phone)
     // @ts-ignore
-    navigation.push('VerificationCode', { phone })
+    navigation.replace('VerificationCode', { phone })
   }
   return <View style={styles.loginWrap}>
     <Image style={styles.loginLogo} source={ImgLogo}/>
@@ -87,10 +87,12 @@ export default function Login ({ navigation }: RootStackScreenProps<'Login'>) {
 
 const styles = StyleSheet.create({
   loginWrap: {
+    flex: 1,
     height,
     alignItems: 'center',
     paddingLeft: 40,
     paddingRight: 40,
+    backgroundColor: '#FFFFFF',
   },
   loginLogo: {
     width: 80,

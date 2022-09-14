@@ -1,6 +1,6 @@
 import { View, StyleSheet, Dimensions } from "react-native";
 import { useState, useCallback } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import * as WebBrowser from "expo-web-browser";
 import SwiperNormal from "../../components/SwiperNormal";
@@ -10,11 +10,11 @@ import { netOperatingReport } from "../../apis/Theater";
 import { RootState } from "../../store";
 import { OPERATION_TYPE } from "../../utils/const";
 import { getLogTime } from "../../utils/logTime";
+import { RootStackScreenProps } from "../../@types";
 import Checkin from "./component/Checkin";
 import TaskList from "./component/TaskList";
 
-export default function TaskCheckIn ( ) {
-  const navigation = useNavigation()
+export default function TaskCheckIn ({ navigation }: RootStackScreenProps<'TaskCheckIn'>) {
   const [bannerList, setBannerList] = useState<any[]>([]);
   const [isSigns, setIsSign] = useState<EIsSign>(EIsSign.无);
   const [continueDays, setContinueDay] = useState(0);
@@ -96,7 +96,7 @@ export default function TaskCheckIn ( ) {
         }
       }
       // @ts-ignore
-      navigation.navigate({ name: 'Player', params });
+      navigation.navigate('Root',{ screen: 'Player', params: { ...params } });
     } else {
       WebBrowser.openBrowserAsync(actUrl).then(() => {})
     }
@@ -110,7 +110,7 @@ export default function TaskCheckIn ( ) {
       continueDay={continueDays}
       refresh={() => getTaskData()}
     />
-    <TaskList taskSetList={taskSetLists} refresh={() => getTaskData()}/>
+    <TaskList navigation={navigation} taskSetList={taskSetLists} refresh={() => getTaskData()}/>
   </View>
 }
 

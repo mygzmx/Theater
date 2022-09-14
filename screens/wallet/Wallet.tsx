@@ -68,6 +68,7 @@ export default function Wallet ({ navigation }: RootStackScreenProps<'Wallet'>) 
 }
 const styles = StyleSheet.create({
   walletWrap: {
+    flex: 1,
     padding: 15,
     backgroundColor: 'rgba(243, 245, 249, 1)',
   },

@@ -8,11 +8,11 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
-import { useNavigation } from "@react-navigation/native";
 import { netFeedBack } from "../../apis/Self";
 import { regPhone } from "../../utils/reg";
+import { RootStackScreenProps } from "../../@types";
 
-export default function FeedBack () {
+export default function FeedBack ({ navigation }: RootStackScreenProps<'FeedBack'>) {
 
   const [tabList, setTabList] = useState<{content: string, active: boolean}[]>([
     { content:'更新慢', active:false },
@@ -26,7 +26,6 @@ export default function FeedBack () {
   const [feedbackProblem, setFeedbackProblem] = useState('');
   const [feedbackMes, setFeedbackMes] = useState('');
   const [feedbackPhone, setFeedbackPhone] = useState('');
-  const navigation = useNavigation()
   const toast = useToast()
   const toggleActive = (index: number, active: boolean) => {
     setTabList(prevState => prevState.map((pre, ind) => {

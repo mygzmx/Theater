@@ -1,7 +1,7 @@
 import { StyleSheet, View, Image, Text, Pressable, Linking } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { useNavigation } from "@react-navigation/native";
 import { AGREEMENT_H5 } from "../../utils/const";
+import { RootStackScreenProps } from "../../@types";
 const ImgLogo = require('../../assets/images/logo.png');
 const ImgMore = require('../../assets/images/more-about.png');
 
@@ -12,11 +12,10 @@ interface IPageData {
   icon?: any;
 }
 
-export default function AboutUs () {
-  const navigation = useNavigation()
+export default function AboutUs ({ navigation }: RootStackScreenProps<'AboutUs'>) {
   const pageData: IPageData[] = [
     { label: "联系客服", content: '400-118-0066' },
-    { label: "意见反馈", icon: ImgMore, uri: 'FeedBack' },
+    { label: "意见反馈", icon: ImgMore, uri: '' },
     { label: "用户协议", icon: ImgMore, uri: AGREEMENT_H5.USER },
     { label: "隐私政策", icon: ImgMore, uri: AGREEMENT_H5.PRIVACY },
     { label: "会员服务协议", icon: ImgMore, uri: AGREEMENT_H5.VIP },
@@ -26,8 +25,7 @@ export default function AboutUs () {
     if (label === '联系客服') {
       Linking.openURL('tel:4001180066').then(() => {})
     } else if (label === '意见反馈') {
-      // @ts-ignore
-      uri && navigation.navigate(uri)
+      navigation.navigate('FeedBack')
     }else {
       uri && WebBrowser.openBrowserAsync(uri)
     }

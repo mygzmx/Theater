@@ -8,10 +8,11 @@ import FeedBack from "../screens/feedBack/FeedBack";
 import TaskCheckIn from "../screens/task/TaskCheckIn";
 import Setting from "../screens/setting/Setting";
 import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
-import BottomTabNavigator from "./BottomTabNavigator";
 import Wallet from "../screens/wallet/Wallet";
 import Login from "../screens/login/Login";
 import VerificationCode from "../screens/login/VerificationCode";
+import BottomTabNavigator from "./BottomTabNavigator";
+import AutoOrder from "../screens/autoOrder/AutoOrder";
 
 const whiteOptions = (headerTitle: string): { headerTitleAlign: string; headerBackTitle: string; headerTintColor: string; gestureEnabled: boolean; headerTitle: string; headerStyle: { backgroundColor: string } } => ({
   headerBackTitle: '返回',
@@ -77,7 +78,7 @@ export default function RootNavigator() {
       <Stack.Screen
         name="AboutUs"
         component={AboutUs}
-        options={() => ({
+        options={({ navigation }: RootStackScreenProps<'AboutUs'>) => ({
           ...whiteOptions('关于我们'),
           headerTitleAlign: 'left',
         })}
@@ -103,6 +104,14 @@ export default function RootNavigator() {
         component={Setting}
         options={() => ({
           ...whiteOptions('设置'),
+          headerTitleAlign: 'left',
+        })}
+      />
+      <Stack.Screen
+        name="AutoOrder"
+        component={AutoOrder}
+        options={() => ({
+          ...whiteOptions('自动解锁管理'),
           headerTitleAlign: 'left',
         })}
       />

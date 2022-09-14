@@ -1,19 +1,20 @@
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { useToast } from "react-native-toast-notifications";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { ETaskAction, ETaskStatus, ETaskType, ITaskItem, ITaskSetItem } from "../../../interfaces/self.interface";
 import { netReceiveTask, netUpdateUserInfo } from "../../../apis/Self";
+import { RootStackParamList } from "../../../@types";
 const ImgMiddleLine = require('../../../assets/images/self/line.png');
 const ImgCoin1 = require('../../../assets/images/self/coin.png')
 
 interface IProps {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'TaskCheckIn', undefined>
   taskSetList: ITaskSetItem[];
   refresh: () => void;
 }
 
-export default function TaskList ({ taskSetList, refresh }: IProps) {
+export default function TaskList ({ navigation, taskSetList, refresh }: IProps) {
   const toast = useToast()
-  const navigation = useNavigation()
 
   const toFinishTask = (item: ITaskItem) => {
     const { taskAction }  = item;
@@ -21,7 +22,6 @@ export default function TaskList ({ taskSetList, refresh }: IProps) {
       toast.show('zzz...');
     }
     if (taskAction === 2) { // 绑定手机号
-      // @ts-ignore
       navigation.navigate('Login');
     }
     if (taskAction === 3) { // 从桌面打开

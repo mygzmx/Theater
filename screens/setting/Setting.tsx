@@ -1,16 +1,16 @@
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import { netSetting, netUpdateUserInfo } from "../../apis/Self";
 import { RootState } from "../../store";
+import { RootStackScreenProps } from "../../@types";
 const ImgMoreAbout = require('../../assets/images/more-about.png');
 
-export default function Setting () {
+export default function Setting ({ navigation }: RootStackScreenProps<'Setting'>) {
   const toast = useToast()
-  const navigation = useNavigation()
   const [apiChangeCount, setApiChangeCount] = useState(0);
   const [fileList, setFileList] = useState([]);
   const [sfAutoPays, setSfAutoPays] = useState();
@@ -45,7 +45,7 @@ export default function Setting () {
     });
   }
   const logOut = () => {
-    navigation.navigate('Player');
+    navigation.navigate('Root', { screen: 'Player' });
   }
   return <View style={styles.settingWrap}>
     <ConfirmDialog
@@ -66,7 +66,6 @@ export default function Setting () {
       </Pressable> : <Text>0MB</Text>}
     </View>
     {isAps === 1 && <Pressable style={styles.settingItem} onPress={() => {
-      // @ts-ignore
       navigation.navigate('AutoOrder')
     }}>
       <Text style={styles.settingItemLabel}>自动解锁管理</Text>
@@ -79,7 +78,6 @@ export default function Setting () {
       </Pressable>
     </View>}
     <Pressable style={{ ...styles.settingItem, ...styles.settingItem2 }} onPress={() => {
-      // @ts-ignore
       login ? navigation.navigate('Login') : toast.show('您未使用手机号登录，无需注销账号');
     }}>
       <View>
@@ -89,7 +87,6 @@ export default function Setting () {
       <Image style={styles.settingItemMore} source={ImgMoreAbout}/>
     </Pressable>
     { login && <Pressable style={{ ...styles.settingItem, marginTop: 6, height: 58, justifyContent: 'center' }} onPress={() => {
-      // @ts-ignore
       navigation.navigate('Login')
     }}>
       <Text style={{ ...styles.settingItemLabel }}>切换账号</Text>

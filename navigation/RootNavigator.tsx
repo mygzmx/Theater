@@ -60,7 +60,7 @@ export default function RootNavigator() {
         name="SecondaryPlayer"
         component={SecondaryPlayer}
         options={({ navigation }: RootStackScreenProps<'SecondaryPlayer'>) => ({
-          // headerBackTitle: '返回',
+          headerBackTitle: '',
           headerTitle: '',
           // headerTitleStyle: { color: '#FFFFFF' },
           headerTintColor: '#FFFFFF',

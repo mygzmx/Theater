@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 import Player from "../player/Player";
 
 export default function SecondaryPlayer () {
+
   return <View style={styles.secondaryWrap}>
     <Player/>
     <View style={styles.footer}/>

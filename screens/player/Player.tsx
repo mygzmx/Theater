@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, View, Animated } from 'react-native';
 import React, { useCallback, useEffect, useRef } from 'react'
 import { SwiperFlatList } from "react-native-swiper-flatlist/index";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { useSelector, useStore } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import {
@@ -47,6 +47,7 @@ const getOmap = (): string => (
 
 export default function Player () {
   const dispatch = useAppDispatch();
+  const route = useRoute()
   const store =  useStore<RootState>()
   const { bookId, chapterId, videoSource } = useSelector((state: RootState) => (state.player));
   // store.getState()获得的值暂时不能作为useEffect的依赖项
@@ -125,12 +126,16 @@ export default function Player () {
 
   const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
     return <View style={styles.container}>
-      <VideoUnion
+      {(route.name === 'Player') && <VideoUnion
         omap={getOmap()}
-        source={{ ...item, isViewable: swiperIndex === index && store.getState().player.swiperIndex === swiperIndex && !store.getState().player.isLeave }}
-      />
+        source={{
+          ...item,
+          isViewable: swiperIndex === index && !store.getState().player.isLeave
+        }}
+      />}
     </View>
   }
+
   return <View style={styles.playerWrap}>
     {videoList.length > 0 ? <SwiperFlatList
       windowSize={3}

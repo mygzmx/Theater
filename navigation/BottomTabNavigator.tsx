@@ -67,7 +67,7 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         navigationKey="Player"
         name="Player"
-        component={Player}
+        component={() => <Player/>}
         options={({ navigation }: RootTabScreenProps<'Player'>) => ({
           title: '在看',
           headerTitleStyle: {

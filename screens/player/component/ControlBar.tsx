@@ -4,7 +4,7 @@ import {
   Dimensions,
   StyleSheet,
   GestureResponderHandlers,
-  PanResponderGestureState, ScrollView,
+  PanResponderGestureState,
 } from "react-native";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import usePanResponder from "../../../hooks/usePanResponder";
@@ -71,7 +71,7 @@ export default class ControlBar extends React.Component<IProps, IState> {
     const { progressValue, positionMillis } = this.state;
     const { isTouched, statusData } = this.props;
     const progressWidth = Math.round(progressValue * width);
-    return (<View style={styles.controlBarWrap} >
+    return (<View style={styles.controlBarWrap}>
       { isTouched && <ControlTime durationMillis={statusData.durationMillis} positionMillis={positionMillis}/>}
       <View {...this.watcher} style={styles.controlBarBox}>
         <View style={styles.controlBarBox2}>

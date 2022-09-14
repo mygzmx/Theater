@@ -5,7 +5,7 @@ import { AVPlaybackStatus, Video } from "expo-av";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ErrorType } from "expo-video-player/dist/constants";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useStore } from "react-redux";
 import { netVideoFinish, netVideoPreload } from "../../../apis/Player";
 import { RootState, useAppDispatch } from "../../../store";
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export default function VideoUnion ({ source, omap }: IProps) {
-  const route = useRoute()
+
   const player = useRef<Video>({} as Video);
   const store =  useStore<RootState>()
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
@@ -112,7 +112,7 @@ export default function VideoUnion ({ source, omap }: IProps) {
           status: {
             progressUpdateIntervalMillis: 100,
           },
-          shouldPlay: (route.name === "Player" || route.name === "SecondaryPlayer") && source.isViewable,
+          shouldPlay: source.isViewable,
           resizeMode: ResizeMode.CONTAIN,
           usePoster: true,
           posterSource: {

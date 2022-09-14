@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { netImeiAuth, netUserInfo } from "../../apis/User";
+import { netUserInfo } from "../../apis/User";
 import { EIsZhichi, ESex, IUserData } from "../../interfaces/self.interface";
 
 // createAsyncThunk会提供一个thunk对象，可以使用它的dispatch方法将请求的结果转发给其他的reducer处理
@@ -7,24 +7,6 @@ export const userInfoAsync = createAsyncThunk(
   'user/getUserInfo',
   async () => {
     return await netUserInfo();
-  }
-);
-
-export const imeiAuthAsync = createAsyncThunk(
-  'user/getImeiAuth',
-  async () => {
-    return await netImeiAuth({
-      androidId: "36cecec57756f3d27",
-      blackList: 1,
-      bookId: "",
-      ei: "3178363a2051b63d0e0f1b54bbd860f1eaa2a847e8426df03f0c8d98936fe945",
-      pullMode: "",
-      sid: "",
-      userId: "2006902",
-      utdid: "fa2f55573bdf09e4b7e0613b5139cffc",
-      utdidTmp: "tmp_1661862760745o2EjgqeuT4",
-      uuid: "",
-    });
   }
 );
 
@@ -60,10 +42,8 @@ export const userSlice = createSlice({
         // state.status = 'loading';
       })
       .addCase(userInfoAsync.fulfilled, (state, action) => {
+        console.log('userInfoAsync-------------------->', action.payload);
         return { ...state, ...action.payload, user: { ...state.user, ...action.payload.user } }
-      })
-      .addCase(imeiAuthAsync.fulfilled, (state, action) => {
-        console.log('imeiAuthAsync-------------------->', action.payload)
       });
   }
 });

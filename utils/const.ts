@@ -1,8 +1,8 @@
 
 /**接口域名 */
 export const ENVIRONMENT = {
-  'prod': 'https://fastvideo.kkyd.cn',
-  'stage': 'https://yfbvideo.kky.dzods.cn',
+  // 'prod': 'https://fastvideo.kkyd.cn',
+  // 'stage': 'https://yfbvideo.kky.dzods.cn',
   'test': 'http://223.kky.dzods.cn',
 }
 

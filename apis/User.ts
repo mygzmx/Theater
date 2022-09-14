@@ -1,5 +1,11 @@
 import { IUserData } from "../interfaces/self.interface";
-import { IImeiAuthParams, IRegisterParams, IRegisterResult, IReportStartParams } from "../interfaces/user.interface";
+import {
+  IImeiAuthParams,
+  ILoginParams, ILoginResult,
+  IRegisterParams,
+  IRegisterResult,
+  IReportStartParams
+} from "../interfaces/user.interface";
 import Service from "./Service";
 import Constants from "expo-constants";
 
@@ -30,15 +36,14 @@ export const netReportLand = (data: {sourceCid: string; startMode: string; uuid:
 // 发送短信验证码
 export const netSendCode = (phoneNum: string) => {
   const appName = Constants.expoConfig?.name || '繁花剧场'
-  console.log('netSendCode-------_>', { appName, phoneNum, swParam: 2 })
-  return Service.post('glory/video/2102', { appName, phoneNum, swParam: 2 })
+  return Service.post('glory/video/2102', { appName, phoneNum, swParam: 1 })
+}
+
+// 登录
+export const netLogin = (data: ILoginParams): Promise<{ result: ILoginResult }> => {
+  return Service.post('glory/video/2105', data)
 }
 // export default {
-
-//   // 登录
-//   netLogin(data) {
-//     return http.post('glory/video/2105', data)
-//   },
 //   // 注销账号
 //   netLogout(data) {
 //     return http.post('glory/video/2109', data)

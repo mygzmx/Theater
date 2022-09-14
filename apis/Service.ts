@@ -2,6 +2,7 @@ import axios, { Method, AxiosError, AxiosResponse, AxiosRequestConfig, AxiosProm
 import { Store } from "redux";
 import { RootState } from "../store";
 import { getStorageHeader } from "../utils/auth";
+import { ENVIRONMENT } from "../utils/const";
 
 declare module 'axios' {
   export interface AxiosInstance {
@@ -23,13 +24,15 @@ interface PendingType {
 // 取消重复请求
 const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
+
+
 /**接口域名 */
-export const BASE_URL = 'http://223.kky.dzods.cn';
+export const BASE_URL = ENVIRONMENT["test"];
 
 const Service = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
-  timeout: 5000
+  timeout: 30000
 });
 
 export const initAxios = async (store: Store<RootState>, headerConfig?: {[key: string]: any}) => {
@@ -41,10 +44,13 @@ export const initAxios = async (store: Store<RootState>, headerConfig?: {[key: s
     });
     // window.addEventListener('pageshow', () => initAxios(store));
   }
-  if (!Service.headerConfig) {
+  if (!Service.headerConfig || headerConfig) {
     const _header = await getStorageHeader();
     const _headerConfig = headerConfig ? { ...headerConfig, ..._header } : _header;
     Object.defineProperty(Service, 'headerConfig', {
+      set(v: any) {
+        return _headerConfig;
+      },
       get() {
         return _headerConfig;
       },
@@ -58,10 +64,14 @@ export const initAxios = async (store: Store<RootState>, headerConfig?: {[key: s
 }
 // 添加请求拦截器
 Service.interceptors.request.use(
-  (request: AxiosRequestConfig) => {
+  async (request: AxiosRequestConfig) => {
+    let _header = Service.headerConfig
+    if (!_header) {
+      _header = await getStorageHeader();
+    }
     request.headers = {
       ...request.headers,
-      ...Service.headerConfig,
+      ..._header,
     }
     request.cancelToken = new CancelToken((c) => {
       pending.push({

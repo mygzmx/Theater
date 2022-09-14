@@ -11,30 +11,52 @@ import React, { useEffect, useState, } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useRoute } from "@react-navigation/native";
 import { useCountdown } from "react-native-countdown-circle-timer";
-import { netSendCode } from "../../apis/User";
+import { Base64 } from "js-base64";
+import { netLogin, netSendCode } from "../../apis/User";
 import { RootStackScreenProps } from "../../@types";
 import { encrypt } from "../../utils/rsa";
+import { ELoginAccountType, ELoginType } from "../../interfaces/user.interface";
+import { setStorageHeader } from "../../utils/auth";
+import { initAxios } from "../../apis/Service";
+import { store, useAppDispatch } from "../../store";
+import { userInfoAsync } from "../../store/modules/user.module";
 const { height } = Dimensions.get('screen');
 const ImgLogo = require('../../assets/images/user/logo.png');
 
 export default function VerificationCode ({ navigation }: RootStackScreenProps<'VerificationCode'>) {
+  const dispatch = useAppDispatch();
   const route = useRoute()
   const toast = useToast()
   const [phone, setPhone] = useState('');
   const [vCode, setVCode] = useState('');
   const [countDown, setCountDown] = useState(60);
+  useCountdown({ isPlaying: true, duration: 60, colors: '#abc', onUpdate: (remainingTime) => setCountDown(remainingTime) });
   useEffect(() => {
     const _phone = (route?.params as any)?.phone || ''
     setPhone(_phone)
   }, [])
-  const _countDown = useCountdown({ isPlaying: true, duration: 60, colors: '#abc', onUpdate: (remainingTime) => setCountDown(remainingTime)});
+
   const sendCode = async () => {
     await netSendCode(encrypt(phone) || phone)
-    // navigation.
   }
-  const onchange = (txt: string) => {
+  const onchange = async (txt: string) => {
     setVCode(txt);
     if (txt.length === 4) {
+      const data = await netLogin({
+        validCode: txt || '',
+        confirmPop: 1,
+        type: ELoginType.登录,
+        accountType: ELoginAccountType.手机号,
+        bindId: Base64.encode(phone), // 登录标志	openId标志/手机号码
+        swParam: 1, // base64
+        from: 2,
+        noCode: 0, // 需要验证码
+      });
+      console.log('data-----------------_>', data);
+      const { token, userId } = data.result;
+      await setStorageHeader({ t: token, userId });
+      await initAxios(store, { t: token, userId });
+      dispatch(userInfoAsync());
       navigation.replace('Root', { screen: 'Self' })
     }
   }
@@ -55,7 +77,7 @@ export default function VerificationCode ({ navigation }: RootStackScreenProps<'
       />
       <View style={styles.inputLineBox}>
         {Array.from({ length: 4 }, (v, i) => {
-          return <View style={styles.inputLine}/>
+          return <View key={i} style={styles.inputLine}/>
         })}
       </View>
     </View>
@@ -105,7 +127,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 35,
     letterSpacing: 45,
-    textAlign: 'center',
   },
   inputLineBox: {
     // backgroundColor: 'red',

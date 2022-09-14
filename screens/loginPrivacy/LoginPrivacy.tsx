@@ -41,7 +41,6 @@ export default function LoginPrivacy({ navigation }: RootStackScreenProps<'Login
 
   const isShowPrivacy = async () => {
     const headerData = await Storage.getItem('header');
-    await initAxios(store);
     if (!headerData) {
       setVisible(true)
     } else {
@@ -66,8 +65,8 @@ export default function LoginPrivacy({ navigation }: RootStackScreenProps<'Login
 
   const confirm = async () => {
     setVisible(false)
-    await nextStep();
     setDeviceVisible(true);
+    await nextStep();
   }
 
   const cancel = () => {

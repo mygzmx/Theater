@@ -9,14 +9,14 @@ import {
   Pressable,
   TouchableWithoutFeedback
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { useToast } from "react-native-toast-notifications";
+import { Base64 } from 'js-base64'
 import { AGREEMENT_H5 } from "../../utils/const";
 import { regPhone } from "../../utils/reg";
 import { netSendCode } from "../../apis/User";
 import { RootStackScreenProps } from "../../@types";
-import { encrypt } from "../../utils/rsa";
 const { height } = Dimensions.get('screen');
 const ImgLogo = require('../../assets/images/user/logo.png');
 const ImgBtn = require('../../assets/images/user/button.png');
@@ -26,7 +26,7 @@ export default function Login ({ navigation }: RootStackScreenProps<'Login'>) {
   const toast = useToast()
   const [phone, setPhone] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const sendCode = () => {
+  const sendCode = async () => {
     if (!phone) {
       toast.show('请输入手机号码', { duration: 1000 });
       return false;
@@ -40,7 +40,8 @@ export default function Login ({ navigation }: RootStackScreenProps<'Login'>) {
       toast.show('请先阅读并同意用户协议和隐私策略', { duration: 1000 });
       return false;
     }
-    netSendCode(encrypt(phone) || phone)
+
+    netSendCode(Base64.encode(phone) || phone)
     // @ts-ignore
     navigation.push('VerificationCode', { phone })
   }

@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   Image,
   Dimensions,
-  Button
 } from "react-native";
 import dayjs from "dayjs";
 import { IUserInfo } from "../../../interfaces/self.interface";
@@ -31,7 +30,7 @@ export default function VipCard (props: IProps) {
         <Image style={styles.topImg} source={ImgVipTitle}/>
         <Text style={{ ...styles.topExpire, color: props.vip ? '#C9651A' : '#7F7F7F' }}>
           { props.vipExpiryTime ?
-            (props.vip ? `${dayjs(props.vipExpiryTime, 'YYYY-MM-DD')}到期` : `${dayjs(props.vipExpiryTime, 'YYYY-MM-DD')}已过期`)
+            (props.vip ? `${dayjs(props.vipExpiryTime).format('YYYY-MM-DD')}到期` : `${dayjs(props.vipExpiryTime).format('YYYY-MM-DD')}已过期`)
             : '未开通'
           }
         </Text>
@@ -62,7 +61,7 @@ export default function VipCard (props: IProps) {
   </ImageBackground>)
 }
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   vipCard: {
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     paddingRight: 40,
   },
   top: {
-    paddingBottom: 30,
+    paddingBottom: 26,
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginTop: 18
+    marginTop: 12
   },
   accountBalanceLeftCount: {
     fontSize: 22,

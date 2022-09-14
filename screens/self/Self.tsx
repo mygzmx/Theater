@@ -8,9 +8,8 @@ import SelfHeader from "./component/SelfHeader";
 import VipCard from "./component/VipCard";
 import SelfLink, { ILinkItem } from "./component/SelfLink";
 
-
 export default function Self ({ navigation }: RootTabScreenProps<'Self'>) {
-  const { user, amount, zhiChiUrl, isZhichi } = useAppSelector((state: RootState) => state.user)
+  const { user, amount = 0, award = 0, zhiChiUrl, isZhichi } = useAppSelector((state: RootState) => state.user)
   // 登录
   const handleLogin = () => {
     navigation.push('Login');
@@ -37,7 +36,7 @@ export default function Self ({ navigation }: RootTabScreenProps<'Self'>) {
   return (
     <View style={styles.container}>
       <SelfHeader {...user} handleLogin={handleLogin}/>
-      <VipCard {...user} amount={amount} routerToAc={routerToAc} linkPay={ linkPay} linkRecharge={linkRecharge}/>
+      <VipCard {...user} amount={amount + award} routerToAc={routerToAc} linkPay={ linkPay} linkRecharge={linkRecharge}/>
       <SelfLink linkTo={linkTo} zhichi={ !!(isZhichi === EIsZhichi.开 && zhiChiUrl) }/>
     </View>
   );

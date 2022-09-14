@@ -41,6 +41,7 @@
     "expo-updates": "~0.14.5",
     "expo-video-player": "^2.1.0",
     "expo-web-browser": "~11.0.0",
+    "js-base64": "^3.7.2",
     "jsencrypt": "^3.2.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",

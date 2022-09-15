@@ -38,3 +38,27 @@ expo publish
 
 
 ### 构件项目
+
+
+//{
+//  "cli": {
+//    "version": ">= 0.60.0"
+//  },
+//  "build": {
+//    "development": {
+//      "developmentClient": true,
+//      "distribution": "internal",
+//      "ios": {
+//        "simulator": true
+//      }
+//    },
+//    "preview": {
+//      "distribution": "internal"
+//    },
+//    "production": {}
+//  },
+//  "submit": {
+//    "production": {}
+//  }
+//}
+

@@ -7,6 +7,7 @@ import { ErrorType } from "expo-video-player/dist/constants";
 import { AVPlaybackStatusSuccess } from "expo-av/src/AV.types";
 import { useFocusEffect } from "@react-navigation/native";
 import { useStore } from "react-redux";
+import { useToast } from "react-native-toast-notifications";
 import { netVideoFinish, netVideoPreload } from "../../../apis/Player";
 import { RootState, useAppDispatch } from "../../../store";
 import { IVideoList } from "../Player";
@@ -21,7 +22,7 @@ interface IProps {
 }
 
 export default function VideoUnion ({ source, omap }: IProps) {
-
+  const toast = useToast();
   const player = useRef<Video>({} as Video);
   const store =  useStore<RootState>()
   const [statusData, setStatusData] = useState<AVPlaybackStatusSuccess>({} as AVPlaybackStatusSuccess);
@@ -78,6 +79,10 @@ export default function VideoUnion ({ source, omap }: IProps) {
     if (_chapterId) {
       dispatch(setChapterId(_chapterId));
       const videoPreload = await netVideoPreload({ bookId, chapterId: _chapterId, autoPay: EAutoPay.否, scene: EScene.播放页, omap: JSON.stringify(omap) });
+      if (!videoPreload.chapterInfo || videoPreload.chapterInfo.length === 0) {
+        toast.show('下级付费 || 结局了, 没做')
+        return;
+      }
       const _preVideo = videoPreload.chapterInfo.filter(val => videoList.findIndex(v => v.chapterId === val.chapterId) === -1 ) || [];
       const _videoList = JSON.parse(JSON.stringify(videoList));
       _videoList.splice(swiperIndex, 1);

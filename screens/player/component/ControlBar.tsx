@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   controlBarWrap: {
     width,
     // height: 300,
-    // backgroundColor: 'rgba(255,255,255,0.58)',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },

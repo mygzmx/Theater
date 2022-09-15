@@ -154,7 +154,7 @@ export default function Player () {
       }}
       vertical
       onChangeIndex={onChangeIndex}
-      showPagination
+      showPagination={false}
       paginationDefaultColor={'rgba(255, 255, 255, 0.4)'}
       paginationStyleItem={{ width: 12, height: 5, borderRadius: 3, marginLeft: 4, marginRight: 4 }}
     /> : null }

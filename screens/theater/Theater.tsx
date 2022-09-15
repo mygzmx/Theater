@@ -89,6 +89,7 @@ export default function Theater({ navigation }: RootTabScreenProps<'Theater'>) {
   const linkToPlayer = async (item: IVideoListItem) => {
     dispatch(setBookId(item.bookId))
     dispatch(setChapterId(item.chapterId))
+    // navigation.navigate('Root', { screen: 'Player' })
     navigation.replace('SecondaryPlayer')
   }
 

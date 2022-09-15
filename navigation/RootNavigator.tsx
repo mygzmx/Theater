@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
+import { Pressable, View } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 import { RootStackParamList, RootStackScreenProps } from "../@types";
 import Drama from "../screens/drama/Drama";
 import ViewingRecords from "../screens/viewingRecords/ViewingRecords";
@@ -67,6 +69,9 @@ export default function RootNavigator() {
           headerTitleAlign: 'left',
           gestureEnabled: true, // 手势可操作
           headerStyle: { backgroundColor: '#0F0F0F' },
+          headerLeft: () => <Pressable onPress={() => navigation.replace('Root', { screen: 'Theater' })}>
+            <AntDesign name="arrowleft" size={24} color="#FFFFFF" />
+          </Pressable>
         })}/>
       <Stack.Screen
         navigationKey="Drama"

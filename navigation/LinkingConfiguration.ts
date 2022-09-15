@@ -7,8 +7,8 @@
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 import { RootStackParamList } from '../@types';
-import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
-import Wallet from "../screens/wallet/Wallet";
+// import LoginPrivacy from "../screens/loginPrivacy/LoginPrivacy";
+// import Wallet from "../screens/wallet/Wallet";
 
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.createURL('/')],

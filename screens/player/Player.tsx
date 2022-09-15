@@ -126,7 +126,7 @@ export default function Player () {
 
   const VideoItem = ({ item, index }: { item: IVideoList, index: number }) => {
     return <View style={styles.container}>
-      {(route.name === 'Player') && <VideoUnion
+      {(route.name === 'Player' || route.name === 'SecondaryPlayer') && <VideoUnion
         omap={getOmap()}
         source={{
           ...item,
